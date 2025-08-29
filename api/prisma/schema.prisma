@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id       String  @id @default(uuid())
+  name     String?
+  email    String  @unique
+  password String
+  role     Int     @default(0)
+
+  Trainee   Profile[] @relation("GymEntitys")
+  Trainer   Profile?  @relation("GymEntitys", fields: [trainerId], references: [id])
+  trainerId String?
+
+  Plans  Plan[]
+  Report Report[]
+}
+
+model Report {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  content   String?
+  imc       Float?
+  bodyFat   Float?
+  weight    Float?
+
+  BodyPart  BodyPart[]
+  Profile   Profile    @relation(fields: [profileId], references: [id])
+  profileId String
+  Plan      Plan?      @relation(fields: [planId], references: [id])
+  planId    String?
+}
+
+model BodyPart {
+  id       String @id @default(uuid())
+  name     String
+  bodyFat  Float?
+  Report   Report @relation(fields: [reportId], references: [id])
+  reportId String
+}
+
+model Plan {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  from        DateTime @default(now())
+  to          DateTime @updatedAt
+
+  trainerId String
+
+  Trainee   Profile    @relation(fields: [traineeId], references: [id])
+  traineeId String
+  Activity  Activity[]
+  Train     Train[]
+  Report    Report[]
+}
+
+model Activity {
+  id               String        @id @default(uuid())
+  name             String
+  ACTIVITY_TYPE    ACTIVITY_TYPE
+  description      String?
+  weight           Float?
+  reps             Int?
+  sets             Int?
+  duration         Int? // Duration in seconds
+  planId           String
+  Plan             Plan          @relation(fields: [planId], references: [id])
+  Exercise         Exercise[]
+  reportExerciseId String?       @unique
+}
+
+model Train {
+  id       String     @id @default(uuid())
+  from     DateTime
+  to       DateTime
+  Plan     Plan       @relation(fields: [planId], references: [id])
+  planId   String
+  Exercise Exercise[]
+}
+
+model Exercise {
+  id String @id @default(uuid())
+
+  weight      Float?
+  reps        Int?
+  sets        Int?
+  duration    Int?
+  description String?
+
+  Activity   Activity @relation(fields: [activityId], references: [id])
+  activityId String
+  Train      Train    @relation(fields: [trainId], references: [id])
+  trainId    String
+}
+
+enum ACTIVITY_TYPE {
+  CARDIO
+  STRENGTH
+  FLEXIBILITY
+  BALANCE
+}
