@@ -52,11 +52,12 @@ model BodyPart {
 }
 
 model Plan {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
   description String?
-  from        DateTime @default(now())
-  to          DateTime @updatedAt
+  from        DateTime  @default(now())
+  to          DateTime  @updatedAt
+  weekDay     WEEK_DAYS
 
   trainerId String
 
@@ -104,6 +105,16 @@ model Exercise {
   activityId String
   Train      Train    @relation(fields: [trainId], references: [id])
   trainId    String
+}
+
+enum WEEK_DAYS {
+  SUNDAY
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
 }
 
 enum ACTIVITY_TYPE {
