@@ -104,6 +104,12 @@ sudo docker compose up full_stack_db | docker-compose up full_stack_db
 
 ```
 
+#### Build desktop command
+
+```bash
+pyinstaller --onefile --windowed main.py --hidden-import=qtpy --hidden-import=PyQt5.QtWebEngineWidgets --hidden-import=PyQt5.QtWebEngineCore
+```
+
 To run backend with the database just paste this command.
 
 ```bash
