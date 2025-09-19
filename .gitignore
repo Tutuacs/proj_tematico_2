@@ -1,6 +1,7 @@
 # Desktop
 .venv/
 build
+desktop/dist/main
 
 # Logs
 logs
