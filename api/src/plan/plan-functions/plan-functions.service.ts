@@ -2,4 +2,160 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
-export class PlanFunctionsService extends PrismaService {}
+export class PlanFunctionsService extends PrismaService {
+  // Create a new plan
+  async createPlan(data: any) {
+    return this.plan.create({
+      data,
+    });
+  }
+
+  // Get all plans
+  async getAllPlans() {
+    return this.plan.findMany({
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        from: true,
+        to: true,
+        weekDay: true,
+        trainerId: true,
+        traineeId: true,
+        Trainee: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+  }
+
+  // Get plan by ID
+  async getPlanById(id: string) {
+    return this.plan.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        from: true,
+        to: true,
+        weekDay: true,
+        trainerId: true,
+        traineeId: true,
+        Trainee: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        Activity: {
+          select: {
+            id: true,
+            name: true,
+            ACTIVITY_TYPE: true,
+            description: true,
+            weight: true,
+            reps: true,
+            sets: true,
+            duration: true,
+          },
+        },
+      },
+    });
+  }
+
+  // Get plans by trainer
+  async getPlansByTrainer(trainerId: string) {
+    return this.plan.findMany({
+      where: {
+        trainerId: trainerId,
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        from: true,
+        to: true,
+        weekDay: true,
+        trainerId: true,
+        traineeId: true,
+        Trainee: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+  }
+
+  // Get plans by trainee
+  async getPlansByTrainee(traineeId: string) {
+    return this.plan.findMany({
+      where: {
+        traineeId: traineeId,
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        from: true,
+        to: true,
+        weekDay: true,
+        trainerId: true,
+        traineeId: true,
+        Activity: {
+          select: {
+            id: true,
+            name: true,
+            ACTIVITY_TYPE: true,
+            description: true,
+            weight: true,
+            reps: true,
+            sets: true,
+            duration: true,
+          },
+        },
+      },
+    });
+  }
+
+  // Update plan
+  async updatePlan(id: string, data: any) {
+    return this.plan.update({
+      where: { id },
+      data,
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        from: true,
+        to: true,
+        weekDay: true,
+        trainerId: true,
+        traineeId: true,
+      },
+    });
+  }
+
+  // Delete plan
+  async deletePlan(id: string) {
+    return this.plan.delete({
+      where: { id },
+    });
+  }
+
+  // Check if plan exists by ID
+  async existPlanById(id: string) {
+    return this.plan.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+  }
+}
