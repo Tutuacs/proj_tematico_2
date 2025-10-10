@@ -1,0 +1,248 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-10-10T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v8.6.1",
+  "resources": [
+    {
+      "_id": "req_auth_login",
+      "parentId": "fld_auth",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/auth/login",
+      "name": "Login",
+      "description": "Fazer login na aplicação",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"admin@academia.com\",\n  \"password\": \"senha123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518400000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_auth_login_trainer",
+      "parentId": "fld_auth",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/auth/login",
+      "name": "Login as Trainer",
+      "description": "Login como treinador",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"maria.personal@email.com\",\n  \"password\": \"senha123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518390000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_auth_login_trainee",
+      "parentId": "fld_auth",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/auth/login",
+      "name": "Login as Trainee",
+      "description": "Login como aluno",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"joao.silva@email.com\",\n  \"password\": \"senha123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518380000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_auth_register",
+      "parentId": "fld_auth",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/auth/register",
+      "name": "Register New User",
+      "description": "Registrar um novo usuário na academia",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Carlos Estudante\",\n  \"email\": \"carlos.estudante@email.com\",\n  \"password\": \"senha123\",\n  \"phone\": \"11777666555\",\n  \"role\": 0,\n  \"birth\": \"1995-08-10\",\n  \"height\": 180,\n  \"weight\": 75,\n  \"trainerId\": null\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518300000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_auth_register_trainer",
+      "parentId": "fld_auth",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/auth/register",
+      "name": "Register New Trainer",
+      "description": "Registrar um novo treinador",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Pedro Personal\",\n  \"email\": \"pedro.personal@email.com\",\n  \"password\": \"senha123\",\n  \"phone\": \"11666555444\",\n  \"role\": 1,\n  \"birth\": \"1988-12-25\",\n  \"height\": 178,\n  \"weight\": 85,\n  \"trainerId\": null\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518290000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_auth_refresh",
+      "parentId": "fld_auth",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/auth/refresh",
+      "name": "Refresh Token",
+      "description": "Renovar o token de acesso usando o refresh token",
+      "method": "POST",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.refresh_token }}",
+          "description": "Usar o refresh_token aqui, não o access_token"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518200000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_auth",
+      "parentId": "wrk_main",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "name": "Auth Module",
+      "description": "Endpoints para autenticação e autorização",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1728518500000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_main",
+      "parentId": null,
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "name": "Gym Management API",
+      "description": "API para gerenciamento de academia",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_base",
+      "parentId": "wrk_main",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3333",
+        "access_token": "",
+        "refresh_token": ""
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "access_token", 
+          "refresh_token"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1728518400000,
+      "_type": "environment"
+    }
+  ]
+}

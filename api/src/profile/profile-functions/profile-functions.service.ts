@@ -13,21 +13,13 @@ export class ProfileFunctionsService extends PrismaService {
     return this.profile.findMany({});
   }
 
-  async getAllProfilesTrainer(id: string) {
+  async getAllProfilesTrainer(trainerId: string) {
     return this.profile.findMany({
       where: {
-        AND: [
-          {
-            trainerId: id,
-          },
-          {
-            trainerId: null,
-          },
-        ],
         OR: [
-          {
-            id,
-          },
+          { trainerId: trainerId }, // alunos
+          { id: trainerId },        // professor
+          { trainerId: null },      // quem não tem professor
         ],
       },
     });

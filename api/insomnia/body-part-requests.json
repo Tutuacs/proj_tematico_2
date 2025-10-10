@@ -1,0 +1,342 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-10-10T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v8.6.1",
+  "resources": [
+    {
+      "_id": "req_bodypart_create",
+      "parentId": "fld_bodypart",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/body-part",
+      "name": "Create Body Part Measurement",
+      "description": "Criar uma nova medida corporal (apenas TRAINER e ADMIN)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Bíceps\",\n  \"measurement\": 35.5,\n  \"unit\": \"cm\",\n  \"observations\": \"Medida tomada com o braço relaxado\",\n  \"reportId\": \"{{ _.report_id }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518400000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_bodypart_create_waist",
+      "parentId": "fld_bodypart",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/body-part",
+      "name": "Create Waist Measurement",
+      "description": "Criar medida da cintura",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Cintura\",\n  \"measurement\": 82.0,\n  \"unit\": \"cm\",\n  \"observations\": \"Medida tomada na parte mais estreita do abdômen\",\n  \"reportId\": \"{{ _.report_id }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518390000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_bodypart_create_chest",
+      "parentId": "fld_bodypart",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/body-part",
+      "name": "Create Chest Measurement",
+      "description": "Criar medida do peitoral",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Peitoral\",\n  \"measurement\": 102.5,\n  \"unit\": \"cm\",\n  \"observations\": \"Medida tomada com o tórax expandido\",\n  \"reportId\": \"{{ _.report_id }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518380000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_bodypart_findall",
+      "parentId": "fld_bodypart",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/body-part",
+      "name": "Get All Body Part Measurements",
+      "description": "Buscar todas as medidas corporais (baseado no role do usuário)",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518300000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_bodypart_findone",
+      "parentId": "fld_bodypart",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/body-part/{{ _.bodypart_id }}",
+      "name": "Get Body Part Measurement by ID",
+      "description": "Buscar uma medida corporal específica por ID",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518200000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_bodypart_update",
+      "parentId": "fld_bodypart",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/body-part/{{ _.bodypart_id }}",
+      "name": "Update Body Part Measurement",
+      "description": "Atualizar uma medida corporal específica (apenas TRAINER e ADMIN)",
+      "method": "PATCH",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"measurement\": 36.0,\n  \"observations\": \"Medida atualizada - observado ganho de massa muscular\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518100000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_bodypart_correction",
+      "parentId": "fld_bodypart",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/body-part/{{ _.bodypart_id }}",
+      "name": "Correct Measurement Error",
+      "description": "Corrigir erro na medição",
+      "method": "PATCH",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"measurement\": 81.5,\n  \"observations\": \"Correção: medida anterior estava incorreta devido ao posicionamento da fita\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518090000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_bodypart_delete",
+      "parentId": "fld_bodypart",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/body-part/{{ _.bodypart_id }}",
+      "name": "Delete Body Part Measurement",
+      "description": "Deletar uma medida corporal específica (apenas TRAINER e ADMIN)",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_bodypart",
+      "parentId": "wrk_main",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "name": "Body Part Module",
+      "description": "Endpoints para gerenciamento de medidas corporais",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1728518400000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_main",
+      "parentId": null,
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "name": "Gym Management API",
+      "description": "API para gerenciamento de academia",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_base",
+      "parentId": "wrk_main",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3333",
+        "access_token": "",
+        "refresh_token": "",
+        "bodypart_id": "",
+        "report_id": ""
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "access_token", 
+          "refresh_token",
+          "bodypart_id",
+          "report_id"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1728518400000,
+      "_type": "environment"
+    }
+  ]
+}

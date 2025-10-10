@@ -11,7 +11,7 @@ export class AuthService {
   private issuer = 'auth-token';
   private refreshAudience = 'refresh';
   private refreshIssuer = 'refresh-token';
-  private EXPIRE_TIME = 20 * 1000;
+  private EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000;
 
   constructor(
     private readonly authFunctions: AuthFunctionsService,
@@ -48,7 +48,7 @@ export class AuthService {
           name: profile.name,
         },
         {
-          expiresIn: '20s',
+          expiresIn: '7d',
           subject: profile.id,
           issuer: this.issuer,
           audience: this.audience,

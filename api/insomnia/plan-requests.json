@@ -1,0 +1,303 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-10-10T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v8.6.1",
+  "resources": [
+    {
+      "_id": "req_plan_create",
+      "parentId": "fld_plan",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/plan",
+      "name": "Create Plan",
+      "description": "Criar um novo plano de treino (apenas TRAINER e ADMIN)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Plano Hipertrofia Iniciante\",\n  \"description\": \"Plano de treino voltado para ganho de massa muscular para iniciantes\",\n  \"goal\": \"Hipertrofia\",\n  \"duration\": \"12 semanas\",\n  \"frequency\": \"3x por semana\",\n  \"traineeId\": \"{{ _.trainee_id }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518400000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_plan_create_cardio",
+      "parentId": "fld_plan",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/plan",
+      "name": "Create Cardio Plan",
+      "description": "Criar um plano de treino cardiovascular",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Plano Cardiovascular\",\n  \"description\": \"Plano de treino focado em resistência cardiovascular e queima de gordura\",\n  \"goal\": \"Emagrecimento\",\n  \"duration\": \"8 semanas\",\n  \"frequency\": \"5x por semana\",\n  \"traineeId\": \"{{ _.trainee_id }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518390000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_plan_findall",
+      "parentId": "fld_plan",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/plan",
+      "name": "Get All Plans",
+      "description": "Buscar todos os planos (baseado no role do usuário)",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518300000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_plan_findone",
+      "parentId": "fld_plan",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/plan/{{ _.plan_id }}",
+      "name": "Get Plan by ID",
+      "description": "Buscar um plano específico por ID",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518200000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_plan_update",
+      "parentId": "fld_plan",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/plan/{{ _.plan_id }}",
+      "name": "Update Plan",
+      "description": "Atualizar um plano específico (apenas TRAINER e ADMIN)",
+      "method": "PATCH",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Plano Hipertrofia Intermediário\",\n  \"description\": \"Plano atualizado para nível intermediário com exercícios mais avançados\",\n  \"goal\": \"Hipertrofia Avançada\",\n  \"duration\": \"16 semanas\",\n  \"frequency\": \"4x por semana\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518100000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_plan_update_progress",
+      "parentId": "fld_plan",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/plan/{{ _.plan_id }}",
+      "name": "Update Plan Progress",
+      "description": "Atualizar progresso do plano",
+      "method": "PATCH",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"description\": \"Cliente está respondendo muito bem ao treino, aumentando cargas gradualmente\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518090000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_plan_delete",
+      "parentId": "fld_plan",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/plan/{{ _.plan_id }}",
+      "name": "Delete Plan",
+      "description": "Deletar um plano específico (apenas TRAINER e ADMIN)",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_plan",
+      "parentId": "wrk_main",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "name": "Plan Module",
+      "description": "Endpoints para gerenciamento de planos de treino",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1728518400000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_main",
+      "parentId": null,
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "name": "Gym Management API",
+      "description": "API para gerenciamento de academia",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_base",
+      "parentId": "wrk_main",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3333",
+        "access_token": "",
+        "refresh_token": "",
+        "plan_id": "",
+        "trainee_id": ""
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "access_token", 
+          "refresh_token",
+          "plan_id",
+          "trainee_id"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1728518400000,
+      "_type": "environment"
+    }
+  ]
+}

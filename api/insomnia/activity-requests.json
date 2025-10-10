@@ -1,0 +1,381 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-10-10T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v8.6.1",
+  "resources": [
+    {
+      "_id": "req_activity_create_cardio",
+      "parentId": "fld_activity",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/activity",
+      "name": "Create Cardio Activity",
+      "description": "Criar uma nova atividade de cardio",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Corrida na Esteira\",\n  \"type\": \"CARDIO\",\n  \"weight\": null,\n  \"reps\": null,\n  \"sets\": null,\n  \"duration\": 30,\n  \"planId\": \"{{ _.plan_id }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518400000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_activity_create_strength",
+      "parentId": "fld_activity",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/activity",
+      "name": "Create Strength Activity",
+      "description": "Criar uma nova atividade de força",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Supino Reto\",\n  \"type\": \"STRENGTH\",\n  \"weight\": 80,\n  \"reps\": 12,\n  \"sets\": 3,\n  \"duration\": null,\n  \"planId\": \"{{ _.plan_id }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518390000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_activity_create_flexibility",
+      "parentId": "fld_activity",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/activity",
+      "name": "Create Flexibility Activity",
+      "description": "Criar uma nova atividade de flexibilidade",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Alongamento de Isquiotibiais\",\n  \"type\": \"FLEXIBILITY\",\n  \"weight\": null,\n  \"reps\": 15,\n  \"sets\": 2,\n  \"duration\": 10,\n  \"planId\": \"{{ _.plan_id }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518380000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_activity_create_balance",
+      "parentId": "fld_activity",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/activity",
+      "name": "Create Balance Activity",
+      "description": "Criar uma nova atividade de equilíbrio",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Prancha Unilateral\",\n  \"type\": \"BALANCE\",\n  \"weight\": null,\n  \"reps\": null,\n  \"sets\": 3,\n  \"duration\": 45,\n  \"planId\": \"{{ _.plan_id }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518370000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_activity_findall",
+      "parentId": "fld_activity",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/activity",
+      "name": "Get All Activities",
+      "description": "Buscar todas as atividades (baseado no role do usuário)",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518300000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_activity_findone",
+      "parentId": "fld_activity",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/activity/{{ _.activity_id }}",
+      "name": "Get Activity by ID",
+      "description": "Buscar uma atividade específica por ID",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518200000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_activity_update",
+      "parentId": "fld_activity",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/activity/{{ _.activity_id }}",
+      "name": "Update Activity",
+      "description": "Atualizar uma atividade específica",
+      "method": "PATCH",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Supino Reto - Progresso\",\n  \"weight\": 85,\n  \"reps\": 10,\n  \"sets\": 4\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518100000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_activity_update_cardio",
+      "parentId": "fld_activity",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/activity/{{ _.activity_id }}",
+      "name": "Update Cardio Duration",
+      "description": "Atualizar duração de atividade cardio",
+      "method": "PATCH",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Corrida na Esteira - Evolução\",\n  \"duration\": 40\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518090000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_activity_delete",
+      "parentId": "fld_activity",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/activity/{{ _.activity_id }}",
+      "name": "Delete Activity",
+      "description": "Deletar uma atividade específica",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_activity",
+      "parentId": "wrk_main",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "name": "Activity Module",
+      "description": "Endpoints para gerenciamento de atividades individuais",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1728518400000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_main",
+      "parentId": null,
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "name": "Gym Management API",
+      "description": "API para gerenciamento de academia",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_base",
+      "parentId": "wrk_main",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3333",
+        "access_token": "",
+        "refresh_token": "",
+        "activity_id": "",
+        "plan_id": ""
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "access_token", 
+          "refresh_token",
+          "activity_id",
+          "plan_id"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1728518400000,
+      "_type": "environment"
+    }
+  ]
+}

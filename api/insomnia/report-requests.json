@@ -1,0 +1,225 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-10-10T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v8.6.1",
+  "resources": [
+    {
+      "_id": "req_report_create",
+      "parentId": "fld_report",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/report",
+      "name": "Create Report",
+      "description": "Criar um novo relatório (apenas TRAINER e ADMIN)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Relatório Mensal de Progresso\",\n  \"description\": \"Avaliação do progresso do aluno no mês de outubro\",\n  \"observations\": \"Cliente apresentou boa evolução na força e resistência\",\n  \"traineeId\": \"{{ _.trainee_id }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518400000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_report_findall",
+      "parentId": "fld_report",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/report",
+      "name": "Get All Reports",
+      "description": "Buscar todos os relatórios (baseado no role do usuário)",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518300000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_report_findone",
+      "parentId": "fld_report",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/report/{{ _.report_id }}",
+      "name": "Get Report by ID",
+      "description": "Buscar um relatório específico por ID",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518200000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_report_update",
+      "parentId": "fld_report",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/report/{{ _.report_id }}",
+      "name": "Update Report",
+      "description": "Atualizar um relatório específico (apenas TRAINER e ADMIN)",
+      "method": "PATCH",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Relatório Mensal de Progresso - Atualizado\",\n  \"description\": \"Avaliação atualizada do progresso do aluno\",\n  \"observations\": \"Cliente apresentou excelente evolução e está pronto para novos desafios\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_content_type",
+          "name": "Content-Type",
+          "value": "application/json",
+          "description": ""
+        },
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518100000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_report_delete",
+      "parentId": "fld_report",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "url": "{{ _.base_url }}/report/{{ _.report_id }}",
+      "name": "Delete Report",
+      "description": "Deletar um relatório específico (apenas TRAINER e ADMIN)",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "id": "pair_authorization",
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1728518000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_report",
+      "parentId": "wrk_main",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "name": "Report Module",
+      "description": "Endpoints para gerenciamento de relatórios",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1728518400000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_main",
+      "parentId": null,
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "name": "Gym Management API",
+      "description": "API para gerenciamento de academia",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_base",
+      "parentId": "wrk_main",
+      "modified": 1728518400000,
+      "created": 1728518400000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3333",
+        "access_token": "",
+        "refresh_token": "",
+        "report_id": "",
+        "trainee_id": ""
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "access_token", 
+          "refresh_token",
+          "report_id",
+          "trainee_id"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1728518400000,
+      "_type": "environment"
+    }
+  ]
+}
