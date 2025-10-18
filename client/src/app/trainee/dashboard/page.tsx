@@ -1,13 +1,45 @@
-'use client';
+"use client";
 
-import GreetingBox from '@/components/pages/dashboard/GreetingBox';
-import DashboardCard from '@/components/pages/dashboard/DashboardCard';
+import GreetingBox from "@/components/pages/dashboard/GreetingBox";
+import DashboardCard from "@/components/pages/dashboard/DashboardCard";
+import useFetch from "@/utils/useFetch";
 
 export default function TraineeDashboardPageMock() {
-  const mockSession = { user: { name: 'Bruna' } };
-  const planTitle = 'Hipertrofia A/B';
-  const periodFrom = '01/10/2025';
-  const periodTo   = '30/10/2025';
+  const { fetchWithAuth } = useFetch();
+  // ! Para usar o fetch use dentro de uma funcao async
+  // const res = await fetchWithAuth(`/pokemon/page/${page}`);
+  // const res = await fetchWithAuth(`/pokemon/${params.id}`, {
+  //   method: "PATCH",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify(bodyData),
+  // });
+
+  const fetchEvolutionPokemons = async () => {
+    try {
+      const res = await fetchWithAuth(`/pokemon/page/1`);
+      if (res?.status === 200) {
+        const response: Response = res.data;
+        const pokemons: Pokemon[] = response.pokemons;
+        const exist = pokemons.find(
+          (pokemon) => pokemon.id === Number(params.id)
+        );
+        if (exist) {
+          pokemons.splice(pokemons.indexOf(exist), 1);
+        }
+        setPokemons(pokemons);
+        setTotalPages(Math.ceil(response.count / 10));
+      }
+    } catch (error) {
+      console.error("Failed to fetch evolution pokemons", error);
+    }
+  };
+
+  const mockSession = { user: { name: "Bruna" } };
+  const planTitle = "Hipertrofia A/B";
+  const periodFrom = "01/10/2025";
+  const periodTo = "30/10/2025";
 
   return (
     <div className="h-full">
@@ -16,8 +48,12 @@ export default function TraineeDashboardPageMock() {
         <GreetingBox
           name={mockSession.user.name}
           lines={[
-            <>Plano atual: <strong>{planTitle}</strong></>,
-            <>Período: {periodFrom} → {periodTo}</>,
+            <>
+              Plano atual: <strong>{planTitle}</strong>
+            </>,
+            <>
+              Período: {periodFrom} → {periodTo}
+            </>,
           ]}
         />
 
