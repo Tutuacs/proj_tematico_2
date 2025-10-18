@@ -1,1 +1,1 @@
-// para gerenciar alunos (GET, POST, PUT, DELETE)
+// # lista/busca/paginação (com Axios + fallback mock)
