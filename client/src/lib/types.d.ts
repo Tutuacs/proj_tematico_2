@@ -4,3 +4,5 @@ export type Profile = {
   password?: string;
   email: string;
 };
+
+// # (opcional) Tipos compartilhados (Trainee)
