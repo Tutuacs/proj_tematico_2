@@ -1,7 +1,9 @@
 import { useSession } from "next-auth/react";
 import { Backend_URL } from "@/lib/Constants";
-import { useToast } from "@/components/ui/use-toast";
 import { getToastConfig } from "@/components/ui/toastConfig";
+import { toast, useToast } from "@/components/ui/use-toast";
+// import { useToast } from "@/components/ui/use-toast";
+// import { getToastConfig, toastConfig } from "@/components/ui/toastConfig";
 
 const useFetch = (title?: string) => {
   const { data: session } = useSession();

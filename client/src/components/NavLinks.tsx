@@ -30,7 +30,7 @@ export default function NavLinks() {
         </div>
       </main>
     );
-  } else if (session?.profile?.role === ROLE.USER) {
+  } else if (session?.profile?.role === ROLE.TRAINER) {
     return (
       <main>
         <div className="flex p-4 flex-row justify-between items-center">
@@ -39,7 +39,25 @@ export default function NavLinks() {
               Home
             </Link>
             <Link className="p-2" href="/home">
-              {session?.profile?.name}
+              Trainer {session?.profile?.name}
+            </Link>
+          </div>
+          <div className="flex space-x-4">
+            <ButtonLogout />
+          </div>
+        </div>
+      </main>
+    );
+  } else if (session?.profile?.role === ROLE.TRAINEE) {
+    return (
+      <main>
+        <div className="flex p-4 flex-row justify-between items-center">
+          <div className="flex space-x-4">
+            <Link className="p-2" href="/">
+              Home
+            </Link>
+            <Link className="p-2" href="/home">
+              Trainee {session?.profile?.name}
             </Link>
           </div>
           <div className="flex space-x-4">
