@@ -16,25 +16,25 @@ export default function TraineeDashboardPageMock() {
   //   body: JSON.stringify(bodyData),
   // });
 
-  const fetchEvolutionPokemons = async () => {
-    try {
-      const res = await fetchWithAuth(`/pokemon/page/1`);
-      if (res?.status === 200) {
-        const response: Response = res.data;
-        const pokemons: Pokemon[] = response.pokemons;
-        const exist = pokemons.find(
-          (pokemon) => pokemon.id === Number(params.id)
-        );
-        if (exist) {
-          pokemons.splice(pokemons.indexOf(exist), 1);
-        }
-        setPokemons(pokemons);
-        setTotalPages(Math.ceil(response.count / 10));
-      }
-    } catch (error) {
-      console.error("Failed to fetch evolution pokemons", error);
-    }
-  };
+//   const fetchEvolutionPokemons = async () => {
+//     try {
+//       const res = await fetchWithAuth(`/pokemon/page/1`);
+//       if (res?.status === 200) {
+//         const response: Response = res.data;
+//         const pokemons: Pokemon[] = response.pokemons;
+//         const exist = pokemons.find(
+//           (pokemon) => pokemon.id === Number(params.id)
+//         );
+//         if (exist) {
+//           pokemons.splice(pokemons.indexOf(exist), 1);
+//         }
+//         setPokemons(pokemons);
+//         setTotalPages(Math.ceil(response.count / 10));
+//       }
+//     } catch (error) {
+//       console.error("Failed to fetch evolution pokemons", error);
+//     }
+//   };
 
   const mockSession = { user: { name: "Bruna" } };
   const planTitle = "Hipertrofia A/B";
