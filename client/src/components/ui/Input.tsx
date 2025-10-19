@@ -1,16 +1,25 @@
 "use client";
 
-import { forwardRef, InputHTMLAttributes } from "react";
+import { forwardRef, InputHTMLAttributes, useId, ReactNode } from "react";
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
-  error?: string;
+  /** texto/elemento do label (opcional) */
+  label?: ReactNode;
+  /** classe extra para o wrapper externo */
   wrapperClassName?: string;
+  /** classe extra para o label */
+  labelClassName?: string;
+  /** mensagem de erro (opcional) */
+  error?: string;
 };
 
 const Input = forwardRef<HTMLInputElement, Props>(function Input(
-  { className, error, wrapperClassName, ...rest },
+  { className, label, wrapperClassName, labelClassName, error, id, ...rest },
   ref
 ) {
+  const generatedId = useId();
+  const inputId = id ?? `input-${generatedId}`;
+
   const base =
     "w-full rounded-xl border bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 " +
     "focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 " +
@@ -21,14 +30,26 @@ const Input = forwardRef<HTMLInputElement, Props>(function Input(
 
   return (
     <div className={wrapperClassName}>
+      {label && (
+        <label
+          htmlFor={inputId}
+          className={[
+            "mb-1 block text-sm font-medium text-slate-700",
+            labelClassName ?? "",
+          ].join(" ")}
+        >
+          {label}
+        </label>
+      )}
+
       <input
         ref={ref}
+        id={inputId}
         className={[base, error ? errored : "border-slate-300", className ?? ""].join(" ")}
         {...rest}
       />
-      {error ? (
-        <p className="mt-1 text-xs text-red-600">{error}</p>
-      ) : null}
+
+      {error ? <p className="mt-1 text-xs text-red-600">{error}</p> : null}
     </div>
   );
 });
