@@ -10,7 +10,17 @@ export class ProfileFunctionsService extends PrismaService {
   }
 
   async getAllProfiles() {
-    return this.profile.findMany({});
+    return this.profile.findMany({
+      include: {
+        Trainer: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
   }
 
   async getAllProfilesTrainer(trainerId: string) {
@@ -21,6 +31,15 @@ export class ProfileFunctionsService extends PrismaService {
           { id: trainerId },        // professor
           { trainerId: null },      // quem não tem professor
         ],
+      },
+      include: {
+        Trainer: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
       },
     });
   }

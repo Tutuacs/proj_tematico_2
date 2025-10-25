@@ -3,14 +3,9 @@ export type Profile = {
   name: string;
   password?: string;
   email: string;
+  role?: number;
+  trainerId?: string;
+  Trainer?: Profile; // Relação com o instrutor
 };
 
-export type Trainee = {
-  id: string;
-  enrollment: string; // matrícula
-  name: string;
-  email: string;
-  trainerName?: string;
-};
-
-// # (opcional) Tipos compartilhados (Trainee)
+export type Trainee = Profile; // Trainee é um Profile com role específico

@@ -14,10 +14,9 @@ export default function TraineeTable({ data, onEdit }: Props) {
       <table className="min-w-full border-collapse">
         <thead>
           <tr className="bg-slate-900 text-white text-sm">
-            <th className="px-4 py-3 text-left rounded-l-2xl">Matrícula</th>
-            <th className="px-4 py-3 text-left">Nome aluno</th>
+            <th className="px-4 py-3 text-left rounded-l-2xl">Nome aluno</th>
             <th className="px-4 py-3 text-left">Email</th>
-            <th className="px-4 py-3 text-left">Instrutor</th>
+            <th className="px-4 py-3 text-left">Role</th>
             <th className="px-4 py-3 text-left rounded-r-2xl">Editar</th>
           </tr>
         </thead>
@@ -29,7 +28,7 @@ export default function TraineeTable({ data, onEdit }: Props) {
 
           {!data.length && (
             <tr>
-              <td colSpan={5} className="px-4 py-10 text-center text-slate-500">
+              <td colSpan={4} className="px-4 py-10 text-center text-slate-500">
                 Nenhum aluno encontrado.
               </td>
             </tr>

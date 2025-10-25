@@ -1,51 +1,73 @@
-// # lista/busca/paginação (com Axios + fallback mock)
-
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { api } from "@/lib/api";
+import { useEffect, useState, useCallback } from "react";
+import useFetch from "@/utils/useFetch";
 import type { Trainee } from "@/lib/types";
 
 type UseTraineesParams = {
-  q?: string;      // query de busca
-  page?: number;   // paginação futura
-  pageSize?: number;
+  q?: string;
 };
 
-export function useTrainees({ q = "", page = 1, pageSize = 20 }: UseTraineesParams) {
-  const [data, setData] = useState<Trainee[]>([]);
+export function useTrainees({ q = "" }: UseTraineesParams) {
+  const [trainees, setTrainees] = useState<Trainee[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refetchTrigger, setRefetchTrigger] = useState(0);
+  const { fetchWithAuth } = useFetch();
 
   useEffect(() => {
     let canceled = false;
 
-    (async () => {
+    const fetchTrainees = async () => {
       try {
-        // tente o backend real aqui (troque URL quando existir)
-        const res = await api.get<Trainee[]>("/trainees", { params: { q, page, pageSize } });
-        if (!canceled) setData(res.data);
-      } catch {
-        // fallback para o mock local
-        const res = await fetch("/api/mock/trainees");
-        const json: Trainee[] = await res.json();
-        if (!canceled) setData(json);
+        setLoading(true);
+        const res = await fetchWithAuth("/profile");
+        
+        if (res?.status === 200) {
+          const data = res.data;
+          
+          // Se for um array, usar diretamente
+          if (Array.isArray(data)) {
+            if (!canceled) setTrainees(data);
+          } 
+          // Se for um objeto com lista de profiles
+          else if (data.profiles) {
+            if (!canceled) setTrainees(data.profiles);
+          }
+          // Se for um único profile (trainee logado)
+          else if (data.id) {
+            if (!canceled) setTrainees([data]);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch trainees", error);
+        if (!canceled) setTrainees([]);
       } finally {
         if (!canceled) setLoading(false);
       }
-    })();
+    };
 
-    return () => { canceled = true; };
-  }, [q, page, pageSize]);
+    fetchTrainees();
 
-  const filtered = useMemo(() => {
+    return () => {
+      canceled = true;
+    };
+  }, [refetchTrigger]);
+
+  // Função para forçar recarregar os dados
+  const refetch = useCallback(() => {
+    setRefetchTrigger(prev => prev + 1);
+  }, []);
+
+  // Filtro local baseado na query
+  const filtered = trainees.filter((t) => {
+    if (!q) return true;
     const text = q.trim().toLowerCase();
-    if (!text) return data;
-    return data.filter(t =>
-      t.name.toLowerCase().includes(text) ||
-      t.email.toLowerCase().includes(text) ||
-      t.enrollment.toLowerCase().includes(text)
+    return (
+      t.name?.toLowerCase().includes(text) ||
+      t.email?.toLowerCase().includes(text) ||
+      t.id?.toLowerCase().includes(text)
     );
-  }, [data, q]);
+  });
 
-  return { trainees: filtered, loading };
+  return { trainees: filtered, loading, refetch };
 }

@@ -1,6 +1,10 @@
-// # linha da tabela + botão Editar
-
 import type { Trainee } from "@/lib/types";
+
+const roleNames: Record<number, string> = {
+  0: "Aluno",
+  1: "Instrutor",
+  2: "Admin",
+};
 
 export default function TraineeTableRow({
   trainee,
@@ -11,10 +15,9 @@ export default function TraineeTableRow({
 }) {
   return (
     <tr className="even:bg-slate-50/60">
-      <td className="px-4 py-3">{trainee.enrollment}</td>
       <td className="px-4 py-3">{trainee.name}</td>
       <td className="px-4 py-3">{trainee.email}</td>
-      <td className="px-4 py-3">{trainee.trainerName ?? "-"}</td>
+      <td className="px-4 py-3">{roleNames[trainee.role || 0] || "N/A"}</td>
       <td className="px-4 py-3">
         <button
           onClick={onEdit}
