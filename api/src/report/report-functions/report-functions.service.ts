@@ -16,7 +16,7 @@ export class ReportFunctionsService extends PrismaService {
         weight: true,
         profileId: true,
         planId: true,
-        Profile: {
+        Trainee: {
           select: {
             id: true,
             name: true,
@@ -39,7 +39,7 @@ export class ReportFunctionsService extends PrismaService {
         weight: true,
         profileId: true,
         planId: true,
-        Profile: {
+        Trainee: {
           select: {
             id: true,
             name: true,
@@ -70,13 +70,21 @@ export class ReportFunctionsService extends PrismaService {
         bodyFat: true,
         weight: true,
         profileId: true,
+        createdBy: true,
         planId: true,
-        Profile: {
+        Trainee: {
           select: {
             id: true,
             name: true,
             email: true,
             trainerId: true,
+          },
+        },
+        Trainer: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
           },
         },
         BodyPart: {
@@ -97,13 +105,66 @@ export class ReportFunctionsService extends PrismaService {
     });
   }
 
+  // Get reports with filters (for ADMIN)
+  async getReportsWithFilters(filters: {
+    profileId?: string;
+    from?: string;
+    to?: string;
+  }) {
+    const whereClause: any = {};
+
+    if (filters.profileId) {
+      whereClause.profileId = filters.profileId;
+    }
+
+    if (filters.from || filters.to) {
+      whereClause.createdAt = {};
+      if (filters.from) {
+        whereClause.createdAt.gte = new Date(filters.from);
+      }
+      if (filters.to) {
+        whereClause.createdAt.lte = new Date(filters.to);
+      }
+    }
+
+    return this.report.findMany({
+      where: whereClause,
+      select: {
+        id: true,
+        createdAt: true,
+        content: true,
+        imc: true,
+        bodyFat: true,
+        weight: true,
+        profileId: true,
+        planId: true,
+        Trainee: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            trainerId: true,
+          },
+        },
+        BodyPart: {
+          select: {
+            id: true,
+            name: true,
+            bodyFat: true,
+          },
+        },
+      },
+    });
+  }
+
   // Get reports by trainer (from their trainees)
-  async getReportsByTrainer(trainerId: string) {
+  async getReportsByTrainer(trainerId: string, filterProfileId?: string) {
     return this.report.findMany({
       where: {
-        Profile: {
+        Trainee: {
           trainerId: trainerId,
         },
+        ...(filterProfileId && { profileId: filterProfileId }),
       },
       select: {
         id: true,
@@ -114,7 +175,7 @@ export class ReportFunctionsService extends PrismaService {
         weight: true,
         profileId: true,
         planId: true,
-        Profile: {
+        Trainee: {
           select: {
             id: true,
             name: true,

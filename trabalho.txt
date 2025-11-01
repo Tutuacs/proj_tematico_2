@@ -1,0 +1,276 @@
+Descrição Casos de Uso Larman
+Nome do Caso de Uso UC01 - Logar no sistema
+Ator Primário Aluno / instrutor / Administrador
+Pré-condições 1. O usuário deve ter uma conta previamente cadastrada no sistema (entidade
+Profile).
+2. O sistema deve estar disponível e acessível.
+Fluxo Principal 1. O usuário acessa a tela de login do sistema.
+2. O sistema exibe os campos de e-mail e senha.
+3. O usuário insere seu e-mail e senha.
+4. O sistema valida os dados informados.
+5. O sistema verifica se o perfil está ativo.
+6. O sistema autentica o usuário e identifica seu papel (role).
+7. O sistema redireciona o usuário para a interface correspondente ao seu perfil
+(aluno, instrutor ou administrador).
+Fluxos Alternativos A. Dados incorretos: 4a. Se o e-mail ou senha forem inválidos, o sistema exibe
+uma mensagem de erro e permite nova tentativa.
+Pós-condições 1. O usuário está autenticado no sistema.
+2. O sistema registra o horário de login (opcional, para auditoria).
+3. A sessão é iniciada e os menus, funcionalidades e permissões correspondem
+ao tipo de perfil.
+Nome do Caso de Uso UC02 - Visualizar Plano de Treino
+Ator Primário Aluno
+Pré-condições 1. O aluno deve estar autenticado no sistema.
+2. O aluno deve ter ao menos um plano de treino ativo atribuído (Plan com
+traineeId).
+Fluxo Principal 1. O aluno acessa a opção “Meus Planos de Treino” no menu principal.
+2. O sistema consulta os planos de treino vinculados ao perfil do aluno.
+3. O sistema exibe uma lista com os planos de treino ativos.
+4. O aluno seleciona um dos planos disponíveis.
+5. O sistema exibe os detalhes do plano selecionado, incluindo os dias da semana
+com seus respectivos treinos (Train) e as atividades/exercícios previstos para
+cada dia (Activity).
+Fluxos Alternativos A. Nenhum plano disponível: 3a. Se o aluno não tiver planos de treino ativos, o
+sistema exibe uma mensagem informando que nenhum plano foi atribuído até o
+momento.
+B. Erro de carregamento: 2a. Em caso de falha na recuperação dos dados do
+plano, o sistema exibe mensagem de erro e solicita nova tentativa.
+Pós-condições 1. O aluno tem acesso completo às informações do plano de treino selecionado.
+2. O sistema está pronto para permitir a execução de treinos com base nos dados
+visualizados.
+Nome do Caso de Uso UC03 - Registrar Treino Realizado
+Ator Primário Aluno
+Pré-condições 1. O aluno deve estar autenticado no sistema.
+2. O aluno deve ter ao menos um plano de treino ativo com treinos diários
+cadastrados.
+3. O plano deve conter treinos e atividades atribuídas pelo instrutor.
+Fluxo Principal 1. O aluno acessa a opção “Registrar Treino”.
+2. O sistema exibe os planos ativos do aluno.
+3. O aluno seleciona o plano de treino desejado.
+4. O sistema exibe os treinos do plano organizados por dia da semana.
+5. O aluno seleciona o treino referente ao dia atual.
+6. O sistema exibe a lista de atividades do treino (exercícios previstos).
+7. Para cada atividade, o aluno insere os dados de execução (ex: carga usada,
+número de repetições, observações).
+8. O aluno confirma a execução e marca o treino como “concluído”.
+9. O sistema registra um novo conjunto de Exercise, vinculando o treino do dia, as
+atividades e os dados executados.
+10. O sistema exibe uma mensagem de confirmação de treino realizado.
+Fluxos Alternativos A. Nenhum plano disponível: 2a. Se o aluno não possuir planos ativos, o sistema
+exibe mensagem informativa e impede o registro.
+B. Nenhum treino para o dia atual: 5a. Se o treino do dia selecionado não estiver
+disponível, o sistema exibe mensagem e retorna à tela anterior.
+C. Dados incompletos: 7a. Caso o aluno não preencha todos os campos
+obrigatórios (ex: carga), o sistema solicita o preenchimento antes de continuar.
+Pós-condições 1. O treino é registrado com os dados reais inseridos pelo aluno (Exercise).
+2. O treino é marcado como concluído no histórico.
+3. Os dados ficam disponíveis para acompanhamento de evolução e geração de
+relatórios.
+Nome do Caso de Uso UC04 - Consultar Histórico de Treinos e Avaliações
+Ator Primário Aluno
+Pré-condições 1. O aluno deve estar autenticado no sistema.
+2. O aluno deve possuir ao menos um treino realizado (Exercise) ou uma
+avaliação física registrada (Report).
+Fluxo Principal 1. O aluno acessa a opção “Histórico” no menu principal.
+2. O sistema exibe as opções: “Treinos Realizados” e “Avaliações Físicas”.
+3. O aluno escolhe o tipo de histórico que deseja consultar.
+4. Se selecionar “Treinos Realizados”:
+4.1. O sistema exibe uma lista com os treinos concluídos, ordenados por data.
+4.2. O aluno pode visualizar os detalhes de execução de cada atividade (carga,
+repetições, observações).
+5. Se selecionar “Avaliações Físicas”:
+5.1. O sistema exibe os relatórios cadastrados, com IMC, peso, percentual de
+gordura, entre outros.
+5.2. O aluno pode selecionar uma avaliação para visualizar os detalhes por
+segmento corporal (BodyPart).
+Fluxos Alternativos A. Nenhum histórico disponível: 4a. Se o aluno não tiver treinos concluídos ou
+avaliações registradas, o sistema exibe uma mensagem informando a ausência de
+registros.
+B. Falha na consulta: 4b. Se ocorrer erro ao carregar os dados, o sistema exibe
+uma mensagem de erro e solicita nova tentativa.
+Pós-condições 1. O aluno acessa seus dados anteriores de forma organizada e compreensível.
+2. As informações podem ser utilizadas para comparação de progresso com
+treinos e avaliações recentes.
+Nome do Caso de Uso UC05 - Gerenciar Alunos
+Ator Primário Instrutor
+Pré-condições 1. O instrutor deve estar autenticado no sistema com permissão para
+gerenciamento de perfis.
+2. O sistema deve estar operacional e com acesso ao banco de dados de perfis
+(Profile).
+Fluxo Principal 1. O instrutor acessa a opção “Gerenciar Alunos” no menu.
+2. O sistema exibe uma lista de alunos cadastrados vinculados ao instrutor ou
+visíveis conforme permissões.
+3. O instrutor pode realizar buscas por nome, email ou matrícula.
+4. O instrutor seleciona uma das opções:
+a) Editar dados de um aluno existente
+b) Visualizar perfil do aluno
+5. Para edição:
+a) O sistema carrega os dados do aluno.
+b) O instrutor altera as informações e salva.
+Fluxos Alternativos A. Dados inválidos na edição: 5b.1. Se algum campo obrigatório não for
+preenchido ou estiver inválido, o sistema exibe mensagem de erro e impede o
+envio.
+B. Nenhum aluno foi encontrado na busca: 3a. O sistema exibe uma mensagem
+informando que não foram encontrados alunos com os critérios informados.
+Pós-condições 1. O aluno é editado com sucesso.
+2. A lista de alunos é atualizada imediatamente após cada operação.
+3. A integridade dos relacionamentos com Plan e Exercise é mantida.
+Nome do Caso de Uso UC06 - Cadastrar/Editar Atividade
+Ator Primário Instrutor
+Pré-condições 1. O instrutor deve estar autenticado no sistema.
+2. O instrutor deve ter permissão para cadastrar ou editar atividades (exercícios).
+Fluxo Principal 1. O instrutor acessa a opção “Gerenciar Atividades” no menu.
+2. O sistema exibe uma lista de atividades (exercícios) já cadastradas por ele ou
+visíveis globalmente.
+3. O instrutor pode buscar uma atividade existente pelo nome.
+4. O instrutor pode selecionar:
+a) Cadastrar nova atividade
+b) Editar atividade existente
+5. Para cadastrar nova atividade:
+a) O sistema exibe um formulário com os campos: nome, tipo
+(superior/inferior/cardio/etc.), descrição, grupos musculares envolvidos,
+observações opcionais.
+b) O instrutor preenche os campos e confirma o cadastro.
+c) O sistema valida os dados e salva a nova atividade (Activity).
+6. Para editar:
+a) O sistema carrega os dados da atividade selecionada.
+b) O instrutor altera as informações necessárias e salva.
+7. O sistema exibe uma mensagem de confirmação da operação.
+Fluxos Alternativos A. Dados inválidos no cadastro/edição: 5b.1/6b.1. Se algum campo obrigatório
+estiver inválido ou em branco, o sistema exibe mensagem de erro e impede a
+operação.
+B. Nome duplicado: 5b.2. Caso já exista uma atividade com o mesmo nome para o
+instrutor, o sistema exibe alerta solicitando alteração.
+Pós-condições 1. Uma nova atividade é registrada no sistema ou uma existente é atualizada com
+sucesso.
+2. As atividades ficam disponíveis para montagem de planos de treino (Plan).
+Nome do Caso de Uso UC07 - Cadastrar/Editar Planos de Treino
+Ator Primário Instrutor
+Pré-condições 1. O instrutor deve estar autenticado no sistema.
+2. O instrutor deve ter um ou mais alunos vinculados a ele (traineeId).
+3. Devem existir atividades cadastradas previamente para compor o plano.
+Fluxo Principal 1. O instrutor acessa a opção “Gerenciar Planos de Treino”.
+2. O sistema exibe a lista de planos de treino criados pelo instrutor.
+3. O instrutor pode selecionar:
+a) Cadastrar novo plano
+b) Editar plano existente
+4. Para cadastrar:
+a) O sistema exibe um formulário com os campos: aluno, título, data de início e
+fim, descrição opcional.
+b) O instrutor preenche os dados e seleciona os treinos semanais (ex: seg –
+costas, ter – ombro…).
+c) Para cada dia, o instrutor adiciona as atividades (Activity) com informações de
+séries e repetições.
+d) O sistema valida os dados e salva o plano (Plan) com seus respectivos treinos
+(Train) e ligações com atividades (Activity).
+5. Para edição:
+a) O instrutor seleciona um plano existente.
+b) O sistema carrega os dados atuais do plano, permitindo alterações.
+c) O instrutor altera o conteúdo e salva as modificações.
+6. O sistema confirma a operação com uma mensagem de sucesso.
+Fluxos Alternativos A. Dados obrigatórios não preenchidos: 4c/5c.1. O sistema informa campos
+obrigatórios ausentes e impede a operação.
+B. Nenhuma atividade cadastrada: 4b.1. O sistema informa que não há atividades
+disponíveis para incluir no plano e orienta a cadastrar previamente.
+Pós-condições 1. Um novo plano de treino é cadastrado e vinculado a um aluno.
+2. Os treinos diários e suas respectivas atividades são salvos corretamente no
+banco de dados.
+3. O aluno poderá visualizar esse plano ao acessar o sistema.
+Nome do Caso de Uso UC08 - Registrar Avaliação Física
+Ator Primário Instrutor
+Pré-condições 1. O instrutor deve estar autenticado no sistema.
+2. O aluno avaliado deve estar previamente cadastrado no sistema.
+3. O instrutor deve ter vínculo com o aluno (trainerId).
+Fluxo Principal 1. O instrutor acessa a opção “Registrar Avaliação Física”.
+2. O sistema exibe a lista de alunos vinculados ao instrutor.
+3. O instrutor seleciona o aluno a ser avaliado.
+4. O sistema exibe um formulário para preenchimento dos dados:
+a) Peso corporal
+b) Altura (para cálculo do IMC)
+c) Percentual de gordura corporal
+d) Medidas segmentadas por parte do corpo (opcional – braço, perna, cintura etc.)
+5. O instrutor preenche os dados e confirma o registro.
+6. O sistema valida e salva os dados como um novo Report, com possíveis
+registros associados de BodyPart.
+7. O sistema exibe uma mensagem de sucesso com opção de visualizar ou
+registrar nova avaliação.
+Fluxos Alternativos A. Dados incompletos ou inválidos: 5a. O sistema informa quais campos
+obrigatórios não foram preenchidos corretamente e impede o envio.
+B. Nenhum aluno selecionado: 3a. O sistema solicita a seleção de um aluno antes
+de prosseguir.
+Pós-condições 1. Um novo registro de avaliação física é associado ao perfil do aluno.
+2. Os dados ficam disponíveis para consulta e análise histórica.
+3. O instrutor pode utilizar as informações para ajustar planos de treino.
+Nome do Caso de Uso UC09 - Consultar Histórico de Execuções do Aluno
+Ator Primário Instrutor
+Pré-condições 1. O instrutor deve estar autenticado no sistema.
+2. O aluno deve estar cadastrado e possuir um plano de treino ativo.
+3. O aluno deve ter ao menos um treino realizado (Exercise) vinculado a um plano.
+Fluxo Principal 1. O instrutor acessa a opção “Histórico de Execuções”.
+2. O sistema exibe a lista de alunos vinculados ao instrutor.
+3. O instrutor seleciona um aluno.
+4. O sistema exibe a lista de planos de treino associados ao aluno.
+5. O instrutor seleciona um plano para consulta.
+6. O sistema exibe os treinos (Train) registrados pelo aluno dentro do plano,
+organizados por data.
+7. O instrutor pode selecionar um treino específico para visualizar os detalhes das
+atividades executadas (Exercise):
+a) Cargas utilizadas
+b) Séries e repetições realizadas
+c) Observações do aluno
+8. O sistema exibe a visualização dos dados com possibilidade de comparação
+com treinos anteriores do mesmo plano.
+Fluxos Alternativos A. Aluno sem execuções registradas: 6a. O sistema informa que não há treinos
+realizados para o plano selecionado.
+B. Falha ao carregar dados: 6b. O sistema exibe uma mensagem de erro e orienta
+o instrutor a tentar novamente.
+Pós-condições 1. O instrutor obtém uma visão detalhada da evolução do aluno em cada
+atividade.
+2. As informações podem ser usadas como base para ajustes no plano de treino.
+Nome do Caso de Uso UC10 - Visualizar Avaliações de Aluno
+Ator Primário Instrutor
+Pré-condições 1. O instrutor deve estar autenticado no sistema.
+2. O aluno deve estar cadastrado e vinculado ao instrutor.
+3. O aluno deve possuir ao menos uma avaliação física registrada (Report).
+Fluxo Principal 1. O instrutor acessa a opção “Avaliações dos Alunos”.
+2. O sistema exibe a lista de alunos sob responsabilidade do instrutor.
+3. O instrutor seleciona um aluno.
+4. O sistema exibe a lista de avaliações físicas do aluno, ordenadas por data
+(createdAt).
+5. O instrutor seleciona uma avaliação para visualizar.
+6. O sistema exibe os dados gerais da avaliação (Report):
+a) Peso
+b) IMC
+c) Percentual de gordura
+d) Comentários do instrutor (se houver)
+7. O sistema também exibe os dados detalhados por região corporal (BodyPart),
+caso existam.
+Fluxos Alternativos A. Aluno sem avaliações registradas: 4a. O sistema informa que não há
+avaliações disponíveis para o aluno selecionado.
+B. Falha ao carregar dados: 6a. O sistema exibe mensagem de erro e permite
+tentar novamente.
+Pós-condições 1. O instrutor obtém uma visão consolidada da evolução física do aluno.
+2. As informações podem ser utilizadas para ajustes no plano de treino ou
+orientações complementares.
+Nome do Caso de Uso UC11 - Gerenciar Usuários
+Ator Primário Administrador
+Pré-condições 1. O administrador deve estar autenticado no sistema.
+2. O sistema deve estar operacional e com acesso ao banco de dados de usuários
+(Profile).
+Fluxo Principal 1. O administrador acessa a opção “Gerenciar Usuários”.
+2. O sistema exibe a lista completa de usuários cadastrados, com informações
+básicas como nome, e-mail e função (role).
+3. O administrador pode realizar buscas por nome, email ou e-mail.
+4. O administrador pode escolher entre as ações:
+a) Editar informações de um usuário existente
+5. Para edição:
+a) O sistema carrega os dados do usuário.
+b) O administrador altera os dados necessários e salva.
+Fluxos Alternativos A. Dados inválidos: 5b.1. O sistema identifica campos obrigatórios vazios ou
+inválidos e bloqueia a operação, exibindo mensagem de erro.
+B. E-mail já cadastrado: 5c.1. O sistema impede cadastro duplicado e solicita
+correção.
+Pós-condições 1. O novo usuário existente é atualizado com sucesso.
+2. A lista de usuários reflete imediatamente as alterações feitas.
+3. A integridade dos dados relacionados a planos, avaliações e execuções é
+preservada.

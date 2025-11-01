@@ -17,6 +17,10 @@ export class CreateReportDto {
   @IsOptional()
   weight?: number;
 
+  @IsNumber()
+  @IsOptional()
+  height?: number; // altura em cm
+
   @IsUUID()
   profileId: string;
 

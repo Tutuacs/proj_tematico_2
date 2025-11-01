@@ -26,25 +26,40 @@ export class PlanService {
       throw new ForbiddenException('Apenas treinadores podem criar planos');
     }
 
-    // TRAINER can only create plans for their trainees or themselves
-    if (profile.role === ROLE.TRAINER) {
-      // Set trainerId to current user if TRAINER
-      createPlanDto.trainerId = profile.id;
-    }
+    // Adicionar trainerId automaticamente
+    const planData = {
+      ...createPlanDto,
+      trainerId: profile.id,
+    };
 
-    return this.planFunctions.createPlan(createPlanDto);
+    return this.planFunctions.createPlan(planData);
   }
 
-  async findAll(profile: {
-    id: string;
-    email: string;
-    role: number;
-    name: string;
-  }) {
+  async findAll(
+    profile: {
+      id: string;
+      email: string;
+      role: number;
+      name: string;
+    },
+    filters?: {
+      traineeId?: string;
+      trainerId?: string;
+      active?: string;
+    },
+  ) {
+    // Apply filters if provided by ADMIN
+    if (profile.role === ROLE.ADMIN && filters) {
+      return this.planFunctions.getPlansWithFilters(filters);
+    }
+
     if (profile.role !== ROLE.ADMIN) {
       if (profile.role === ROLE.TRAINER) {
-        // TRAINER sees plans they created
-        return this.planFunctions.getPlansByTrainer(profile.id);
+        // TRAINER sees plans they created (can be filtered by traineeId)
+        return this.planFunctions.getPlansByTrainer(
+          profile.id,
+          filters?.traineeId,
+        );
       }
       // TRAINEE sees only their own plans
       return this.planFunctions.getPlansByTrainee(profile.id);
@@ -106,9 +121,11 @@ export class PlanService {
         if (found.trainerId !== profile.id) {
           throw new NotFoundException('Plano não encontrado');
         }
-        // TRAINER cannot change trainerId
-        const { trainerId, ...allowedUpdates } = updatePlanDto;
-        updatePlanDto = allowedUpdates as UpdatePlanDto;
+        // TRAINER cannot change trainerId - remove if present
+        if ('trainerId' in updatePlanDto) {
+          const { trainerId, ...allowedUpdates } = updatePlanDto as any;
+          updatePlanDto = allowedUpdates as UpdatePlanDto;
+        }
       } else {
         // TRAINEE cannot update plans
         throw new ForbiddenException('Apenas treinadores podem editar planos');

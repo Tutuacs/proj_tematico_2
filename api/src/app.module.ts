@@ -8,6 +8,7 @@ import { BodyPartModule } from './body-part/body-part.module';
 import { PlanModule } from './plan/plan.module';
 import { ActivityModule } from './activity/activity.module';
 import { TrainModule } from './train/train.module';
+import { ExerciseModule } from './exercise/exercise.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { TrainModule } from './train/train.module';
     PlanModule,
     ActivityModule,
     TrainModule,
+    ExerciseModule,
   ],
   controllers: [],
   providers: [],

@@ -40,12 +40,22 @@ export class BodyPartService {
     return this.bodyPartFunctions.createBodyPart(createBodyPartDto);
   }
 
-  async findAll(profile: {
-    id: string;
-    email: string;
-    role: number;
-    name: string;
-  }) {
+  async findAll(
+    profile: {
+      id: string;
+      email: string;
+      role: number;
+      name: string;
+    },
+    filters?: {
+      reportId?: string;
+    },
+  ) {
+    // If reportId filter is provided, use it
+    if (filters?.reportId) {
+      return this.bodyPartFunctions.getBodyPartsByReport(filters.reportId);
+    }
+
     if (profile.role !== ROLE.ADMIN) {
       if (profile.role === ROLE.TRAINER) {
         // TRAINER sees body parts from reports of their trainees

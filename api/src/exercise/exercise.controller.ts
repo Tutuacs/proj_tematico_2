@@ -9,22 +9,22 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { PlanService } from './plan.service';
-import { CreatePlanDto } from './dto/create-plan.dto';
-import { UpdatePlanDto } from './dto/update-plan.dto';
+import { ExerciseService } from './exercise.service';
+import { CreateExerciseDto } from './dto/create-exercise.dto';
+import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { AuthGuard, RoleGuard } from 'src/guards';
 import { Access, ROLE } from 'src/decorators';
 import { ProfileAuth } from 'src/decorators/ProfileAtuh.decorator';
 
 @UseGuards(AuthGuard, RoleGuard)
-@Controller('plan')
-export class PlanController {
-  constructor(private readonly planService: PlanService) {}
+@Controller('exercise')
+export class ExerciseController {
+  constructor(private readonly exerciseService: ExerciseService) {}
 
-  @Access(ROLE.TRAINER, ROLE.ADMIN)
+  @Access(ROLE.TRAINEE, ROLE.TRAINER, ROLE.ADMIN)
   @Post()
   create(
-    @Body() createPlanDto: CreatePlanDto,
+    @Body() createExerciseDto: CreateExerciseDto,
     @ProfileAuth()
     profile: {
       id: string;
@@ -33,7 +33,7 @@ export class PlanController {
       name: string;
     },
   ) {
-    return this.planService.create(createPlanDto, profile);
+    return this.exerciseService.create(createExerciseDto, profile);
   }
 
   @Access(ROLE.TRAINEE, ROLE.TRAINER, ROLE.ADMIN)
@@ -47,10 +47,13 @@ export class PlanController {
       name: string;
     },
     @Query('traineeId') traineeId?: string,
-    @Query('trainerId') trainerId?: string,
-    @Query('active') active?: string,
+    @Query('planId') planId?: string,
+    @Query('trainId') trainId?: string,
   ) {
-    return this.planService.findAll(profile, { traineeId, trainerId, active });
+    return this.exerciseService.findAll(
+      { traineeId, planId, trainId },
+      profile,
+    );
   }
 
   @Access(ROLE.TRAINEE, ROLE.TRAINER, ROLE.ADMIN)
@@ -65,14 +68,14 @@ export class PlanController {
       name: string;
     },
   ) {
-    return this.planService.findOne(id, profile);
+    return this.exerciseService.findOne(id, profile);
   }
 
-  @Access(ROLE.TRAINER, ROLE.ADMIN)
+  @Access(ROLE.TRAINEE, ROLE.TRAINER, ROLE.ADMIN)
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() updatePlanDto: UpdatePlanDto,
+    @Body() updateExerciseDto: UpdateExerciseDto,
     @ProfileAuth()
     profile: {
       id: string;
@@ -81,10 +84,10 @@ export class PlanController {
       name: string;
     },
   ) {
-    return this.planService.update(id, updatePlanDto, profile);
+    return this.exerciseService.update(id, updateExerciseDto, profile);
   }
 
-  @Access(ROLE.TRAINER, ROLE.ADMIN)
+  @Access(ROLE.TRAINEE, ROLE.TRAINER, ROLE.ADMIN)
   @Delete(':id')
   remove(
     @Param('id') id: string,
@@ -96,6 +99,6 @@ export class PlanController {
       name: string;
     },
   ) {
-    return this.planService.remove(id, profile);
+    return this.exerciseService.remove(id, profile);
   }
 }

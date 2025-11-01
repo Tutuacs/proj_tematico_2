@@ -47,22 +47,36 @@ export class TrainService {
     return this.trainFunctions.createTrain(createTrainDto);
   }
 
-  async findAll(profile: {
-    id: string;
-    email: string;
-    role: number;
-    name: string;
-  }) {
+  async findAll(
+    profile: {
+      id: string;
+      email: string;
+      role: number;
+      name: string;
+    },
+    filters?: {
+      planId?: string;
+    },
+  ) {
     if (profile.role === ROLE.ADMIN) {
+      if (filters?.planId) {
+        return this.trainFunctions.getTrainsByPlan(filters.planId);
+      }
       return this.trainFunctions.getAllTrains();
     }
     
     if (profile.role === ROLE.TRAINER) {
       // TRAINER vê treinos de planos de seus alunos
+      if (filters?.planId) {
+        return this.trainFunctions.getTrainsByPlan(filters.planId);
+      }
       return this.trainFunctions.getTrainsByTrainer(profile.id);
     }
     
     // TRAINEE vê apenas seus próprios treinos
+    if (filters?.planId) {
+      return this.trainFunctions.getTrainsByPlan(filters.planId);
+    }
     return this.trainFunctions.getTrainsByTrainee(profile.id);
   }
 

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { TrainService } from './train.service';
 import { CreateTrainDto } from './dto/create-train.dto';
@@ -45,8 +46,9 @@ export class TrainController {
       role: number;
       name: string;
     },
+    @Query('planId') planId?: string,
   ) {
-    return this.trainService.findAll(profile);
+    return this.trainService.findAll(profile, { planId });
   }
 
   @Access(ROLE.TRAINEE, ROLE.TRAINER, ROLE.ADMIN)

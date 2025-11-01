@@ -161,6 +161,55 @@ export class TrainFunctionsService extends PrismaService {
     });
   }
 
+  // Get trains by plan ID
+  async getTrainsByPlan(planId: string) {
+    return this.train.findMany({
+      where: {
+        planId: planId,
+      },
+      select: {
+        id: true,
+        from: true,
+        to: true,
+        planId: true,
+        weekDay: true,
+        Plan: {
+          select: {
+            id: true,
+            title: true,
+            traineeId: true,
+            trainerId: true,
+            Trainee: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+          },
+        },
+        Exercise: {
+          select: {
+            id: true,
+            weight: true,
+            reps: true,
+            sets: true,
+            duration: true,
+            description: true,
+            Activity: {
+              select: {
+                id: true,
+                name: true,
+                ACTIVITY_TYPE: true,
+                description: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   // Get trains by trainee (their own trains)
   async getTrainsByTrainee(traineeId: string) {
     return this.train.findMany({

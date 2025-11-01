@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ReportService } from './report.service';
 import { CreateReportDto } from './dto/create-report.dto';
@@ -45,8 +46,11 @@ export class ReportController {
       role: number;
       name: string;
     },
+    @Query('profileId') profileId?: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
   ) {
-    return this.reportService.findAll(profile);
+    return this.reportService.findAll(profile, { profileId, from, to });
   }
 
   @Access(ROLE.TRAINEE, ROLE.TRAINER, ROLE.ADMIN)

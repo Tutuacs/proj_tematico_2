@@ -2,7 +2,7 @@
 
 import { getToastConfig } from "@/components/ui/toastConfig";
 import { toast } from "@/components/ui/use-toast";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SyntheticEvent, useState } from "react";
@@ -40,9 +40,26 @@ export default function Login() {
       return;
     }
 
-    setTimeout(() => {
-      router.push('/home');
-    }, 100);
+    // Get the session to determine the redirect path based on role
+    const response = await fetch('/api/auth/session');
+    const session = await response.json();
+    
+    if (session?.profile?.role !== undefined) {
+      const role = session.profile.role;
+      
+      // Redirect based on role: 0=TRAINEE, 1=TRAINER, 2=ADMIN
+      if (role === 0) {
+        router.push('/trainee/dashboard');
+      } else if (role === 1) {
+        router.push('/trainer/dashboard');
+      } else if (role === 2) {
+        router.push('/admin/dashboard');
+      } else {
+        router.push('/');
+      }
+    } else {
+      router.push('/');
+    }
   }
 
 

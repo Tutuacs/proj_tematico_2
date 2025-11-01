@@ -21,7 +21,7 @@ export class BodyPartFunctionsService extends PrismaService {
         Report: {
           select: {
             id: true,
-            Profile: {
+            Trainee: {
               select: {
                 id: true,
                 name: true,
@@ -46,7 +46,34 @@ export class BodyPartFunctionsService extends PrismaService {
         Report: {
           select: {
             id: true,
-            Profile: {
+            Trainee: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  // Get body parts by report ID
+  async getBodyPartsByReport(reportId: string) {
+    return this.bodyPart.findMany({
+      where: {
+        reportId: reportId,
+      },
+      select: {
+        id: true,
+        name: true,
+        bodyFat: true,
+        reportId: true,
+        Report: {
+          select: {
+            id: true,
+            Trainee: {
               select: {
                 id: true,
                 name: true,
@@ -64,7 +91,7 @@ export class BodyPartFunctionsService extends PrismaService {
     return this.bodyPart.findMany({
       where: {
         Report: {
-          Profile: {
+          Trainee: {
             trainerId: trainerId,
           },
         },
@@ -77,7 +104,7 @@ export class BodyPartFunctionsService extends PrismaService {
         Report: {
           select: {
             id: true,
-            Profile: {
+            Trainee: {
               select: {
                 id: true,
                 name: true,
@@ -138,7 +165,7 @@ export class BodyPartFunctionsService extends PrismaService {
     const report = await this.report.findUnique({
       where: { id: reportId },
       select: {
-        Profile: {
+        Trainee: {
           select: {
             trainerId: true,
           },
@@ -146,7 +173,7 @@ export class BodyPartFunctionsService extends PrismaService {
       },
     });
 
-    return report?.Profile?.trainerId === trainerId;
+    return report?.Trainee?.trainerId === trainerId;
   }
 
   // Verify access to body part
@@ -157,7 +184,7 @@ export class BodyPartFunctionsService extends PrismaService {
         Report: {
           select: {
             profileId: true,
-            Profile: {
+            Trainee: {
               select: {
                 trainerId: true,
               },
@@ -170,7 +197,7 @@ export class BodyPartFunctionsService extends PrismaService {
     if (!bodyPart) return false;
 
     if (userType === 'trainer') {
-      return bodyPart.Report.Profile.trainerId === userId;
+      return bodyPart.Report.Trainee.trainerId === userId;
     } else {
       return bodyPart.Report.profileId === userId;
     }

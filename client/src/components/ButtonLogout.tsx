@@ -11,13 +11,13 @@ export default function ButtonLogout() {
       redirect: false,
     });
 
-    router.push("/login");
+    router.push("/");
   }
 
   return (
     <button
       onClick={logout}
-      className="w-40 p-2 border border-gray-300 rounded-md hover:bg-black"
+      className="w-40 p-2 border border-gray-300 rounded-md hover:bg-red-600 transition-colors"
     >
       Sair
     </button>

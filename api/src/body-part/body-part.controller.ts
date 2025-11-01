@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { BodyPartService } from './body-part.service';
 import { CreateBodyPartDto } from './dto/create-body-part.dto';
@@ -45,8 +46,9 @@ export class BodyPartController {
       role: number;
       name: string;
     },
+    @Query('reportId') reportId?: string,
   ) {
-    return this.bodyPartService.findAll(profile);
+    return this.bodyPartService.findAll(profile, { reportId });
   }
 
   @Access(ROLE.TRAINEE, ROLE.TRAINER, ROLE.ADMIN)

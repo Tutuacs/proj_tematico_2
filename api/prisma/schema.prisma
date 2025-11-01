@@ -24,8 +24,10 @@ model Profile {
   Trainer   Profile?  @relation("GymEntitys", fields: [trainerId], references: [id])
   trainerId String?
 
-  Plans  Plan[]
-  Report Report[]
+  PlansCreated    Plan[]   @relation("PlansCreated")
+  PlansReceived   Plan[]   @relation("PlansReceived")
+  ReportsCreated  Report[] @relation("ReportsCreated")
+  ReportsReceived Report[] @relation("ReportsReceived")
 }
 
 model Report {
@@ -35,10 +37,16 @@ model Report {
   imc       Float?
   bodyFat   Float?
   weight    Float?
+  height    Float?   // altura em cm
 
   BodyPart  BodyPart[]
-  Profile   Profile    @relation(fields: [profileId], references: [id])
+  
+  Trainee   Profile    @relation("ReportsReceived", fields: [profileId], references: [id])
   profileId String
+  
+  Trainer   Profile?   @relation("ReportsCreated", fields: [createdBy], references: [id])
+  createdBy String?
+  
   Plan      Plan?      @relation(fields: [planId], references: [id])
   planId    String?
 }
@@ -57,12 +65,13 @@ model Plan {
   description String?
   from        DateTime  @default(now())
   to          DateTime  @updatedAt
-  weekDay     WEEK_DAYS
 
+  Trainer   Profile    @relation("PlansCreated", fields: [trainerId], references: [id])
   trainerId String
 
-  Trainee   Profile    @relation(fields: [traineeId], references: [id])
+  Trainee   Profile    @relation("PlansReceived", fields: [traineeId], references: [id])
   traineeId String
+  
   Activity  Activity[]
   Train     Train[]
   Report    Report[]
@@ -85,6 +94,7 @@ model Activity {
 
 model Train {
   id       String     @id @default(uuid())
+  weekDay  WEEK_DAYS
   from     DateTime
   to       DateTime
   Plan     Plan       @relation(fields: [planId], references: [id])

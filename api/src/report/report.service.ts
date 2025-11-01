@@ -32,21 +32,51 @@ export class ReportService {
       }
     }
 
-    return this.reportFunctions.createReport(createReportDto);
+    // Calcular IMC automaticamente se peso e altura forem fornecidos
+    let calculatedImc = createReportDto.imc;
+    if (createReportDto.weight && createReportDto.height && !createReportDto.imc) {
+      // IMC = peso (kg) / (altura em metros)²
+      const heightInMeters = createReportDto.height / 100;
+      calculatedImc = createReportDto.weight / (heightInMeters * heightInMeters);
+      calculatedImc = Math.round(calculatedImc * 100) / 100; // Arredondar para 2 casas decimais
+    }
+
+    // Adicionar createdBy automaticamente (quem está criando)
+    const dataWithCreator = {
+      ...createReportDto,
+      createdBy: profile.id,
+      imc: calculatedImc,
+    };
+
+    return this.reportFunctions.createReport(dataWithCreator);
   }
 
-  async findAll(profile: {
-    id: string;
-    email: string;
-    role: number;
-    name: string;
-  }) {
+  async findAll(
+    profile: {
+      id: string;
+      email: string;
+      role: number;
+      name: string;
+    },
+    filters?: {
+      profileId?: string;
+      from?: string;
+      to?: string;
+    },
+  ) {
+    if (profile.role === ROLE.ADMIN && filters) {
+      return this.reportFunctions.getReportsWithFilters(filters);
+    }
+
     if (profile.role === ROLE.ADMIN) {
       return this.reportFunctions.getAllReports();
     }
     
     if (profile.role === ROLE.TRAINER) {
-      return this.reportFunctions.getReportsByTrainer(profile.id);
+      return this.reportFunctions.getReportsByTrainer(
+        profile.id,
+        filters?.profileId,
+      );
     }
     
     // TRAINEE
@@ -73,7 +103,7 @@ export class ReportService {
 
     if (profile.role === ROLE.TRAINER) {
       // TRAINER pode ver relatórios de seus alunos
-      if (found.Profile.trainerId !== profile.id) {
+      if (found.Trainee.trainerId !== profile.id) {
         throw new NotFoundException('Relatório não encontrado');
       }
       return found;
@@ -104,7 +134,7 @@ export class ReportService {
 
     if (profile.role === ROLE.TRAINER) {
       // TRAINER pode atualizar apenas relatórios de seus alunos
-      if (found.Profile.trainerId !== profile.id) {
+      if (found.Trainee.trainerId !== profile.id) {
         throw new NotFoundException('Relatório não encontrado');
       }
     }
@@ -129,7 +159,7 @@ export class ReportService {
 
     if (profile.role === ROLE.TRAINER) {
       // TRAINER pode deletar apenas relatórios de seus alunos
-      if (found.Profile.trainerId !== profile.id) {
+      if (found.Trainee.trainerId !== profile.id) {
         throw new NotFoundException('Relatório não encontrado');
       }
     }

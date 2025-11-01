@@ -19,9 +19,15 @@ export class PlanFunctionsService extends PrismaService {
         description: true,
         from: true,
         to: true,
-        weekDay: true,
         trainerId: true,
         traineeId: true,
+        Trainer: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
         Trainee: {
           select: {
             id: true,
@@ -43,9 +49,15 @@ export class PlanFunctionsService extends PrismaService {
         description: true,
         from: true,
         to: true,
-        weekDay: true,
         trainerId: true,
         traineeId: true,
+        Trainer: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
         Trainee: {
           select: {
             id: true,
@@ -65,15 +77,76 @@ export class PlanFunctionsService extends PrismaService {
             duration: true,
           },
         },
+        Train: {
+          select: {
+            id: true,
+            weekDay: true,
+            from: true,
+            to: true,
+          },
+        },
+      },
+    });
+  }
+
+  // Get plans with filters (for ADMIN)
+  async getPlansWithFilters(filters: {
+    traineeId?: string;
+    trainerId?: string;
+    active?: string;
+  }) {
+    const now = new Date();
+    const whereClause: any = {};
+
+    if (filters.traineeId) {
+      whereClause.traineeId = filters.traineeId;
+    }
+
+    if (filters.trainerId) {
+      whereClause.trainerId = filters.trainerId;
+    }
+
+    if (filters.active === 'true') {
+      whereClause.from = { lte: now };
+      whereClause.to = { gte: now };
+    } else if (filters.active === 'false') {
+      whereClause.OR = [{ from: { gt: now } }, { to: { lt: now } }];
+    }
+
+    return this.plan.findMany({
+      where: whereClause,
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        from: true,
+        to: true,
+        trainerId: true,
+        traineeId: true,
+        Trainer: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        Trainee: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
       },
     });
   }
 
   // Get plans by trainer
-  async getPlansByTrainer(trainerId: string) {
+  async getPlansByTrainer(trainerId: string, filterTraineeId?: string) {
     return this.plan.findMany({
       where: {
         trainerId: trainerId,
+        ...(filterTraineeId && { traineeId: filterTraineeId }),
       },
       select: {
         id: true,
@@ -81,7 +154,6 @@ export class PlanFunctionsService extends PrismaService {
         description: true,
         from: true,
         to: true,
-        weekDay: true,
         trainerId: true,
         traineeId: true,
         Trainee: {
@@ -89,6 +161,12 @@ export class PlanFunctionsService extends PrismaService {
             id: true,
             name: true,
             email: true,
+          },
+        },
+        Train: {
+          select: {
+            id: true,
+            weekDay: true,
           },
         },
       },
@@ -107,9 +185,15 @@ export class PlanFunctionsService extends PrismaService {
         description: true,
         from: true,
         to: true,
-        weekDay: true,
         trainerId: true,
         traineeId: true,
+        Trainer: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
         Activity: {
           select: {
             id: true,
@@ -120,6 +204,14 @@ export class PlanFunctionsService extends PrismaService {
             reps: true,
             sets: true,
             duration: true,
+          },
+        },
+        Train: {
+          select: {
+            id: true,
+            weekDay: true,
+            from: true,
+            to: true,
           },
         },
       },
@@ -137,7 +229,6 @@ export class PlanFunctionsService extends PrismaService {
         description: true,
         from: true,
         to: true,
-        weekDay: true,
         trainerId: true,
         traineeId: true,
       },

@@ -14,15 +14,18 @@ export default function NavLinks() {
       <main>
         <div className="flex p-4 flex-row justify-between items-center">
           <div className="flex space-x-4">
-            <Link className="p-2" href="/">
-              Home
+            <Link className="p-2 hover:text-blue-300 transition-colors" href="/admin/dashboard">
+              Dashboard
             </Link>
-            <Link className="p-2" href="/home">
-              Users
+            <Link className="p-2 hover:text-blue-300 transition-colors" href="/admin/users">
+              Usuários
             </Link>
-            <Link className="p-2" href="/">
-              AdminName {session?.profile?.name}
+            <Link className="p-2 hover:text-blue-300 transition-colors" href="/admin/activities">
+              Atividades
             </Link>
+            <span className="p-2 text-gray-300">
+              {session?.profile?.name}
+            </span>
           </div>
           <div className="flex space-x-4">
             <ButtonLogout />
@@ -35,12 +38,18 @@ export default function NavLinks() {
       <main>
         <div className="flex p-4 flex-row justify-between items-center">
           <div className="flex space-x-4">
-            <Link className="p-2" href="/">
-              Home
+            <Link className="p-2 hover:text-purple-300 transition-colors" href="/trainer/dashboard">
+              Dashboard
             </Link>
-            <Link className="p-2" href="/home">
-              Trainer {session?.profile?.name}
+            <Link className="p-2 hover:text-purple-300 transition-colors" href="/trainer/plans">
+              Planos
             </Link>
+            <Link className="p-2 hover:text-purple-300 transition-colors" href="/trainer/reports/new">
+              Nova Avaliação
+            </Link>
+            <span className="p-2 text-gray-300">
+              {session?.profile?.name}
+            </span>
           </div>
           <div className="flex space-x-4">
             <ButtonLogout />
@@ -53,12 +62,21 @@ export default function NavLinks() {
       <main>
         <div className="flex p-4 flex-row justify-between items-center">
           <div className="flex space-x-4">
-            <Link className="p-2" href="/">
-              Home
+            <Link className="p-2 hover:text-blue-300 transition-colors" href="/trainee/dashboard">
+              Dashboard
             </Link>
-            <Link className="p-2" href="/home">
-              Trainee {session?.profile?.name}
+            <Link className="p-2 hover:text-blue-300 transition-colors" href="/trainee/plans">
+              Meus Planos
             </Link>
+            <Link className="p-2 hover:text-blue-300 transition-colors" href="/trainee/history/assessments">
+              Avaliações
+            </Link>
+            <Link className="p-2 hover:text-blue-300 transition-colors" href="/trainee/history/workouts">
+              Histórico
+            </Link>
+            <span className="p-2 text-gray-300">
+              {session?.profile?.name}
+            </span>
           </div>
           <div className="flex space-x-4">
             <ButtonLogout />
@@ -71,16 +89,19 @@ export default function NavLinks() {
       <main>
         <div className="flex p-4 flex-row justify-between items-center">
           <div className="flex space-x-4">
-            <Link className="p-2" href="/">
-              Home
+            <Link className="p-2 hover:text-gray-300 transition-colors" href="/">
+              Início
             </Link>
-            <Link className="p-2 text-gray-800" href="/">
-              Not logged
-            </Link>
+            <span className="p-2 text-gray-400">
+              Não logado
+            </span>
           </div>
           <div className="flex space-x-4">
-            <Link className="p-2" href="/login">
+            <Link className="p-2 bg-blue-600 hover:bg-blue-700 px-4 rounded transition-colors" href="/login">
               Login
+            </Link>
+            <Link className="p-2 bg-gray-700 hover:bg-gray-600 px-4 rounded transition-colors" href="/register">
+              Criar Conta
             </Link>
           </div>
         </div>
