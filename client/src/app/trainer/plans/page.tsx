@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import useFetch from "@/utils/useFetch";
 
@@ -23,6 +24,8 @@ type Plan = {
 
 export default function TrainerPlansPage() {
   const { data: session } = useSession();
+  const searchParams = useSearchParams();
+  const filterByTraineeId = searchParams.get("traineeId");
   const { fetchWithAuth } = useFetch();
 
   const [plans, setPlans] = useState<Plan[]>([]);
@@ -83,6 +86,11 @@ export default function TrainerPlansPage() {
 
   const filteredPlans = plans
     .filter((plan) => {
+      // Filter by traineeId if provided in URL
+      if (filterByTraineeId && plan.traineeId !== filterByTraineeId) {
+        return false;
+      }
+      
       if (filter === "active") return isPlanActive(plan);
       if (filter === "expired") return !isPlanActive(plan);
       return true;
@@ -107,6 +115,11 @@ export default function TrainerPlansPage() {
             <p className="mt-2 text-gray-600">
               Todos os planos de treino criados por você
             </p>
+            {filterByTraineeId && filteredPlans.length > 0 && (
+              <p className="mt-1 text-sm text-purple-600">
+                ✓ Mostrando planos de: {filteredPlans[0]?.Trainee?.name || filteredPlans[0]?.Trainee?.email || "Aluno selecionado"}
+              </p>
+            )}
           </div>
           <Link
             href="/trainer/plans/new"

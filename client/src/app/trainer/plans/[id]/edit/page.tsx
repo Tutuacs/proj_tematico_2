@@ -14,57 +14,34 @@ type Profile = {
 };
 
 type Activity = {
-  id: string;
+  id?: string;
   name: string;
-  type: "CARDIO" | "STRENGTH" | "FLEXIBILITY" | "BALANCE";
+  ACTIVITY_TYPE: "CARDIO" | "STRENGTH" | "FLEXIBILITY" | "BALANCE";
   description?: string;
-};
-
-type Train = {
-  id: string;
-  weekDay: string;
-  activityId: string;
-  activity: Activity;
-  series?: number;
-  repetitions?: number;
   weight?: number;
+  reps?: number;
+  sets?: number;
   duration?: number;
 };
 
 type Plan = {
   id: string;
   traineeId: string;
-  trainee: Profile;
+  trainerId: string;
   title: string;
   description?: string;
   from: string;
   to: string;
+  Trainee: Profile;
+  Trainer: Profile;
+  Activity: Activity[];
 };
 
-type TrainActivity = {
-  id?: string; // For existing trains
-  activityId: string;
-  activity: Activity;
-  series?: number;
-  repetitions?: number;
-  weight?: number;
-  duration?: number;
-  _action?: "keep" | "update" | "delete"; // Track changes
-};
-
-type DayPlan = {
-  weekDay: string;
-  activities: TrainActivity[];
-};
-
-const WEEKDAYS = [
-  { value: "MONDAY", label: "Segunda-feira" },
-  { value: "TUESDAY", label: "Terça-feira" },
-  { value: "WEDNESDAY", label: "Quarta-feira" },
-  { value: "THURSDAY", label: "Quinta-feira" },
-  { value: "FRIDAY", label: "Sexta-feira" },
-  { value: "SATURDAY", label: "Sábado" },
-  { value: "SUNDAY", label: "Domingo" },
+const ACTIVITY_TYPES = [
+  { value: "CARDIO", label: "Cardio" },
+  { value: "STRENGTH", label: "Força" },
+  { value: "FLEXIBILITY", label: "Flexibilidade" },
+  { value: "BALANCE", label: "Equilíbrio" },
 ];
 
 export default function EditPlanPage() {
@@ -74,277 +51,207 @@ export default function EditPlanPage() {
   const { data: session } = useSession();
   const { fetchWithAuth } = useFetch();
 
-  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // Step 1: Basic Info
-  const [trainees, setTrainees] = useState<Profile[]>([]);
-  const [traineeId, setTraineeId] = useState("");
+  const [plan, setPlan] = useState<Plan | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
 
-  // Step 2: Select Days
-  const [selectedDays, setSelectedDays] = useState<string[]>([]);
-  const [originalDays, setOriginalDays] = useState<string[]>([]);
-
-  // Step 3: Add Activities per Day
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [dayPlans, setDayPlans] = useState<Map<string, TrainActivity[]>>(new Map());
-  const [originalTrains, setOriginalTrains] = useState<Train[]>([]);
-  const [trainsToDelete, setTrainsToDelete] = useState<string[]>([]);
-  const [currentDay, setCurrentDay] = useState<string | null>(null);
+  const [deletedActivityIds, setDeletedActivityIds] = useState<string[]>([]);
   const [showActivityModal, setShowActivityModal] = useState(false);
-  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
-  const [activityForm, setActivityForm] = useState({
-    series: "",
-    repetitions: "",
-    weight: "",
-    duration: "",
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [activityForm, setActivityForm] = useState<Activity>({
+    name: "",
+    ACTIVITY_TYPE: "STRENGTH",
+    description: "",
+    weight: undefined,
+    reps: undefined,
+    sets: undefined,
+    duration: undefined,
   });
 
-  // Load plan data
   useEffect(() => {
-    const fetchPlanData = async () => {
+    const fetchPlan = async () => {
       try {
         setLoading(true);
-
-        // Fetch plan details
-        const planRes = await fetchWithAuth(`/plan/${planId}`);
-        if (planRes?.status !== 200) {
-          throw new Error("Failed to fetch plan");
-        }
-
-        const plan: Plan = planRes.data;
-        setTraineeId(plan.traineeId);
-        setTitle(plan.title);
-        setDescription(plan.description || "");
-        setDateFrom(new Date(plan.from).toISOString().split("T")[0]);
-        setDateTo(new Date(plan.to).toISOString().split("T")[0]);
-
-        // Fetch trains for this plan
-        const trainsRes = await fetchWithAuth(`/train?planId=${planId}`);
-        if (trainsRes?.status === 200) {
-          const trains: Train[] = Array.isArray(trainsRes.data) ? trainsRes.data : [];
-          setOriginalTrains(trains);
-
-          // Extract unique days
-          const days = Array.from(new Set(trains.map((t) => t.weekDay)));
-          setSelectedDays(days);
-          setOriginalDays(days);
-
-          // Group trains by day
-          const grouped = new Map<string, TrainActivity[]>();
-          trains.forEach((train) => {
-            const existing = grouped.get(train.weekDay) || [];
-            grouped.set(train.weekDay, [
-              ...existing,
-              {
-                id: train.id,
-                activityId: train.activityId,
-                activity: train.activity,
-                series: train.series,
-                repetitions: train.repetitions,
-                weight: train.weight,
-                duration: train.duration,
-                _action: "keep",
-              },
-            ]);
-          });
-          setDayPlans(grouped);
-
-          if (days.length > 0) {
-            setCurrentDay(days[0]);
-          }
-        }
-
-        // Fetch trainees (for dropdown, even if disabled)
-        const profilesRes = await fetchWithAuth(`/profile?role=0`);
-        if (profilesRes?.status === 200) {
-          const profiles = Array.isArray(profilesRes.data) ? profilesRes.data : [];
-          setTrainees(profiles);
+        const res = await fetchWithAuth(`/plan/${planId}`);
+        
+        if (res?.status === 200 && res.data) {
+          const planData: Plan = res.data;
+          setPlan(planData);
+          setTitle(planData.title);
+          setDescription(planData.description || "");
+          
+          const fromDate = new Date(planData.from);
+          const toDate = new Date(planData.to);
+          setDateFrom(fromDate.toISOString().split('T')[0]);
+          setDateTo(toDate.toISOString().split('T')[0]);
+          
+          setActivities(planData.Activity || []);
+        } else {
+          alert("Erro ao carregar plano");
+          router.push("/trainer/plans");
         }
       } catch (error) {
-        console.error("Failed to fetch plan data", error);
-        alert("Erro ao carregar plano. Redirecionando...");
+        console.error("Failed to fetch plan", error);
+        alert("Erro ao carregar plano");
         router.push("/trainer/plans");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPlanData();
+    if (planId) {
+      fetchPlan();
+    }
   }, [planId]);
 
-  // Load activities when needed
-  useEffect(() => {
-    const fetchActivities = async () => {
-      if (step !== 3 || activities.length > 0) return;
-
-      try {
-        const res = await fetchWithAuth(`/activity`);
-        if (res?.status === 200) {
-          const activitiesData = Array.isArray(res.data) ? res.data : [];
-          setActivities(activitiesData);
-        }
-      } catch (error) {
-        console.error("Failed to fetch activities", error);
-      }
-    };
-
-    fetchActivities();
-  }, [step]);
-
-  const handleNextStep = () => {
-    if (step === 1) {
-      if (!traineeId || !title || !dateFrom || !dateTo) {
-        alert("Preencha todos os campos obrigatórios");
-        return;
-      }
-      if (new Date(dateFrom) >= new Date(dateTo)) {
-        alert("A data de início deve ser anterior à data de fim");
-        return;
-      }
-    }
-
-    if (step === 2) {
-      if (selectedDays.length === 0) {
-        alert("Selecione pelo menos um dia da semana");
-        return;
-      }
-      if (currentDay === null && selectedDays.length > 0) {
-        setCurrentDay(selectedDays[0]);
-      }
-    }
-
-    setStep(step + 1);
-  };
-
-  const handlePreviousStep = () => {
-    setStep(step - 1);
-  };
-
-  const toggleDay = (day: string) => {
-    if (selectedDays.includes(day)) {
-      // Remove day
-      setSelectedDays(selectedDays.filter((d) => d !== day));
-
-      // Mark all existing trains for this day as deleted
-      const dayActivities = dayPlans.get(day) || [];
-      const idsToDelete = dayActivities.filter((a) => a.id).map((a) => a.id!);
-      setTrainsToDelete([...trainsToDelete, ...idsToDelete]);
-
-      // Remove from dayPlans
-      const newDayPlans = new Map(dayPlans);
-      newDayPlans.delete(day);
-      setDayPlans(newDayPlans);
-    } else {
-      setSelectedDays([...selectedDays, day]);
-    }
-  };
-
   const handleAddActivity = () => {
-    if (!selectedActivity || !currentDay) return;
-
-    const newActivity: TrainActivity = {
-      activityId: selectedActivity.id,
-      activity: selectedActivity,
-      series: activityForm.series ? parseInt(activityForm.series) : undefined,
-      repetitions: activityForm.repetitions ? parseInt(activityForm.repetitions) : undefined,
-      weight: activityForm.weight ? parseFloat(activityForm.weight) : undefined,
-      duration: activityForm.duration ? parseInt(activityForm.duration) : undefined,
-      _action: "keep", // New activities don't have IDs
-    };
-
-    const currentActivities = dayPlans.get(currentDay) || [];
-    const newDayPlans = new Map(dayPlans);
-    newDayPlans.set(currentDay, [...currentActivities, newActivity]);
-    setDayPlans(newDayPlans);
-
-    // Reset form
-    setShowActivityModal(false);
-    setSelectedActivity(null);
-    setActivityForm({ series: "", repetitions: "", weight: "", duration: "" });
+    setEditingIndex(null);
+    setActivityForm({
+      name: "",
+      ACTIVITY_TYPE: "STRENGTH",
+      description: "",
+      weight: undefined,
+      reps: undefined,
+      sets: undefined,
+      duration: undefined,
+    });
+    setShowActivityModal(true);
   };
 
-  const handleRemoveActivity = (day: string, index: number) => {
-    const currentActivities = dayPlans.get(day) || [];
-    const activityToRemove = currentActivities[index];
+  const handleEditActivity = (index: number) => {
+    setEditingIndex(index);
+    setActivityForm({ ...activities[index] });
+    setShowActivityModal(true);
+  };
 
-    // If it has an ID (existing train), mark for deletion
-    if (activityToRemove.id) {
-      setTrainsToDelete([...trainsToDelete, activityToRemove.id]);
+  const handleSaveActivity = () => {
+    if (!activityForm.name.trim()) {
+      alert("Nome da atividade é obrigatório");
+      return;
     }
 
-    const newActivities = currentActivities.filter((_, i) => i !== index);
-    const newDayPlans = new Map(dayPlans);
-    newDayPlans.set(day, newActivities);
-    setDayPlans(newDayPlans);
+    if (editingIndex !== null) {
+      const updated = [...activities];
+      updated[editingIndex] = activityForm;
+      setActivities(updated);
+    } else {
+      const newActivity: Activity = { ...activityForm };
+      delete newActivity.id;
+      setActivities([...activities, newActivity]);
+    }
+
+    setShowActivityModal(false);
+  };
+
+  const handleDeleteActivity = (index: number) => {
+    if (confirm("Remover esta atividade?")) {
+      const activity = activities[index];
+      
+      if (activity.id) {
+        setDeletedActivityIds([...deletedActivityIds, activity.id]);
+      }
+      
+      setActivities(activities.filter((_, i) => i !== index));
+    }
   };
 
   const handleSubmit = async () => {
-    // Validate that all days have at least one activity
-    for (const day of selectedDays) {
-      const dayActivities = dayPlans.get(day) || [];
-      if (dayActivities.length === 0) {
-        alert(`O dia ${WEEKDAYS.find((w) => w.value === day)?.label} precisa ter pelo menos uma atividade`);
-        return;
-      }
+    if (!title.trim()) {
+      alert("Título é obrigatório");
+      return;
+    }
+    if (!dateFrom || !dateTo) {
+      alert("Datas são obrigatórias");
+      return;
+    }
+    if (activities.length === 0) {
+      alert("Adicione pelo menos uma atividade ao plano");
+      return;
     }
 
     try {
       setSubmitting(true);
 
-      // 1. Update Plan
+      const fromDate = new Date(dateFrom);
+      const toDate = new Date(dateTo);
+
+      const planBody: any = {
+        title,
+        from: fromDate.toISOString(),
+        to: toDate.toISOString(),
+      };
+
+      if (description && description.trim()) {
+        planBody.description = description;
+      }
+
+      console.log("Updating plan with body:", planBody);
+
       const planRes = await fetchWithAuth(`/plan/${planId}`, {
         method: "PATCH",
-        body: JSON.stringify({
-          title,
-          description,
-          from: new Date(dateFrom).toISOString(),
-          to: new Date(dateTo).toISOString(),
-        }),
+        body: JSON.stringify(planBody),
       });
 
       if (!planRes || planRes.status !== 200) {
         throw new Error("Failed to update plan");
       }
 
-      // 2. Delete removed trains
-      const deletePromises = trainsToDelete.map((trainId) =>
-        fetchWithAuth(`/train/${trainId}`, { method: "DELETE" })
-      );
-      await Promise.all(deletePromises);
+      if (deletedActivityIds.length > 0) {
+        console.log("Deleting activities:", deletedActivityIds);
+        
+        const deletePromises = deletedActivityIds.map(activityId =>
+          fetchWithAuth(`/plan/${planId}/activities/${activityId}`, {
+            method: "DELETE",
+          })
+        );
 
-      // 3. Create new trains (activities without ID)
-      const createPromises: Promise<any>[] = [];
-
-      for (const day of selectedDays) {
-        const dayActivities = dayPlans.get(day) || [];
-
-        for (const trainActivity of dayActivities) {
-          if (!trainActivity.id) {
-            // New train
-            const trainPromise = fetchWithAuth(`/train`, {
-              method: "POST",
-              body: JSON.stringify({
-                planId,
-                weekDay: day,
-                activityId: trainActivity.activityId,
-                series: trainActivity.series,
-                repetitions: trainActivity.repetitions,
-                weight: trainActivity.weight,
-                duration: trainActivity.duration,
-              }),
-            });
-            createPromises.push(trainPromise);
-          }
-        }
+        await Promise.all(deletePromises);
       }
 
-      await Promise.all(createPromises);
+      const existingActivities = activities.filter(a => a.id);
+      const newActivities = activities.filter(a => !a.id);
+
+      if (existingActivities.length > 0) {
+        console.log("Updating existing activities:", existingActivities);
+        
+        const updatePromises = existingActivities.map(activity =>
+          fetchWithAuth(`/activity/${activity.id}`, {
+            method: "PATCH",
+            body: JSON.stringify({
+              name: activity.name,
+              ACTIVITY_TYPE: activity.ACTIVITY_TYPE,
+              description: activity.description,
+              weight: activity.weight,
+              reps: activity.reps,
+              sets: activity.sets,
+              duration: activity.duration,
+              planId: planId,
+            }),
+          })
+        );
+
+        await Promise.all(updatePromises);
+      }
+
+      if (newActivities.length > 0) {
+        console.log("Creating new activities:", newActivities);
+
+        const activitiesRes = await fetchWithAuth(`/plan/${planId}/activities`, {
+          method: "POST",
+          body: JSON.stringify(newActivities),
+        });
+
+        if (!activitiesRes || activitiesRes.status !== 201) {
+          console.error("Failed to create activities");
+          alert("Plano atualizado, mas houve erro ao adicionar novas atividades");
+        }
+      }
 
       alert("Plano atualizado com sucesso!");
       router.push("/trainer/plans");
@@ -358,622 +265,366 @@ export default function EditPlanPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-gray-100">
-        <div className="max-w-4xl mx-auto p-6">
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <div className="animate-pulse space-y-4">
-              <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              <div className="space-y-3">
-                <div className="h-10 bg-gray-200 rounded"></div>
-                <div className="h-10 bg-gray-200 rounded"></div>
-                <div className="h-10 bg-gray-200 rounded"></div>
-              </div>
-            </div>
-          </div>
+      <main className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Carregando plano...</p>
         </div>
       </main>
     );
   }
 
+  if (!plan) {
+    return null;
+  }
+
   return (
     <main className="min-h-screen bg-gray-100">
-      <div className="max-w-4xl mx-auto p-6">
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Editar Plano</h1>
-          <p className="mt-2 text-gray-600">
-            Passo {step} de 4
-          </p>
+      <div className="max-w-4xl mx-auto p-6 pb-20">
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Editar Plano</h1>
+            <p className="text-gray-600 mt-1">
+              Aluno: {plan.Trainee.name || plan.Trainee.email}
+            </p>
+          </div>
+          <Link
+            href="/trainer/plans"
+            className="text-gray-600 hover:text-gray-900"
+          >
+            ← Voltar
+          </Link>
         </div>
 
-        {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-2">
-            {["Informações", "Dias", "Atividades", "Revisão"].map((label, index) => (
-              <div key={index} className="flex-1 text-center">
-                <div
-                  className={`mx-auto w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-                    step > index + 1
-                      ? "bg-green-500 text-white"
-                      : step === index + 1
-                      ? "bg-indigo-600 text-white"
-                      : "bg-gray-300 text-gray-600"
-                  }`}
-                >
-                  {step > index + 1 ? "✓" : index + 1}
-                </div>
-                <p className="text-xs mt-1 text-gray-600">{label}</p>
-              </div>
-            ))}
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div
-              className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(step / 4) * 100}%` }}
-            ></div>
-          </div>
-        </div>
-
-        {/* Step 1: Basic Information */}
-        {step === 1 && (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">
-              Informações Básicas do Plano
-            </h2>
-
+        <div className="bg-white rounded-lg shadow p-6 space-y-6">
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Informações Básicas</h2>
+            
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Aluno <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Aluno
                 </label>
-                <select
-                  value={traineeId}
-                  onChange={(e) => setTraineeId(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
+                <input
+                  type="text"
+                  value={plan.Trainee.name || plan.Trainee.email}
                   disabled
-                >
-                  <option value="">Selecione um aluno...</option>
-                  {trainees.map((trainee) => (
-                    <option key={trainee.id} value={trainee.id}>
-                      {trainee.name} ({trainee.email})
-                    </option>
-                  ))}
-                </select>
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-100 text-gray-600"
+                />
                 <p className="text-xs text-gray-500 mt-1">
-                  O aluno não pode ser alterado após a criação do plano
+                  O aluno não pode ser alterado
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Título do Plano <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Título do Plano *
                 </label>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Ex: Treino de Hipertrofia - Iniciante"
-                  required
+                  placeholder="Ex: Plano de Hipertrofia - Janeiro"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Descrição (opcional)
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Descrição
                 </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Descrição opcional do plano"
                   rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Descreva os objetivos e características do plano..."
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Data de Início <span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Data Início *
                   </label>
                   <input
                     type="date"
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    required
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Data de Término <span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Data Fim *
                   </label>
                   <input
                     type="date"
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    required
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t pt-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold">Atividades do Plano</h2>
+              <button
+                onClick={handleAddActivity}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
+              >
+                + Adicionar Atividade
+              </button>
+            </div>
+
+            {activities.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                Nenhuma atividade adicionada ainda.
+                <br />
+                Clique em "Adicionar Atividade" para começar.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {activities.map((activity, index) => (
+                  <div
+                    key={activity.id || `new-${index}`}
+                    className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="font-semibold text-lg">{activity.name}</h3>
+                          <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                            {ACTIVITY_TYPES.find((t) => t.value === activity.ACTIVITY_TYPE)?.label}
+                          </span>
+                          {!activity.id && (
+                            <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
+                              Nova
+                            </span>
+                          )}
+                        </div>
+                        {activity.description && (
+                          <p className="text-gray-600 text-sm mb-2">
+                            {activity.description}
+                          </p>
+                        )}
+                        <div className="flex gap-4 text-sm text-gray-700">
+                          {activity.weight && (
+                            <span>Peso: {activity.weight}kg</span>
+                          )}
+                          {activity.sets && (
+                            <span>Séries: {activity.sets}</span>
+                          )}
+                          {activity.reps && (
+                            <span>Repetições: {activity.reps}</span>
+                          )}
+                          {activity.duration && (
+                            <span>Duração: {activity.duration}min</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleEditActivity(index)}
+                          className="text-blue-600 hover:text-blue-800 px-3 py-1 rounded"
+                        >
+                          Editar
+                        </button>
+                        <button
+                          onClick={() => handleDeleteActivity(index)}
+                          className="text-red-600 hover:text-red-800 px-3 py-1 rounded"
+                        >
+                          Remover
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="border-t pt-6 flex justify-end gap-3">
+            <Link
+              href="/trainer/plans"
+              className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              Cancelar
+            </Link>
+            <button
+              onClick={handleSubmit}
+              disabled={submitting}
+              className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium disabled:opacity-50"
+            >
+              {submitting ? "Salvando..." : "Salvar Alterações"}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {showActivityModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold mb-4">
+              {editingIndex !== null ? "Editar Atividade" : "Nova Atividade"}
+            </h2>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nome da Atividade *
+                </label>
+                <input
+                  type="text"
+                  value={activityForm.name}
+                  onChange={(e) =>
+                    setActivityForm({ ...activityForm, name: e.target.value })
+                  }
+                  placeholder="Ex: Supino Reto"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tipo *
+                </label>
+                <select
+                  value={activityForm.ACTIVITY_TYPE}
+                  onChange={(e) =>
+                    setActivityForm({
+                      ...activityForm,
+                      ACTIVITY_TYPE: e.target.value as any,
+                    })
+                  }
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  {ACTIVITY_TYPES.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Descrição
+                </label>
+                <textarea
+                  value={activityForm.description || ""}
+                  onChange={(e) =>
+                    setActivityForm({
+                      ...activityForm,
+                      description: e.target.value,
+                    })
+                  }
+                  placeholder="Descrição da atividade"
+                  rows={2}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Peso (kg)
+                  </label>
+                  <input
+                    type="number"
+                    value={activityForm.weight || ""}
+                    onChange={(e) =>
+                      setActivityForm({
+                        ...activityForm,
+                        weight: e.target.value ? Number(e.target.value) : undefined,
+                      })
+                    }
+                    placeholder="Ex: 80"
+                    min="0"
+                    step="0.5"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Séries
+                  </label>
+                  <input
+                    type="number"
+                    value={activityForm.sets || ""}
+                    onChange={(e) =>
+                      setActivityForm({
+                        ...activityForm,
+                        sets: e.target.value ? Number(e.target.value) : undefined,
+                      })
+                    }
+                    placeholder="Ex: 3"
+                    min="0"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Repetições
+                  </label>
+                  <input
+                    type="number"
+                    value={activityForm.reps || ""}
+                    onChange={(e) =>
+                      setActivityForm({
+                        ...activityForm,
+                        reps: e.target.value ? Number(e.target.value) : undefined,
+                      })
+                    }
+                    placeholder="Ex: 12"
+                    min="0"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Duração (min)
+                  </label>
+                  <input
+                    type="number"
+                    value={activityForm.duration || ""}
+                    onChange={(e) =>
+                      setActivityForm({
+                        ...activityForm,
+                        duration: e.target.value ? Number(e.target.value) : undefined,
+                      })
+                    }
+                    placeholder="Ex: 30"
+                    min="0"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 flex justify-end gap-3">
-              <Link
-                href="/trainer/plans"
-                className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-6 rounded-lg transition"
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setShowActivityModal(false)}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
               >
                 Cancelar
-              </Link>
+              </button>
               <button
-                onClick={handleNextStep}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-lg transition"
+                onClick={handleSaveActivity}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"
               >
-                Próximo
+                {editingIndex !== null ? "Salvar Alterações" : "Adicionar"}
               </button>
             </div>
           </div>
-        )}
-
-        {/* Step 2: Select Days */}
-        {step === 2 && (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">
-              Selecione os Dias da Semana
-            </h2>
-
-            <p className="text-sm text-gray-600 mb-4">
-              Escolha em quais dias da semana o aluno treinará
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {WEEKDAYS.map((day) => (
-                <button
-                  key={day.value}
-                  onClick={() => toggleDay(day.value)}
-                  className={`p-4 rounded-lg border-2 font-medium transition ${
-                    selectedDays.includes(day.value)
-                      ? "border-indigo-600 bg-indigo-50 text-indigo-700"
-                      : "border-gray-300 bg-white text-gray-700 hover:border-gray-400"
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span>{day.label}</span>
-                    {selectedDays.includes(day.value) && (
-                      <svg
-                        className="w-5 h-5 text-indigo-600"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    )}
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            {selectedDays.length > 0 && (
-              <p className="mt-4 text-sm text-gray-600">
-                {selectedDays.length} dia(s) selecionado(s)
-              </p>
-            )}
-
-            <div className="mt-6 flex justify-between">
-              <button
-                onClick={handlePreviousStep}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-6 rounded-lg transition"
-              >
-                Voltar
-              </button>
-              <button
-                onClick={handleNextStep}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-lg transition"
-              >
-                Próximo
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 3: Add Activities per Day */}
-        {step === 3 && (
-          <div className="space-y-4">
-            {/* Day Selector */}
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Configurar treino para:
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {selectedDays.map((day) => {
-                  const dayLabel = WEEKDAYS.find((w) => w.value === day)?.label;
-                  const dayActivities = dayPlans.get(day) || [];
-
-                  return (
-                    <button
-                      key={day}
-                      onClick={() => setCurrentDay(day)}
-                      className={`px-4 py-2 rounded-lg font-medium transition ${
-                        currentDay === day
-                          ? "bg-indigo-600 text-white"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                      }`}
-                    >
-                      {dayLabel}
-                      {dayActivities.length > 0 && (
-                        <span className="ml-2 text-xs">
-                          ({dayActivities.length})
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Activities for Current Day */}
-            {currentDay && (
-              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-gray-900">
-                    {WEEKDAYS.find((w) => w.value === currentDay)?.label}
-                  </h3>
-                  <button
-                    onClick={() => setShowActivityModal(true)}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition text-sm"
-                  >
-                    + Adicionar Atividade
-                  </button>
-                </div>
-
-                {/* Activities List */}
-                {(dayPlans.get(currentDay) || []).length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <p>Nenhuma atividade adicionada para este dia</p>
-                    <p className="text-sm mt-2">Clique em "Adicionar Atividade" para começar</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {(dayPlans.get(currentDay) || []).map((trainActivity, index) => (
-                      <div
-                        key={index}
-                        className="border border-gray-200 rounded-lg p-4"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 font-bold text-xs">
-                                {index + 1}
-                              </span>
-                              <h4 className="font-semibold text-gray-900">
-                                {trainActivity.activity.name}
-                              </h4>
-                              {trainActivity.id && (
-                                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
-                                  Existente
-                                </span>
-                              )}
-                            </div>
-
-                            <div className="flex flex-wrap gap-3 text-sm text-gray-600 ml-8">
-                              {trainActivity.series && (
-                                <span>Séries: {trainActivity.series}</span>
-                              )}
-                              {trainActivity.repetitions && (
-                                <span>Reps: {trainActivity.repetitions}</span>
-                              )}
-                              {trainActivity.weight && (
-                                <span>Peso: {trainActivity.weight} kg</span>
-                              )}
-                              {trainActivity.duration && (
-                                <span>Duração: {trainActivity.duration} min</span>
-                              )}
-                            </div>
-                          </div>
-
-                          <button
-                            onClick={() => handleRemoveActivity(currentDay, index)}
-                            className="text-red-600 hover:text-red-700 ml-4"
-                          >
-                            <svg
-                              className="w-5 h-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div className="flex justify-between">
-              <button
-                onClick={handlePreviousStep}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-6 rounded-lg transition"
-              >
-                Voltar
-              </button>
-              <button
-                onClick={handleNextStep}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-lg transition"
-              >
-                Próximo
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 4: Review */}
-        {step === 4 && (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">
-              Revisão das Alterações
-            </h2>
-
-            {/* Basic Info */}
-            <div className="mb-6">
-              <h3 className="font-semibold text-gray-900 mb-3">Informações Básicas</h3>
-              <div className="bg-gray-50 p-4 rounded-lg space-y-2 text-sm">
-                <p>
-                  <strong>Aluno:</strong>{" "}
-                  {trainees.find((t) => t.id === traineeId)?.name}
-                </p>
-                <p>
-                  <strong>Título:</strong> {title}
-                </p>
-                {description && (
-                  <p>
-                    <strong>Descrição:</strong> {description}
-                  </p>
-                )}
-                <p>
-                  <strong>Período:</strong>{" "}
-                  {new Date(dateFrom).toLocaleDateString("pt-BR")} →{" "}
-                  {new Date(dateTo).toLocaleDateString("pt-BR")}
-                </p>
-              </div>
-            </div>
-
-            {/* Changes Summary */}
-            {trainsToDelete.length > 0 && (
-              <div className="mb-6">
-                <h3 className="font-semibold text-red-600 mb-3">
-                  Treinos a Remover: {trainsToDelete.length}
-                </h3>
-              </div>
-            )}
-
-            {/* Days and Activities */}
-            <div className="mb-6">
-              <h3 className="font-semibold text-gray-900 mb-3">
-                Treinos por Dia ({selectedDays.length} dias)
-              </h3>
-              <div className="space-y-4">
-                {selectedDays.map((day) => {
-                  const dayLabel = WEEKDAYS.find((w) => w.value === day)?.label;
-                  const dayActivities = dayPlans.get(day) || [];
-
-                  return (
-                    <div key={day} className="border border-gray-200 rounded-lg p-4">
-                      <h4 className="font-semibold text-gray-900 mb-3">
-                        {dayLabel} - {dayActivities.length} atividade(s)
-                      </h4>
-                      <div className="space-y-2">
-                        {dayActivities.map((activity, index) => (
-                          <div key={index} className="text-sm text-gray-600 ml-4">
-                            <span className="font-medium text-gray-900">
-                              {index + 1}. {activity.activity.name}
-                            </span>
-                            {activity.id && (
-                              <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
-                                Mantido
-                              </span>
-                            )}
-                            {!activity.id && (
-                              <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">
-                                Novo
-                              </span>
-                            )}
-                            {" - "}
-                            {[
-                              activity.series && `${activity.series} séries`,
-                              activity.repetitions && `${activity.repetitions} reps`,
-                              activity.weight && `${activity.weight} kg`,
-                              activity.duration && `${activity.duration} min`,
-                            ]
-                              .filter(Boolean)
-                              .join(", ")}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="flex justify-between">
-              <button
-                onClick={handlePreviousStep}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-6 rounded-lg transition"
-              >
-                Voltar
-              </button>
-              <button
-                onClick={handleSubmit}
-                disabled={submitting}
-                className="bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-semibold py-2 px-8 rounded-lg transition"
-              >
-                {submitting ? "Salvando..." : "Salvar Alterações"}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Activity Selection Modal */}
-        {showActivityModal && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-            onClick={() => setShowActivityModal(false)}
-          >
-            <div
-              className="bg-white rounded-xl shadow-lg max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Selecionar Atividade
-              </h3>
-
-              {/* Activity List */}
-              <div className="mb-4 max-h-60 overflow-y-auto border border-gray-200 rounded-lg">
-                {activities.map((activity) => (
-                  <button
-                    key={activity.id}
-                    onClick={() => setSelectedActivity(activity)}
-                    className={`w-full text-left p-3 hover:bg-gray-50 border-b border-gray-100 last:border-0 ${
-                      selectedActivity?.id === activity.id ? "bg-indigo-50" : ""
-                    }`}
-                  >
-                    <div className="font-medium text-gray-900">{activity.name}</div>
-                    {activity.description && (
-                      <div className="text-sm text-gray-600 line-clamp-1">
-                        {activity.description}
-                      </div>
-                    )}
-                  </button>
-                ))}
-              </div>
-
-              {/* Activity Form */}
-              {selectedActivity && (
-                <div className="space-y-4 mb-4">
-                  <div className="bg-indigo-50 p-3 rounded-lg">
-                    <p className="font-medium text-indigo-900">
-                      {selectedActivity.name}
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Séries
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={activityForm.series}
-                        onChange={(e) =>
-                          setActivityForm({ ...activityForm, series: e.target.value })
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        placeholder="Ex: 3"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Repetições
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={activityForm.repetitions}
-                        onChange={(e) =>
-                          setActivityForm({
-                            ...activityForm,
-                            repetitions: e.target.value,
-                          })
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        placeholder="Ex: 12"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Peso (kg)
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        step="0.5"
-                        value={activityForm.weight}
-                        onChange={(e) =>
-                          setActivityForm({ ...activityForm, weight: e.target.value })
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        placeholder="Ex: 10"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Duração (min)
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={activityForm.duration}
-                        onChange={(e) =>
-                          setActivityForm({
-                            ...activityForm,
-                            duration: e.target.value,
-                          })
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        placeholder="Ex: 30"
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex gap-3">
-                <button
-                  onClick={() => {
-                    setShowActivityModal(false);
-                    setSelectedActivity(null);
-                    setActivityForm({
-                      series: "",
-                      repetitions: "",
-                      weight: "",
-                      duration: "",
-                    });
-                  }}
-                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg transition"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={handleAddActivity}
-                  disabled={!selectedActivity}
-                  className="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-medium py-2 px-4 rounded-lg transition"
-                >
-                  Adicionar
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </main>
   );
 }

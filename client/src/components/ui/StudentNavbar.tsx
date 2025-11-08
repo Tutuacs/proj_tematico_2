@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
 const nav = [
   { href: '/trainee/plan',     label: 'Plano de Treino' },
@@ -15,7 +16,10 @@ export default function StudentNavbar() {
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + '/');
 
-  const handleLogout = () => router.push('/login');
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    router.push('/');
+  };
 
   return (
     <nav className="sticky top-0 z-40 w-full bg-slate-900 text-white">

@@ -25,33 +25,43 @@ const useFetch = (title?: string) => {
     session.tokens = response;
   };
 
-  const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
+  const fetchWithAuth = async (url: string, options: RequestInit & { showToast?: boolean } = {}) => {
     if (!session || !session.profile) return;
 
-    const headers = {
-      ...options.headers,
+    const { showToast = true, ...fetchOptions } = options;
+
+    const headers: Record<string, string> = {
+      ...(fetchOptions.headers as Record<string, string> || {}),
       Authorization: `Bearer ${session.tokens.access}`,
     };
+
+    // Add Content-Type header if body is present
+    if (fetchOptions.body && typeof fetchOptions.body === 'string') {
+      headers['Content-Type'] = 'application/json';
+    }
 
     if (!(new Date().getTime() < session.tokens.expiresIn)){
       await refreshToken();
       headers.Authorization = `Bearer ${session.tokens.access}`;
     }
     
-    const res = await fetch(`${Backend_URL}${url}`, { ...options, headers });
+    const res = await fetch(`${Backend_URL}${url}`, { ...fetchOptions, headers });
 
-    return handleResponse(res);
+    return handleResponse(res, showToast);
   };
 
-  const handleResponse = async (res: Response) => {
+  const handleResponse = async (res: Response, showToast = true) => {
     const data = await res.json();
-    const config = getToastConfig(res.status.toString());
+    
+    if (showToast) {
+      const config = getToastConfig(res.status.toString());
 
-    if (res.status === 200 || res.status === 201) {
-      data.message = title;
+      if (res.status === 200 || res.status === 201) {
+        data.message = title;
+      }
+
+      toast({ title: config!.title, description: data!.message, variant: config!.variant });
     }
-
-    toast({ title: config!.title, description: data!.message, variant: config!.variant });
 
     return { data, status: res.status };
   };

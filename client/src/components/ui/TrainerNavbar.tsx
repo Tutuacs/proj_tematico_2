@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
 type NavItem = { href: string; label: string };
 
@@ -18,9 +19,9 @@ export default function TrainerNavbar() {
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + '/');
 
-  const handleLogout = () => {
-    // quando tiver auth troca por signOut()
-    router.push('/login');
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    router.push('/');
   };
 
   return (

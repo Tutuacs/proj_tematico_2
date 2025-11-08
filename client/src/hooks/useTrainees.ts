@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useSession } from "next-auth/react";
 import useFetch from "@/utils/useFetch";
 import type { Trainee } from "@/lib/types";
 
@@ -9,6 +10,7 @@ type UseTraineesParams = {
 };
 
 export function useTrainees({ q = "" }: UseTraineesParams) {
+  const { data: session } = useSession();
   const [trainees, setTrainees] = useState<Trainee[]>([]);
   const [loading, setLoading] = useState(true);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
@@ -18,25 +20,34 @@ export function useTrainees({ q = "" }: UseTraineesParams) {
     let canceled = false;
 
     const fetchTrainees = async () => {
+      if (!session?.profile?.id) {
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
-        const res = await fetchWithAuth("/profile");
+        const res = await fetchWithAuth("/profile", { showToast: false });
         
         if (res?.status === 200) {
           const data = res.data;
+          let allProfiles: any[] = [];
           
           // Se for um array, usar diretamente
           if (Array.isArray(data)) {
-            if (!canceled) setTrainees(data);
+            allProfiles = data;
           } 
           // Se for um objeto com lista de profiles
           else if (data.profiles) {
-            if (!canceled) setTrainees(data.profiles);
+            allProfiles = data.profiles;
           }
-          // Se for um único profile (trainee logado)
+          // Se for um único profile
           else if (data.id) {
-            if (!canceled) setTrainees([data]);
+            allProfiles = [data];
           }
+
+          // API já filtra: apenas TRAINEES (role=0) vinculados ao instrutor OU sem instrutor
+          if (!canceled) setTrainees(allProfiles);
         }
       } catch (error) {
         console.error("Failed to fetch trainees", error);
@@ -51,7 +62,7 @@ export function useTrainees({ q = "" }: UseTraineesParams) {
     return () => {
       canceled = true;
     };
-  }, [refetchTrigger]);
+  }, [refetchTrigger, session?.profile?.id]);
 
   // Função para forçar recarregar os dados
   const refetch = useCallback(() => {

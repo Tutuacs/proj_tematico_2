@@ -123,6 +123,22 @@ export default function AdminUsersPage() {
       return;
     }
 
+    // Additional confirmation when creating an admin
+    if (formData.role === "2") {
+      const confirmAdmin = confirm(
+        "⚠️ ATENÇÃO: Você está criando um usuário ADMINISTRADOR.\n\n" +
+        "Administradores têm acesso total ao sistema, incluindo:\n" +
+        "• Gerenciar todos os usuários\n" +
+        "• Visualizar e editar todos os dados\n" +
+        "• Excluir usuários e informações\n\n" +
+        "Tem certeza que deseja continuar?"
+      );
+      
+      if (!confirmAdmin) {
+        return;
+      }
+    }
+
     try {
       setSubmitting(true);
 
@@ -305,11 +321,29 @@ export default function AdminUsersPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredUsers.map((user) => (
-                    <tr key={user.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                      </td>
+                  {filteredUsers.map((user) => {
+                    const isCurrentUser = session?.profile?.id === user.id;
+                    return (
+                      <tr 
+                        key={user.id} 
+                        className={`hover:bg-gray-50 ${
+                          isCurrentUser 
+                            ? 'bg-indigo-50 border-l-4 border-l-indigo-500' 
+                            : ''
+                        }`}
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-gray-900">
+                              {user.name}
+                            </span>
+                            {isCurrentUser && (
+                              <span className="px-2 py-0.5 text-xs font-medium bg-indigo-100 text-indigo-700 rounded">
+                                Você
+                              </span>
+                            )}
+                          </div>
+                        </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-600">{user.email}</div>
                       </td>
@@ -343,7 +377,8 @@ export default function AdminUsersPage() {
                         </button>
                       </td>
                     </tr>
-                  ))}
+                  );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -417,8 +452,16 @@ export default function AdminUsersPage() {
                   >
                     <option value="0">Aluno</option>
                     <option value="1">Instrutor</option>
-                    <option value="2">Administrador</option>
+                    <option value="2">⚠️ Administrador (requer confirmação)</option>
                   </select>
+                  {formData.role === "2" && (
+                    <p className="mt-2 text-sm text-amber-600 flex items-center gap-1">
+                      <span>⚠️</span>
+                      <span>
+                        Cuidado: Administradores têm acesso total ao sistema
+                      </span>
+                    </p>
+                  )}
                 </div>
 
                 <div className="flex gap-3 mt-6">

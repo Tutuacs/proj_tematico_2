@@ -1,12 +1,35 @@
 import type { ReactNode } from "react";
 import StudentNavbar from "@/components/ui/StudentNavbar";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authOptions";
+import { redirect } from "next/navigation";
+import { ROLE } from "@/common/role.enums";
 
-export default function TraineeLayout({ children }: { children: ReactNode }) {
+export default async function TraineeLayout({ children }: { children: ReactNode }) {
+  const session = await getServerSession(authOptions);
+
+  // Check if user is authenticated
+  if (!session?.profile?.id) {
+    redirect("/login");
+  }
+
+  // Only allow trainee (role 0) to access
+  if (session.profile.role !== ROLE.TRAINEE) {
+    // Redirect to appropriate dashboard based on role
+    if (session.profile.role === ROLE.ADMIN) {
+      redirect("/admin/dashboard");
+    } else if (session.profile.role === ROLE.TRAINER) {
+      redirect("/trainer/dashboard");
+    } else {
+      redirect("/");
+    }
+  }
+
   return (
-    <div className="fixed inset-0 flex flex-col bg-gray-100 overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-gray-100">
       <StudentNavbar />
-      <main className="flex-1 overflow-hidden">{children}</main>
-      <footer className="h-12 flex items-center justify-center text-sm text-gray-500">
+      <main className="flex-1">{children}</main>
+      <footer className="h-12 flex items-center justify-center text-sm text-gray-500 bg-white border-t mt-auto">
         Versão 1.0 – © GymTrack 2025
       </footer>
     </div>

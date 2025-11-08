@@ -6,9 +6,13 @@ import TraineeTableRow from "./TraineeTableRow";
 type Props = {
   data: Trainee[];
   onEdit: (t: Trainee) => void;
+  onCreatePlan: (t: Trainee) => void;
+  onCreateReport: (t: Trainee) => void;
+  onViewHistory: (t: Trainee) => void;
+  onViewReports: (t: Trainee) => void;
 };
 
-export default function TraineeTable({ data, onEdit }: Props) {
+export default function TraineeTable({ data, onEdit, onCreatePlan, onCreateReport, onViewHistory, onViewReports }: Props) {
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
       <table className="min-w-full border-collapse">
@@ -17,13 +21,21 @@ export default function TraineeTable({ data, onEdit }: Props) {
             <th className="px-4 py-3 text-left rounded-l-2xl">Nome aluno</th>
             <th className="px-4 py-3 text-left">Email</th>
             <th className="px-4 py-3 text-left">Role</th>
-            <th className="px-4 py-3 text-left rounded-r-2xl">Editar</th>
+            <th className="px-4 py-3 text-left rounded-r-2xl">Ações</th>
           </tr>
         </thead>
 
         <tbody className="text-sm">
           {data.map((t) => (
-            <TraineeTableRow key={t.id} trainee={t} onEdit={() => onEdit(t)} />
+            <TraineeTableRow 
+              key={t.id} 
+              trainee={t} 
+              onEdit={() => onEdit(t)}
+              onCreatePlan={() => onCreatePlan(t)}
+              onCreateReport={() => onCreateReport(t)}
+              onViewHistory={() => onViewHistory(t)}
+              onViewReports={() => onViewReports(t)}
+            />
           ))}
 
           {!data.length && (

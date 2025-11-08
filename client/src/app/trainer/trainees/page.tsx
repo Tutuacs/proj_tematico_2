@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useTrainees } from "@/hooks/useTrainees";
 import useFetch from "@/utils/useFetch";
 import TraineeSearchBar from "@/components/pages/trainer/trainees/TraineeSearchBar";
@@ -11,6 +12,7 @@ import type { Trainee } from "@/lib/types";
 
 export default function TrainerTraineesPage() {
   const { data: session } = useSession();
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const { trainees, loading, refetch } = useTrainees({ q: query });
   const { fetchWithAuth } = useFetch("Aluno atualizado com sucesso");
@@ -50,7 +52,18 @@ export default function TrainerTraineesPage() {
 
   const handleSave = async (payload: { name: string; email: string; trainerId: string }) => {
     if (!current?.id) return;
-    console.log("Saving trainee with payload:", payload);
+    if (!session?.profile?.id) {
+      console.error("No trainer session found");
+      return;
+    }
+
+    // Garantir que o trainerId seja sempre o do instrutor logado
+    const finalPayload = {
+      ...payload,
+      trainerId: session.profile.id,
+    };
+
+    console.log("Saving trainee with payload:", finalPayload);
 
     try {
       const res = await fetchWithAuth(`/profile/${current.id}`, {
@@ -58,7 +71,7 @@ export default function TrainerTraineesPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(finalPayload),
       });
 
       if (res?.status === 200) {
@@ -69,6 +82,26 @@ export default function TrainerTraineesPage() {
     } catch (error) {
       console.error("Failed to update trainee", error);
     }
+  };
+
+  const handleCreatePlan = (trainee: Trainee) => {
+    // Redireciona para a página de criar plano com o traineeId pré-selecionado
+    router.push(`/trainer/plans/new?traineeId=${trainee.id}`);
+  };
+
+  const handleCreateReport = (trainee: Trainee) => {
+    // Redireciona para a página de criar avaliação física com o traineeId pré-selecionado
+    router.push(`/trainer/reports/new?traineeId=${trainee.id}`);
+  };
+
+  const handleViewHistory = (trainee: Trainee) => {
+    // Redireciona para a lista de planos filtrada pelo aluno
+    router.push(`/trainer/plans?traineeId=${trainee.id}`);
+  };
+
+  const handleViewReports = (trainee: Trainee) => {
+    // Redireciona para a lista de avaliações físicas filtrada pelo aluno
+    router.push(`/trainer/reports?traineeId=${trainee.id}`);
   };
 
   return (
@@ -92,6 +125,10 @@ export default function TrainerTraineesPage() {
               setCurrent(t);
               setOpen(true);
             }}
+            onCreatePlan={handleCreatePlan}
+            onCreateReport={handleCreateReport}
+            onViewHistory={handleViewHistory}
+            onViewReports={handleViewReports}
           />
         )}
       </div>

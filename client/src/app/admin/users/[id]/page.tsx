@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import useFetch from "@/utils/useFetch";
+import { useSession } from "next-auth/react";
 
 type Profile = {
   id: string;
@@ -33,6 +34,7 @@ export default function AdminUserDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const userId = params.id as string;
+  const { data: session } = useSession();
   const { fetchWithAuth } = useFetch();
 
   const [loading, setLoading] = useState(true);
@@ -48,13 +50,21 @@ export default function AdminUserDetailsPage() {
     role: "0",
   });
 
+  // Check if current user is admin
+  useEffect(() => {
+    if (session && session.profile?.role !== 2) {
+      alert("Acesso negado. Apenas administradores podem acessar esta página.");
+      router.push("/");
+    }
+  }, [session, router]);
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
 
-        // Fetch user profile
-        const userRes = await fetchWithAuth(`/profile/${userId}`);
+        // Fetch user profile (no toast for initial load)
+        const userRes = await fetchWithAuth(`/profile/${userId}`, { showToast: false });
         if (userRes?.status !== 200) {
           alert("Usuário não encontrado");
           router.push("/admin/users");
@@ -69,12 +79,12 @@ export default function AdminUserDetailsPage() {
           role: userData.role.toString(),
         });
 
-        // Fetch user-specific data based on role
+        // Fetch user-specific data based on role (no toast)
         if (userData.role === 0) {
           // TRAINEE - fetch plans and reports
           const [plansRes, reportsRes] = await Promise.all([
-            fetchWithAuth(`/plan?traineeId=${userId}`),
-            fetchWithAuth(`/report?profileId=${userId}`),
+            fetchWithAuth(`/plan?traineeId=${userId}`, { showToast: false }),
+            fetchWithAuth(`/report?profileId=${userId}`, { showToast: false }),
           ]);
 
           if (plansRes?.status === 200) {
@@ -92,7 +102,7 @@ export default function AdminUserDetailsPage() {
           }
         } else if (userData.role === 1) {
           // TRAINER - fetch created plans
-          const plansRes = await fetchWithAuth(`/plan?trainerId=${userId}`);
+          const plansRes = await fetchWithAuth(`/plan?trainerId=${userId}`, { showToast: false });
           if (plansRes?.status === 200) {
             const plansData = Array.isArray(plansRes.data) ? plansRes.data : [];
             setPlans(plansData);
@@ -116,21 +126,80 @@ export default function AdminUserDetailsPage() {
     try {
       setSubmitting(true);
 
+      const updateData = {
+        name: formData.name,
+        email: formData.email,
+        role: parseInt(formData.role),
+      };
+
+      console.log("Enviando atualização:", updateData);
+
+      // Update with toast enabled
       const res = await fetchWithAuth(`/profile/${userId}`, {
         method: "PATCH",
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          role: parseInt(formData.role),
-        }),
+        body: JSON.stringify(updateData),
+        showToast: true, // Show toast for update action
       });
 
+      console.log("Resposta da atualização:", res);
+
       if (res?.status === 200) {
-        alert("Usuário atualizado com sucesso!");
-        setUser(res.data);
+        // Update local state with the response data
+        const updatedUser = res.data;
+        const oldRole = user?.role;
+        const newRole = updatedUser.role;
+        
+        setUser(updatedUser);
+        setFormData({
+          name: updatedUser.name,
+          email: updatedUser.email,
+          role: updatedUser.role.toString(),
+        });
         setEditing(false);
+        
+        // If role changed, reload related data
+        if (oldRole !== newRole) {
+          // Reset current data
+          setPlans([]);
+          setReports([]);
+          
+          // Fetch new role-specific data (no toast for background fetches)
+          try {
+            if (newRole === 0) {
+              // TRAINEE - fetch plans and reports
+              const [plansRes, reportsRes] = await Promise.all([
+                fetchWithAuth(`/plan?traineeId=${userId}`, { showToast: false }),
+                fetchWithAuth(`/report?profileId=${userId}`, { showToast: false }),
+              ]);
+
+              if (plansRes?.status === 200) {
+                const plansData = Array.isArray(plansRes.data) ? plansRes.data : [];
+                const plansWithStatus = plansData.map((plan) => ({
+                  ...plan,
+                  isPlanActive: new Date(plan.to) >= new Date(),
+                }));
+                setPlans(plansWithStatus);
+              }
+
+              if (reportsRes?.status === 200) {
+                const reportsData = Array.isArray(reportsRes.data) ? reportsRes.data : [];
+                setReports(reportsData);
+              }
+            } else if (newRole === 1) {
+              // TRAINER - fetch created plans
+              const plansRes = await fetchWithAuth(`/plan?trainerId=${userId}`, { showToast: false });
+              if (plansRes?.status === 200) {
+                const plansData = Array.isArray(plansRes.data) ? plansRes.data : [];
+                setPlans(plansData);
+              }
+            }
+          } catch (error) {
+            console.error("Failed to reload role-specific data", error);
+          }
+        }
       } else {
-        alert("Erro ao atualizar usuário");
+        const errorMsg = res?.data?.message || "Erro ao atualizar usuário";
+        console.error("Update failed:", errorMsg);
       }
     } catch (error) {
       console.error("Failed to update user", error);
@@ -318,12 +387,19 @@ export default function AdminUserDetailsPage() {
                   <select
                     value={formData.role}
                     onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    disabled={session?.profile?.id === userId}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    title={session?.profile?.id === userId ? "Você não pode alterar sua própria role" : ""}
                   >
                     <option value="0">Aluno</option>
                     <option value="1">Instrutor</option>
                     <option value="2">Administrador</option>
                   </select>
+                  {session?.profile?.id === userId && (
+                    <p className="text-sm text-amber-600 mt-1">
+                      ⚠️ Você não pode alterar sua própria role.
+                    </p>
+                  )}
                 </div>
               </div>
 
