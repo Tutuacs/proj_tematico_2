@@ -27,9 +27,20 @@ export class ProfileFunctionsService extends PrismaService {
     return this.profile.findMany({
       where: {
         OR: [
-          { trainerId: trainerId }, // alunos
-          { id: trainerId },        // professor
-          { trainerId: null },      // quem não tem professor
+          // Alunos (role=0) vinculados a este instrutor
+          { 
+            AND: [
+              { trainerId: trainerId },
+              { role: 0 }
+            ]
+          },
+          // Alunos (role=0) sem instrutor (disponíveis para vincular)
+          { 
+            AND: [
+              { trainerId: null },
+              { role: 0 }
+            ]
+          },
         ],
       },
       include: {

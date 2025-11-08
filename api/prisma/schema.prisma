@@ -78,18 +78,17 @@ model Plan {
 }
 
 model Activity {
-  id               String        @id @default(uuid())
-  name             String
-  ACTIVITY_TYPE    ACTIVITY_TYPE
-  description      String?
-  weight           Float?
-  reps             Int?
-  sets             Int?
-  duration         Int? // Duration in seconds
-  planId           String
-  Plan             Plan          @relation(fields: [planId], references: [id])
-  Exercise         Exercise[]
-  reportExerciseId String?       @unique
+  id            String        @id @default(uuid())
+  name          String
+  ACTIVITY_TYPE ACTIVITY_TYPE
+  description   String?
+  weight        Float?
+  reps          Int?
+  sets          Int?
+  duration      Int? // Duration in seconds
+  planId        String
+  Plan          Plan          @relation(fields: [planId], references: [id])
+  Exercise      Exercise[]
 }
 
 model Train {

@@ -88,9 +88,12 @@ export class ProfileService {
         if (found.trainerId !== null && found.trainerId !== profile.id && found.id !== profile.id) {
           throw new NotFoundException('Perfil não encontrado');
         }
-        // TRAINER cannot change role or trainerId
-        const { role, trainerId, ...allowedUpdates } = updateProfileDto;
-        updateProfileDto = allowedUpdates as UpdateProfileDto;
+        // TRAINER can update trainerId (to assign trainees to themselves)
+        // but cannot change role
+        if (updateProfileDto.role !== undefined) {
+          const { role, ...allowedUpdates } = updateProfileDto;
+          updateProfileDto = allowedUpdates as UpdateProfileDto;
+        }
       } else {
         // TRAINEE can only update their own profile
         if (found.id !== profile.id) {
@@ -99,6 +102,11 @@ export class ProfileService {
         // TRAINEE cannot change role or trainerId
         const { role, trainerId, ...allowedUpdates } = updateProfileDto;
         updateProfileDto = allowedUpdates as UpdateProfileDto;
+      }
+    } else {
+      // ADMIN cannot change their own role (security measure)
+      if (profile.id === id && updateProfileDto.role !== undefined && updateProfileDto.role !== found.role) {
+        throw new ConflictException('Você não pode alterar sua própria role por segurança');
       }
     }
 

@@ -6,7 +6,11 @@ export class PlanFunctionsService extends PrismaService {
   // Create a new plan
   async createPlan(data: any) {
     return this.plan.create({
-      data,
+      data: {
+        ...data,
+        from: new Date(data.from),
+        to: new Date(data.to),
+      },
     });
   }
 
@@ -247,6 +251,25 @@ export class PlanFunctionsService extends PrismaService {
     return this.plan.findUnique({
       where: { id },
       select: { id: true },
+    });
+  }
+
+  // Create multiple activities for a plan
+  async createActivitiesForPlan(planId: string, activities: any[]) {
+    const activitiesWithPlanId = activities.map(activity => ({
+      ...activity,
+      planId,
+    }));
+
+    return this.activity.createMany({
+      data: activitiesWithPlanId,
+    });
+  }
+
+  // Delete an activity
+  async deleteActivity(activityId: string) {
+    return this.activity.delete({
+      where: { id: activityId },
     });
   }
 }

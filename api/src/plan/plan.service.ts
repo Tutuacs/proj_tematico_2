@@ -163,4 +163,66 @@ export class PlanService {
 
     return this.planFunctions.deletePlan(id);
   }
+
+  async createActivities(
+    planId: string,
+    activities: any[],
+    profile: {
+      id: string;
+      email: string;
+      role: number;
+      name: string;
+    },
+  ) {
+    // Verify plan exists and user has access
+    const found = await this.planFunctions.getPlanById(planId);
+    if (!found) {
+      throw new NotFoundException('Plano não encontrado');
+    }
+
+    if (profile.role !== ROLE.ADMIN) {
+      if (profile.role === ROLE.TRAINER) {
+        // TRAINER can only add activities to plans they created
+        if (found.trainerId !== profile.id) {
+          throw new NotFoundException('Plano não encontrado');
+        }
+      } else {
+        // TRAINEE cannot create activities
+        throw new ForbiddenException('Apenas treinadores podem criar atividades');
+      }
+    }
+
+    return this.planFunctions.createActivitiesForPlan(planId, activities);
+  }
+
+  async deleteActivity(
+    planId: string,
+    activityId: string,
+    profile: {
+      id: string;
+      email: string;
+      role: number;
+      name: string;
+    },
+  ) {
+    // Verify plan exists and user has access
+    const found = await this.planFunctions.getPlanById(planId);
+    if (!found) {
+      throw new NotFoundException('Plano não encontrado');
+    }
+
+    if (profile.role !== ROLE.ADMIN) {
+      if (profile.role === ROLE.TRAINER) {
+        // TRAINER can only delete activities from plans they created
+        if (found.trainerId !== profile.id) {
+          throw new NotFoundException('Plano não encontrado');
+        }
+      } else {
+        // TRAINEE cannot delete activities
+        throw new ForbiddenException('Apenas treinadores podem deletar atividades');
+      }
+    }
+
+    return this.planFunctions.deleteActivity(activityId);
+  }
 }

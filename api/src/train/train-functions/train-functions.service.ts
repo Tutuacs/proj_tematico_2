@@ -6,7 +6,11 @@ export class TrainFunctionsService extends PrismaService {
   // Create a new train
   async createTrain(data: any) {
     return this.train.create({
-      data,
+      data: {
+        ...data,
+        from: new Date(data.from),
+        to: new Date(data.to),
+      },
       select: {
         id: true,
         from: true,

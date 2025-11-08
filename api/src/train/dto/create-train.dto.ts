@@ -1,4 +1,4 @@
-import { IsDateString, IsNotEmpty, IsUUID, IsEnum } from 'class-validator';
+import { IsISO8601, IsNotEmpty, IsUUID, IsEnum } from 'class-validator';
 
 enum WEEK_DAYS {
   SUNDAY = 'SUNDAY',
@@ -15,13 +15,13 @@ export class CreateTrainDto {
   @IsNotEmpty()
   weekDay: WEEK_DAYS;
 
-  @IsDateString()
+  @IsISO8601({ strict: true })
   @IsNotEmpty()
-  from: Date;
+  from: string;
 
-  @IsDateString()
+  @IsISO8601({ strict: true })
   @IsNotEmpty()
-  to: Date;
+  to: string;
 
   @IsUUID()
   @IsNotEmpty()

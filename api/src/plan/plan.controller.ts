@@ -98,4 +98,36 @@ export class PlanController {
   ) {
     return this.planService.remove(id, profile);
   }
+
+  @Access(ROLE.TRAINER, ROLE.ADMIN)
+  @Post(':id/activities')
+  createActivities(
+    @Param('id') id: string,
+    @Body() activities: any[],
+    @ProfileAuth()
+    profile: {
+      id: string;
+      email: string;
+      role: number;
+      name: string;
+    },
+  ) {
+    return this.planService.createActivities(id, activities, profile);
+  }
+
+  @Access(ROLE.TRAINER, ROLE.ADMIN)
+  @Delete(':planId/activities/:activityId')
+  deleteActivity(
+    @Param('planId') planId: string,
+    @Param('activityId') activityId: string,
+    @ProfileAuth()
+    profile: {
+      id: string;
+      email: string;
+      role: number;
+      name: string;
+    },
+  ) {
+    return this.planService.deleteActivity(planId, activityId, profile);
+  }
 }

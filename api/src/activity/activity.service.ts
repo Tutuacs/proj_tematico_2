@@ -20,22 +20,18 @@ export class ActivityService {
       name: string;
     },
   ) {
-    // TRAINEE cria atividades baseadas em seus planos
+    // planId é obrigatório - Activity sempre pertence a um Plan
+    const planId = createActivityDto.planId;
+
+    // TRAINEE não pode criar Activities (apenas TRAINER e ADMIN)
     if (profile.role === ROLE.TRAINEE) {
-      // Verificar se o plano pertence ao usuário
-      const hasAccess = await this.activityFunctions.verifyPlanOwnership(
-        createActivityDto.planId,
-        profile.id,
-      );
-      if (!hasAccess) {
-        throw new NotFoundException('Plano não encontrado');
-      }
+      throw new NotFoundException('Apenas instrutores podem criar atividades no plano');
     }
 
     if (profile.role === ROLE.TRAINER) {
-      // TRAINER pode criar atividades para planos de seus alunos
+      // TRAINER só pode criar atividades para planos de seus alunos
       const hasAccess = await this.activityFunctions.verifyTrainerPlanAccess(
-        createActivityDto.planId,
+        planId,
         profile.id,
       );
       if (!hasAccess) {
@@ -62,7 +58,7 @@ export class ActivityService {
       return this.activityFunctions.getActivitiesByTrainer(profile.id);
     }
     
-    // TRAINEE vê apenas suas próprias atividades
+    // TRAINEE vê atividades dos seus planos
     return this.activityFunctions.getActivitiesByTrainee(profile.id);
   }
 
@@ -80,10 +76,12 @@ export class ActivityService {
       throw new NotFoundException('Atividade não encontrada');
     }
 
+    // Admin pode ver qualquer atividade
     if (profile.role === ROLE.ADMIN) {
       return found;
     }
 
+    // Validar acesso ao plano
     if (profile.role === ROLE.TRAINER) {
       // TRAINER pode ver atividades de planos de seus alunos
       if (found.Plan.trainerId !== profile.id) {
@@ -115,6 +113,16 @@ export class ActivityService {
       throw new NotFoundException('Atividade não encontrada');
     }
 
+    // Se a atividade não tem plano (atividade genérica do catálogo)
+    // Apenas TRAINER e ADMIN podem editar
+    if (!found.Plan) {
+      if (profile.role === ROLE.TRAINEE) {
+        throw new NotFoundException('Atividade não encontrada');
+      }
+      return this.activityFunctions.updateActivity(id, updateActivityDto);
+    }
+
+    // Se tem plano, validar acesso
     if (profile.role === ROLE.TRAINEE) {
       // TRAINEE pode atualizar apenas atividades de seus próprios planos
       if (found.Plan.traineeId !== profile.id) {
@@ -147,6 +155,16 @@ export class ActivityService {
       throw new NotFoundException('Atividade não encontrada');
     }
 
+    // Se a atividade não tem plano (atividade genérica do catálogo)
+    // Apenas TRAINER e ADMIN podem deletar
+    if (!found.Plan) {
+      if (profile.role === ROLE.TRAINEE) {
+        throw new NotFoundException('Atividade não encontrada');
+      }
+      return this.activityFunctions.deleteActivity(id);
+    }
+
+    // Se tem plano, validar acesso
     if (profile.role === ROLE.TRAINEE) {
       // TRAINEE pode deletar apenas atividades de seus próprios planos
       if (found.Plan.traineeId !== profile.id) {

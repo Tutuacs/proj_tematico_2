@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsUUID, IsDateString } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsUUID, IsISO8601 } from 'class-validator';
 
 export class CreatePlanDto {
   @IsString()
@@ -9,13 +9,13 @@ export class CreatePlanDto {
   @IsOptional()
   description?: string;
 
-  @IsDateString()
-  @IsOptional()
-  from?: Date;
+  @IsISO8601({ strict: true })
+  @IsNotEmpty()
+  from: string;
 
-  @IsDateString()
-  @IsOptional()
-  to?: Date;
+  @IsISO8601({ strict: true })
+  @IsNotEmpty()
+  to: string;
 
   @IsUUID()
   @IsNotEmpty()
