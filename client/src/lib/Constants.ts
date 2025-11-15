@@ -1,4 +1,1 @@
-import { hostname } from "os";
-
-const isDocker = hostname().includes("full_stack");
-export const Backend_URL = "http://localhost:3333";
+export const Backend_URL = "https://vercel.com/tutuacs-projects/tematico_2_back/8S6PdVeDqGqsBULXDDkNjUF8eXmH";
