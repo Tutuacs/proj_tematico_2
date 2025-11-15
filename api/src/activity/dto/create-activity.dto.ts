@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsNumber, IsUUID, IsEnum, IsInt } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsNumber, IsUUID, IsEnum, IsInt, Min } from 'class-validator';
 
 enum ACTIVITY_TYPE {
   CARDIO = 'CARDIO',
@@ -22,18 +22,22 @@ export class CreateActivityDto {
 
   @IsNumber()
   @IsOptional()
+  @Min(0.01)
   weight?: number;
 
   @IsInt()
   @IsOptional()
+  @Min(1)
   reps?: number;
 
   @IsInt()
   @IsOptional()
+  @Min(1)
   sets?: number;
 
   @IsInt()
   @IsOptional()
+  @Min(1)
   duration?: number;
 
   @IsUUID()

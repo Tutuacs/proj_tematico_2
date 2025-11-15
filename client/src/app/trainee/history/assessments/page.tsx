@@ -9,8 +9,7 @@ type BodyPart = {
   id: string;
   reportId: string;
   name: string;
-  measurement: number;
-  fatPercentage?: number;
+  bodyFat?: number; // Este campo está sendo usado para armazenar medida em cm (conforme sistema atual)
 };
 
 type Report = {
@@ -20,8 +19,8 @@ type Report = {
   weight: number;
   height: number;
   imc: number;
-  fatPercentage?: number;
-  observations?: string;
+  bodyFat?: number;
+  content?: string;
   createdAt: string;
   Trainer?: {
     name: string;
@@ -137,13 +136,13 @@ export default function AssessmentHistoryPage() {
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
               <p className="text-sm text-gray-600 mb-1">% Gordura</p>
               <p className="text-xl font-bold text-indigo-600">
-                {reports[0].fatPercentage ? `${reports[0].fatPercentage.toFixed(1)}%` : "N/A"}
+                {reports[0].bodyFat ? `${reports[0].bodyFat.toFixed(1)}%` : "N/A"}
               </p>
-              {reports.length > 1 && reports[0].fatPercentage && reports[1].fatPercentage && (
+              {reports.length > 1 && reports[0].bodyFat && reports[1].bodyFat && (
                 <p className={`text-sm mt-1 ${
-                  reports[0].fatPercentage < reports[1].fatPercentage ? "text-green-600" : "text-red-600"
+                  reports[0].bodyFat < reports[1].bodyFat ? "text-green-600" : "text-red-600"
                 }`}>
-                  {calculateDifference(reports[0].fatPercentage, reports[1].fatPercentage)}%
+                  {calculateDifference(reports[0].bodyFat, reports[1].bodyFat)}%
                 </p>
               )}
             </div>
@@ -251,15 +250,15 @@ export default function AssessmentHistoryPage() {
                         <div>
                           <p className="text-xs text-gray-500">% Gordura</p>
                           <p className="text-lg font-semibold text-gray-900">
-                            {report.fatPercentage ? `${report.fatPercentage.toFixed(1)}%` : "N/A"}
+                            {report.bodyFat ? `${report.bodyFat.toFixed(1)}%` : "N/A"}
                           </p>
                         </div>
                       </div>
 
                       {/* Observations Preview */}
-                      {report.observations && (
+                      {report.content && (
                         <p className="mt-4 text-sm text-gray-600 italic line-clamp-2">
-                          "{report.observations}"
+                          "{report.content}"
                         </p>
                       )}
                     </div>
@@ -340,7 +339,7 @@ export default function AssessmentHistoryPage() {
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <p className="text-sm text-gray-600 mb-1">% Gordura</p>
                   <p className="text-xl font-bold text-gray-900">
-                    {selectedReport.fatPercentage ? `${selectedReport.fatPercentage.toFixed(1)}%` : "N/A"}
+                    {selectedReport.bodyFat ? `${selectedReport.bodyFat.toFixed(1)}%` : "N/A"}
                   </p>
                 </div>
               </div>
@@ -362,9 +361,6 @@ export default function AssessmentHistoryPage() {
                         <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
                           Medida (cm)
                         </th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                          % Gordura
-                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
@@ -374,10 +370,7 @@ export default function AssessmentHistoryPage() {
                             {part.name}
                           </td>
                           <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                            {part.measurement.toFixed(1)} cm
-                          </td>
-                          <td className="px-4 py-3 text-sm text-gray-600">
-                            {part.fatPercentage ? `${part.fatPercentage.toFixed(1)}%` : "—"}
+                            {part.bodyFat ? `${part.bodyFat.toFixed(1)} cm` : "—"}
                           </td>
                         </tr>
                       ))}
@@ -388,13 +381,13 @@ export default function AssessmentHistoryPage() {
             )}
 
             {/* Observations */}
-            {selectedReport.observations && (
+            {selectedReport.content && (
               <div className="mb-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">
                   Observações do Instrutor
                 </h3>
                 <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-gray-700">{selectedReport.observations}</p>
+                  <p className="text-gray-700">{selectedReport.content}</p>
                 </div>
               </div>
             )}

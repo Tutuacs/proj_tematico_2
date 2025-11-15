@@ -60,7 +60,7 @@ export default function TrainerDashboardPage() {
   }, [session?.profile?.id]);
 
   return (
-    <main className="min-h-screen bg-gray-100">
+    <main>
       <div className="max-w-6xl mx-auto p-6">
         <GreetingBox
           name={userData?.name || session?.profile?.name || 'Instrutor'}

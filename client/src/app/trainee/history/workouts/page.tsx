@@ -8,31 +8,36 @@ import useFetch from "@/utils/useFetch";
 type Activity = {
   id: string;
   name: string;
-  type: "CARDIO" | "STRENGTH" | "FLEXIBILITY" | "BALANCE";
-};
-
-type Train = {
-  id: string;
-  planId: string;
-  weekDay: string;
-  activity: Activity;
-  Plan?: {
-    title: string;
-  };
+  ACTIVITY_TYPE: "CARDIO" | "STRENGTH" | "FLEXIBILITY" | "BALANCE";
+  sets?: number;
+  reps?: number;
+  weight?: number;
+  duration?: number;
 };
 
 type Exercise = {
   id: string;
   trainId: string;
   activityId: string;
-  series?: number;
-  repetitions?: number;
+  sets?: number;
+  reps?: number;
   weight?: number;
   duration?: number;
-  observations?: string;
+  description?: string;
   createdAt: string;
-  Train?: Train;
   Activity?: Activity;
+};
+
+type Train = {
+  id: string;
+  planId: string;
+  weekDay: string;
+  from: string;
+  to: string;
+  Plan?: {
+    title: string;
+  };
+  Exercise?: Exercise[];
 };
 
 const WEEKDAY_NAMES: Record<string, string> = {
@@ -56,48 +61,52 @@ export default function WorkoutHistoryPage() {
   const { data: session } = useSession();
   const { fetchWithAuth } = useFetch();
 
-  const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [trains, setTrains] = useState<Train[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
+  const [selectedTrain, setSelectedTrain] = useState<Train | null>(null);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    const fetchExercises = async () => {
+    const fetchTrains = async () => {
       if (!session?.profile?.id) return;
 
       try {
         setLoading(true);
-        const res = await fetchWithAuth(`/exercise?traineeId=${session.profile.id}`);
+        const res = await fetchWithAuth(`/train?traineeId=${session.profile.id}`);
         if (res?.status === 200) {
-          const exercisesData = Array.isArray(res.data) ? res.data : [];
-          setExercises(exercisesData);
+          const trainsData = Array.isArray(res.data) ? res.data : [];
+          setTrains(trainsData);
         }
       } catch (error) {
-        console.error("Failed to fetch exercises", error);
+        console.error("Failed to fetch trains", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchExercises();
+    fetchTrains();
   }, [session?.profile?.id]);
 
-  // Group exercises by date
-  const exercisesByDate = exercises.reduce((acc, exercise) => {
-    const date = new Date(exercise.createdAt).toLocaleDateString("pt-BR");
-    if (!acc[date]) {
-      acc[date] = [];
-    }
-    acc[date].push(exercise);
-    return acc;
-  }, {} as Record<string, Exercise[]>);
+  // Calculate total exercises
+  const totalExercises = trains.reduce((sum, train) => sum + (train.Exercise?.length || 0), 0);
 
-  const dates = Object.keys(exercisesByDate).sort(
-    (a, b) => new Date(b.split("/").reverse().join("-")).getTime() - new Date(a.split("/").reverse().join("-")).getTime()
-  );
+  // Get trains from this week (based on weekDay)
+  const today = new Date().getDay(); // 0 = Sunday, 6 = Saturday
+  const weekDayMap: Record<number, string> = {
+    0: "SUNDAY",
+    1: "MONDAY",
+    2: "TUESDAY",
+    3: "WEDNESDAY",
+    4: "THURSDAY",
+    5: "FRIDAY",
+    6: "SATURDAY",
+  };
+  
+  // Count recent trains (just show total, since we don't have exact dates)
+  const thisWeekTrains = trains;
 
-  const handleViewDetails = (exercise: Exercise) => {
-    setSelectedExercise(exercise);
+  const handleViewDetails = (train: Train) => {
+    setSelectedTrain(train);
     setShowModal(true);
   };
 
@@ -113,33 +122,24 @@ export default function WorkoutHistoryPage() {
         </div>
 
         {/* Summary Cards */}
-        {!loading && exercises.length > 0 && (
+        {!loading && trains.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-              <p className="text-sm text-gray-600 mb-1">Total de Treinos</p>
-              <p className="text-3xl font-bold text-indigo-600">{dates.length}</p>
+              <p className="text-sm text-gray-600 mb-1">Sessões de Treino</p>
+              <p className="text-3xl font-bold text-indigo-600">{trains.length}</p>
             </div>
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
               <p className="text-sm text-gray-600 mb-1">Exercícios Realizados</p>
-              <p className="text-3xl font-bold text-indigo-600">{exercises.length}</p>
+              <p className="text-3xl font-bold text-indigo-600">{totalExercises}</p>
             </div>
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
               <p className="text-sm text-gray-600 mb-1">Esta Semana</p>
-              <p className="text-3xl font-bold text-indigo-600">
-                {
-                  exercises.filter((ex) => {
-                    const exDate = new Date(ex.createdAt);
-                    const now = new Date();
-                    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                    return exDate >= weekAgo;
-                  }).length
-                }
-              </p>
+              <p className="text-3xl font-bold text-indigo-600">{thisWeekTrains.length}</p>
             </div>
           </div>
         )}
 
-        {/* Exercise History */}
+        {/* Train History */}
         {loading ? (
           <div className="space-y-6">
             {[1, 2, 3].map((i) => (
@@ -155,7 +155,7 @@ export default function WorkoutHistoryPage() {
               </div>
             ))}
           </div>
-        ) : exercises.length === 0 ? (
+        ) : trains.length === 0 ? (
           <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
             <div className="text-gray-400 mb-4">
               <svg
@@ -187,96 +187,92 @@ export default function WorkoutHistoryPage() {
           </div>
         ) : (
           <div className="space-y-6">
-            {dates.map((date) => (
+            {trains.map((train) => (
               <div
-                key={date}
+                key={train.id}
                 className="bg-white rounded-xl border border-gray-200 shadow-sm p-6"
               >
-                {/* Date Header */}
+                {/* Train Header */}
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-gray-900">{date}</h2>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">
+                      {train.Plan?.title || "Treino"}
+                    </h2>
+                    <div className="flex items-center gap-3 mt-1 text-sm text-gray-600">
+                      <span className="font-medium">
+                        {WEEKDAY_NAMES[train.weekDay] || train.weekDay}
+                      </span>
+                    </div>
+                  </div>
                   <span className="text-sm text-gray-500">
-                    {exercisesByDate[date].length} exercício(s)
+                    {train.Exercise?.length || 0} exercício(s)
                   </span>
                 </div>
 
                 {/* Exercises List */}
-                <div className="space-y-3">
-                  {exercisesByDate[date].map((exercise) => (
-                    <div
-                      key={exercise.id}
-                      className="border border-gray-200 rounded-lg p-4 hover:border-indigo-300 transition"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                            {exercise.Activity?.name || exercise.Train?.activity?.name || "Exercício"}
-                          </h3>
+                <div className="space-y-3 mb-4">
+                  {train.Exercise && train.Exercise.length > 0 ? (
+                    train.Exercise.map((exercise) => (
+                      <div
+                        key={exercise.id}
+                        className="border border-gray-200 rounded-lg p-4 hover:border-indigo-300 transition"
+                      >
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                          {exercise.Activity?.name || "Exercício"}
+                        </h3>
 
-                          <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-2">
-                            {exercise.Activity && (
-                              <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-700">
-                                {ACTIVITY_TYPES[exercise.Activity.type]}
-                              </span>
-                            )}
-
-                            {exercise.Train?.Plan && (
-                              <span>
-                                <strong>Plano:</strong> {exercise.Train.Plan.title}
-                              </span>
-                            )}
-
-                            {exercise.Train?.weekDay && (
-                              <span>
-                                <strong>Dia:</strong>{" "}
-                                {WEEKDAY_NAMES[exercise.Train.weekDay] || exercise.Train.weekDay}
-                              </span>
-                            )}
-                          </div>
-
-                          <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                            {exercise.series && (
-                              <span>
-                                <strong>Séries:</strong> {exercise.series}
-                              </span>
-                            )}
-
-                            {exercise.repetitions && (
-                              <span>
-                                <strong>Repetições:</strong> {exercise.repetitions}
-                              </span>
-                            )}
-
-                            {exercise.weight && (
-                              <span>
-                                <strong>Peso:</strong> {exercise.weight} kg
-                              </span>
-                            )}
-
-                            {exercise.duration && (
-                              <span>
-                                <strong>Duração:</strong> {exercise.duration} min
-                              </span>
-                            )}
-                          </div>
-
-                          {exercise.observations && (
-                            <p className="mt-2 text-sm text-gray-500 italic">
-                              "{exercise.observations}"
-                            </p>
+                        <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-2">
+                          {exercise.Activity && (
+                            <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-700">
+                              {ACTIVITY_TYPES[exercise.Activity.ACTIVITY_TYPE]}
+                            </span>
                           )}
                         </div>
 
-                        <button
-                          onClick={() => handleViewDetails(exercise)}
-                          className="ml-4 text-indigo-600 hover:text-indigo-700 font-medium text-sm"
-                        >
-                          Detalhes
-                        </button>
+                        <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                          {exercise.sets && (
+                            <span>
+                              <strong>Séries:</strong> {exercise.sets}
+                            </span>
+                          )}
+
+                          {exercise.reps && (
+                            <span>
+                              <strong>Repetições:</strong> {exercise.reps}
+                            </span>
+                          )}
+
+                          {exercise.weight && (
+                            <span>
+                              <strong>Peso:</strong> {exercise.weight} kg
+                            </span>
+                          )}
+
+                          {exercise.duration && (
+                            <span>
+                              <strong>Duração:</strong> {exercise.duration} min
+                            </span>
+                          )}
+                        </div>
+
+                        {exercise.description && (
+                          <p className="mt-2 text-sm text-gray-500 italic">
+                            "{exercise.description}"
+                          </p>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <p className="text-gray-500 text-sm">Nenhum exercício registrado</p>
+                  )}
                 </div>
+
+                <button
+                  onClick={() => handleViewDetails(train)}
+                  className="w-full text-indigo-600 hover:text-indigo-700 font-medium text-sm py-2 border border-indigo-300 rounded-lg hover:bg-indigo-50 transition"
+                >
+                  Ver Detalhes Completos
+                </button>
               </div>
             ))}
           </div>
@@ -284,19 +280,24 @@ export default function WorkoutHistoryPage() {
       </div>
 
       {/* Details Modal */}
-      {showModal && selectedExercise && (
+      {showModal && selectedTrain && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
           onClick={() => setShowModal(false)}
         >
           <div
-            className="bg-white rounded-xl shadow-lg max-w-2xl w-full p-6"
+            className="bg-white rounded-xl shadow-lg max-w-4xl w-full p-6 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between mb-4">
-              <h2 className="text-2xl font-bold text-gray-900">
-                Detalhes do Exercício
-              </h2>
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {selectedTrain.Plan?.title || "Detalhes do Treino"}
+                </h2>
+                <p className="text-sm text-gray-600 mt-1">
+                  {WEEKDAY_NAMES[selectedTrain.weekDay] || selectedTrain.weekDay}
+                </p>
+              </div>
               <button
                 onClick={() => setShowModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -318,79 +319,157 @@ export default function WorkoutHistoryPage() {
             </div>
 
             <div className="space-y-4">
-              <div>
-                <p className="text-sm text-gray-600">Exercício</p>
-                <p className="text-lg font-semibold text-gray-900">
-                  {selectedExercise.Activity?.name || selectedExercise.Train?.activity?.name}
-                </p>
-              </div>
-
-              {selectedExercise.Activity && (
-                <div>
-                  <p className="text-sm text-gray-600">Tipo</p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {ACTIVITY_TYPES[selectedExercise.Activity.type]}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-indigo-50 rounded-lg p-4">
+                  <p className="text-sm text-gray-600">Total de Exercícios</p>
+                  <p className="text-2xl font-bold text-indigo-600">
+                    {selectedTrain.Exercise?.length || 0}
                   </p>
                 </div>
-              )}
 
-              <div className="grid grid-cols-2 gap-4">
-                {selectedExercise.series && (
-                  <div>
-                    <p className="text-sm text-gray-600">Séries</p>
-                    <p className="text-lg font-semibold text-gray-900">
-                      {selectedExercise.series}
-                    </p>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <p className="text-sm text-gray-600 mb-2">Legenda</p>
+                  <div className="space-y-1 text-xs">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-green-600 rounded"></div>
+                      <span className="text-gray-700">Atingiu ou superou a meta</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-orange-600 rounded"></div>
+                      <span className="text-gray-700">Abaixo da meta planejada</span>
+                    </div>
                   </div>
-                )}
-
-                {selectedExercise.repetitions && (
-                  <div>
-                    <p className="text-sm text-gray-600">Repetições</p>
-                    <p className="text-lg font-semibold text-gray-900">
-                      {selectedExercise.repetitions}
-                    </p>
-                  </div>
-                )}
-
-                {selectedExercise.weight && (
-                  <div>
-                    <p className="text-sm text-gray-600">Peso</p>
-                    <p className="text-lg font-semibold text-gray-900">
-                      {selectedExercise.weight} kg
-                    </p>
-                  </div>
-                )}
-
-                {selectedExercise.duration && (
-                  <div>
-                    <p className="text-sm text-gray-600">Duração</p>
-                    <p className="text-lg font-semibold text-gray-900">
-                      {selectedExercise.duration} min
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {selectedExercise.observations && (
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Observações</p>
-                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">
-                    {selectedExercise.observations}
-                  </p>
                 </div>
-              )}
-
-              <div>
-                <p className="text-sm text-gray-600">Data de Realização</p>
-                <p className="text-lg font-semibold text-gray-900">
-                  {new Date(selectedExercise.createdAt).toLocaleDateString("pt-BR")} às{" "}
-                  {new Date(selectedExercise.createdAt).toLocaleTimeString("pt-BR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
               </div>
+
+              {selectedTrain.Exercise && selectedTrain.Exercise.length > 0 ? (
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold text-gray-900">Exercícios Realizados</h3>
+                  {selectedTrain.Exercise.map((exercise, index) => (
+                    <div key={exercise.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded">
+                              #{index + 1}
+                            </span>
+                            <h4 className="text-lg font-semibold text-gray-900">
+                              {exercise.Activity?.name || "Exercício"}
+                            </h4>
+                          </div>
+
+                          {exercise.Activity && (
+                            <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm mb-3">
+                              {ACTIVITY_TYPES[exercise.Activity.ACTIVITY_TYPE]}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
+                        {(exercise.sets || exercise.Activity?.sets) && (
+                          <div>
+                            <p className="text-xs text-gray-600 mb-1">Séries</p>
+                            <div className="space-y-1">
+                              {exercise.Activity?.sets && (
+                                <p className="text-xs text-gray-500">
+                                  Planejado: {exercise.Activity.sets}
+                                </p>
+                              )}
+                              <p className={`text-lg font-semibold ${
+                                exercise.sets && exercise.Activity?.sets && exercise.sets >= exercise.Activity.sets
+                                  ? 'text-green-600'
+                                  : exercise.sets && exercise.Activity?.sets
+                                  ? 'text-orange-600'
+                                  : 'text-gray-900'
+                              }`}>
+                                Feito: {exercise.sets || 0}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {(exercise.reps || exercise.Activity?.reps) && (
+                          <div>
+                            <p className="text-xs text-gray-600 mb-1">Repetições</p>
+                            <div className="space-y-1">
+                              {exercise.Activity?.reps && (
+                                <p className="text-xs text-gray-500">
+                                  Planejado: {exercise.Activity.reps}
+                                </p>
+                              )}
+                              <p className={`text-lg font-semibold ${
+                                exercise.reps && exercise.Activity?.reps && exercise.reps >= exercise.Activity.reps
+                                  ? 'text-green-600'
+                                  : exercise.reps && exercise.Activity?.reps
+                                  ? 'text-orange-600'
+                                  : 'text-gray-900'
+                              }`}>
+                                Feito: {exercise.reps || 0}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {(exercise.weight || exercise.Activity?.weight) && (
+                          <div>
+                            <p className="text-xs text-gray-600 mb-1">Peso</p>
+                            <div className="space-y-1">
+                              {exercise.Activity?.weight && (
+                                <p className="text-xs text-gray-500">
+                                  Planejado: {exercise.Activity.weight} kg
+                                </p>
+                              )}
+                              <p className={`text-lg font-semibold ${
+                                exercise.weight && exercise.Activity?.weight && exercise.weight >= exercise.Activity.weight
+                                  ? 'text-green-600'
+                                  : exercise.weight && exercise.Activity?.weight
+                                  ? 'text-orange-600'
+                                  : 'text-gray-900'
+                              }`}>
+                                Feito: {exercise.weight || 0} kg
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {(exercise.duration || exercise.Activity?.duration) && (
+                          <div>
+                            <p className="text-xs text-gray-600 mb-1">Duração</p>
+                            <div className="space-y-1">
+                              {exercise.Activity?.duration && (
+                                <p className="text-xs text-gray-500">
+                                  Planejado: {exercise.Activity.duration} min
+                                </p>
+                              )}
+                              <p className={`text-lg font-semibold ${
+                                exercise.duration && exercise.Activity?.duration && exercise.duration >= exercise.Activity.duration
+                                  ? 'text-green-600'
+                                  : exercise.duration && exercise.Activity?.duration
+                                  ? 'text-orange-600'
+                                  : 'text-gray-900'
+                              }`}>
+                                Feito: {exercise.duration || 0} min
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {exercise.description && (
+                        <div className="bg-white rounded p-3 border border-gray-200">
+                          <p className="text-xs text-gray-600 mb-1">Observações</p>
+                          <p className="text-sm text-gray-900">{exercise.description}</p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-center py-8">
+                  Nenhum exercício registrado neste treino
+                </p>
+              )}
             </div>
 
             <div className="mt-6 flex justify-end">

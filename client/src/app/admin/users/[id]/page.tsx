@@ -259,7 +259,7 @@ export default function AdminUserDetailsPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-gray-100">
+      <main>
         <div className="max-w-6xl mx-auto p-6">
           <div className="bg-white rounded-xl border border-gray-200 p-6 animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
@@ -273,7 +273,7 @@ export default function AdminUserDetailsPage() {
 
   if (!user) {
     return (
-      <main className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <main className="flex items-center justify-center py-12">
         <div className="text-center">
           <p className="text-gray-600">Usuário não encontrado</p>
           <Link
@@ -288,7 +288,7 @@ export default function AdminUserDetailsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100">
+    <main>
       <div className="max-w-6xl mx-auto p-6">
         {/* Header */}
         <div className="mb-6">
@@ -335,12 +335,14 @@ export default function AdminUserDetailsPage() {
                   >
                     Editar
                   </button>
-                  <button
-                    onClick={handleDeleteUser}
-                    className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition"
-                  >
-                    Excluir
-                  </button>
+                  {session?.profile?.id !== userId && (
+                    <button
+                      onClick={handleDeleteUser}
+                      className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition"
+                    >
+                      Excluir
+                    </button>
+                  )}
                 </>
               )}
             </div>
@@ -435,21 +437,34 @@ export default function AdminUserDetailsPage() {
           <div className="space-y-6">
             {/* Plans */}
             <div className="bg-white rounded-xl border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">
-                Planos de Treino ({plans.length})
-              </h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-gray-900">
+                  Planos de Treino ({plans.length})
+                </h2>
+                {plans.length > 0 && (
+                  <Link
+                    href={`/admin/plans?traineeId=${userId}`}
+                    className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+                  >
+                    Ver todos os planos →
+                  </Link>
+                )}
+              </div>
 
               {plans.length === 0 ? (
                 <p className="text-gray-600 text-center py-8">Nenhum plano atribuído</p>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {plans.map((plan) => (
-                    <div
+                    <Link
                       key={plan.id}
-                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition"
+                      href={`/admin/plans/${plan.id}`}
+                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md hover:border-indigo-300 transition cursor-pointer"
                     >
                       <div className="flex items-start justify-between mb-2">
-                        <h3 className="font-semibold text-gray-900">{plan.title}</h3>
+                        <h3 className="font-semibold text-gray-900 hover:text-indigo-600">
+                          {plan.title}
+                        </h3>
                         <span
                           className={`px-2 py-1 rounded text-xs font-medium ${
                             plan.isPlanActive
@@ -464,7 +479,8 @@ export default function AdminUserDetailsPage() {
                         {new Date(plan.from).toLocaleDateString("pt-BR")} →{" "}
                         {new Date(plan.to).toLocaleDateString("pt-BR")}
                       </p>
-                    </div>
+                      <p className="text-xs text-indigo-600 mt-2">Clique para ver detalhes →</p>
+                    </Link>
                   ))}
                 </div>
               )}
@@ -472,18 +488,29 @@ export default function AdminUserDetailsPage() {
 
             {/* Reports */}
             <div className="bg-white rounded-xl border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">
-                Avaliações Físicas ({reports.length})
-              </h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-gray-900">
+                  Avaliações Físicas ({reports.length})
+                </h2>
+                {reports.length > 0 && (
+                  <Link
+                    href={`/admin/reports?profileId=${userId}`}
+                    className="text-sm text-green-600 hover:text-green-800 font-medium"
+                  >
+                    Ver todas as avaliações →
+                  </Link>
+                )}
+              </div>
 
               {reports.length === 0 ? (
                 <p className="text-gray-600 text-center py-8">Nenhuma avaliação realizada</p>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {reports.map((report, index) => (
-                    <div
+                    <Link
                       key={report.id}
-                      className="border border-gray-200 rounded-lg p-4"
+                      href={`/admin/reports/${report.id}`}
+                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md hover:border-green-300 transition cursor-pointer"
                     >
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="font-semibold text-gray-900">Avaliação #{index + 1}</h3>
@@ -510,7 +537,8 @@ export default function AdminUserDetailsPage() {
                           {new Date(report.createdAt).toLocaleDateString("pt-BR")}
                         </div>
                       </div>
-                    </div>
+                      <p className="text-xs text-green-600 mt-3">Clique para ver detalhes →</p>
+                    </Link>
                   ))}
                 </div>
               )}
@@ -520,9 +548,19 @@ export default function AdminUserDetailsPage() {
 
         {user.role === 1 && (
           <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
-              Planos Criados ({plans.length})
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-900">
+                Planos Criados ({plans.length})
+              </h2>
+              {plans.length > 0 && (
+                <Link
+                  href={`/admin/plans?trainerId=${userId}`}
+                  className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+                >
+                  Ver todos os planos →
+                </Link>
+              )}
+            </div>
 
             {plans.length === 0 ? (
               <p className="text-gray-600 text-center py-8">Nenhum plano criado</p>

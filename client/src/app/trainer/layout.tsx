@@ -37,11 +37,6 @@ export default async function TrainerLayout({
       <main className="flex-1">
         {children}
       </main>
-
-      {/* footer */}
-      <footer className="h-12 flex items-center justify-center text-sm text-gray-500 bg-white border-t mt-auto">
-        Versão 1.0 – © GymTrack 2025
-      </footer>
     </div>
   );
 }

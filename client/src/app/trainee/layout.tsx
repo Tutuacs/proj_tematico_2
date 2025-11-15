@@ -29,9 +29,6 @@ export default async function TraineeLayout({ children }: { children: ReactNode 
     <div className="min-h-screen flex flex-col bg-gray-100">
       <StudentNavbar />
       <main className="flex-1">{children}</main>
-      <footer className="h-12 flex items-center justify-center text-sm text-gray-500 bg-white border-t mt-auto">
-        Versão 1.0 – © GymTrack 2025
-      </footer>
     </div>
   );
 }

@@ -9,18 +9,13 @@ import useFetch from "@/utils/useFetch";
 type Activity = {
   id: string;
   name: string;
-  type: "CARDIO" | "STRENGTH" | "FLEXIBILITY" | "BALANCE";
-};
-
-type Train = {
-  id: string;
-  planId: string;
-  weekDay: "SUNDAY" | "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY";
-  activity: Activity;
-  series?: number;
-  repetitions?: number;
+  ACTIVITY_TYPE: "CARDIO" | "STRENGTH" | "FLEXIBILITY" | "BALANCE";
+  description?: string;
   weight?: number;
+  reps?: number;
+  sets?: number;
   duration?: number;
+  planId: string;
 };
 
 type Plan = {
@@ -28,17 +23,16 @@ type Plan = {
   title: string;
   from: string;
   to: string;
-  Train?: Train[];
+  Activity?: Activity[];
 };
 
 type ExerciseInput = {
-  trainId: string;
   activityId: string;
-  series?: number;
-  repetitions?: number;
   weight?: number;
+  reps?: number;
+  sets?: number;
   duration?: number;
-  observations?: string;
+  description?: string; // Campo correto do schema
 };
 
 const WEEKDAYS = [
@@ -51,14 +45,21 @@ const WEEKDAYS = [
   "SATURDAY",
 ] as const;
 
-const WEEKDAY_NAMES = {
+const WEEKDAY_NAMES: Record<typeof WEEKDAYS[number], string> = {
   SUNDAY: "Domingo",
-  MONDAY: "Segunda-feira",
-  TUESDAY: "Terça-feira",
-  WEDNESDAY: "Quarta-feira",
-  THURSDAY: "Quinta-feira",
-  FRIDAY: "Sexta-feira",
+  MONDAY: "Segunda",
+  TUESDAY: "Terça",
+  WEDNESDAY: "Quarta",
+  THURSDAY: "Quinta",
+  FRIDAY: "Sexta",
   SATURDAY: "Sábado",
+};
+
+const ACTIVITY_TYPE_LABELS: Record<string, string> = {
+  CARDIO: "Cardio",
+  STRENGTH: "Força",
+  FLEXIBILITY: "Flexibilidade",
+  BALANCE: "Equilíbrio",
 };
 
 export default function RegisterWorkoutPage() {
@@ -71,12 +72,13 @@ export default function RegisterWorkoutPage() {
 
   const [plans, setPlans] = useState<Plan[]>([]);
   const [selectedPlanId, setSelectedPlanId] = useState<string>("");
-  const [selectedWeekDay, setSelectedWeekDay] = useState<string>("");
-  const [trains, setTrains] = useState<Train[]>([]);
+  const [selectedWeekDay, setSelectedWeekDay] = useState<typeof WEEKDAYS[number]>("MONDAY"); // Segunda-feira por padrão
+  const [activities, setActivities] = useState<Activity[]>([]);
   const [exercises, setExercises] = useState<Map<string, ExerciseInput>>(new Map());
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [trainId, setTrainId] = useState<string>("");
 
   // Get current day of week
   const getCurrentWeekDay = () => {
@@ -121,80 +123,100 @@ export default function RegisterWorkoutPage() {
   }, [session?.profile?.id, planIdParam]);
 
   useEffect(() => {
-    const fetchTrains = async () => {
-      if (!selectedPlanId) return;
+    const fetchActivities = async () => {
+      if (!selectedPlanId) {
+        setActivities([]);
+        return;
+      }
 
       try {
-        const res = await fetchWithAuth(`/train?planId=${selectedPlanId}`);
+        const res = await fetchWithAuth(`/activity?planId=${selectedPlanId}`);
         if (res?.status === 200) {
-          const trainsData = Array.isArray(res.data) ? res.data : [];
-          setTrains(trainsData);
-
-          // Auto-select today's weekday if available
-          const today = getCurrentWeekDay();
-          if (trainsData.some((t: Train) => t.weekDay === today)) {
-            setSelectedWeekDay(today);
-          } else if (trainsData.length > 0) {
-            setSelectedWeekDay(trainsData[0].weekDay);
-          }
+          const activitiesData = Array.isArray(res.data) ? res.data : [];
+          setActivities(activitiesData);
         }
       } catch (error) {
-        console.error("Failed to fetch trains", error);
+        console.error("Failed to fetch activities", error);
       }
     };
 
-    fetchTrains();
+    fetchActivities();
   }, [selectedPlanId]);
 
-  const todayTrains = trains.filter((t) => t.weekDay === selectedWeekDay);
-
   const handleExerciseChange = (
-    trainId: string,
+    activityId: string,
     field: keyof ExerciseInput,
     value: string | number
   ) => {
-    const train = trains.find((t) => t.id === trainId);
-    if (!train) return;
-
-    const current = exercises.get(trainId) || {
-      trainId,
-      activityId: train.activity.id,
+    const current = exercises.get(activityId) || {
+      activityId,
     };
 
     const updated = { ...current, [field]: value };
     const newMap = new Map(exercises);
-    newMap.set(trainId, updated);
+    newMap.set(activityId, updated);
     setExercises(newMap);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate that at least one exercise is filled
+    const exercisesToSubmit = Array.from(exercises.values()).filter(
+      (ex) => ex.reps || ex.sets || ex.weight || ex.duration
+    );
+
+    if (exercisesToSubmit.length === 0) {
+      alert("Por favor, preencha pelo menos um exercício antes de registrar o treino.");
+      return;
+    }
+
     setSubmitting(true);
 
     try {
-      const exercisesToSubmit = Array.from(exercises.values()).filter(
-        (ex) => ex.series || ex.repetitions || ex.weight || ex.duration
-      );
+      // First, create the Train (workout session)
+      const trainData = {
+        weekDay: selectedWeekDay,
+        planId: selectedPlanId,
+        from: new Date().toISOString(),
+        to: new Date().toISOString(),
+      };
 
-      if (exercisesToSubmit.length === 0) {
-        alert("Por favor, preencha pelo menos um exercício.");
-        setSubmitting(false);
-        return;
+      const trainRes = await fetchWithAuth(`/train`, {
+        method: "POST",
+        body: JSON.stringify(trainData),
+      });
+
+      if (trainRes?.status !== 201) {
+        throw new Error("Failed to create train");
       }
 
-      // Submit each exercise
+      const createdTrainId = trainRes.data.id;
+
+      // Then submit each exercise for this train
+      // Convert duration from minutes to seconds before sending to API
       const promises = exercisesToSubmit.map((exercise) =>
         fetchWithAuth(`/exercise`, {
           method: "POST",
-          body: JSON.stringify(exercise),
+          body: JSON.stringify({
+            ...exercise,
+            duration: exercise.duration ? exercise.duration * 60 : undefined, // Convert minutes to seconds
+            trainId: createdTrainId,
+          }),
         })
       );
 
-      await Promise.all(promises);
+      const results = await Promise.all(promises);
+      
+      // Check if all exercises were created successfully
+      const failed = results.filter(res => res?.status !== 201);
+      if (failed.length > 0) {
+        throw new Error(`Failed to create ${failed.length} exercise(s)`);
+      }
 
       setSuccess(true);
       setTimeout(() => {
-        router.push("/trainee/history/workouts");
+        router.push("/trainee/dashboard");
       }, 2000);
     } catch (error) {
       console.error("Failed to register workout", error);
@@ -206,7 +228,7 @@ export default function RegisterWorkoutPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-gray-100">
+      <main>
         <div className="max-w-4xl mx-auto p-6">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
@@ -222,7 +244,7 @@ export default function RegisterWorkoutPage() {
 
   if (success) {
     return (
-      <main className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <main className="flex items-center justify-center py-12">
         <div className="bg-white rounded-xl border border-gray-200 shadow-lg p-12 text-center max-w-md">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg
@@ -251,7 +273,7 @@ export default function RegisterWorkoutPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100">
+    <main>
       <div className="max-w-4xl mx-auto p-6">
         {/* Breadcrumb */}
         <nav className="mb-6 flex items-center text-sm text-gray-600">
@@ -307,14 +329,14 @@ export default function RegisterWorkoutPage() {
               </select>
             </div>
 
-            {/* Weekday Selection */}
-            {selectedPlanId && trains.length > 0 && (
+            {/* Weekday Selection - Keep for compatibility */}
+            {selectedPlanId && activities.length > 0 && (
               <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Dia da Semana
+                  Dia da Semana do Treino
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {Array.from(new Set(trains.map((t) => t.weekDay))).map((day) => (
+                  {WEEKDAYS.map((day) => (
                     <button
                       key={day}
                       type="button"
@@ -325,103 +347,137 @@ export default function RegisterWorkoutPage() {
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       }`}
                     >
-                      {WEEKDAY_NAMES[day as keyof typeof WEEKDAY_NAMES]}
+                      {WEEKDAY_NAMES[day]}
                     </button>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Exercises List */}
-            {selectedWeekDay && todayTrains.length > 0 && (
+            {/* No Activities Message */}
+            {selectedPlanId && activities.length === 0 && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-6">
+                <div className="flex items-start">
+                  <svg className="w-6 h-6 text-yellow-600 mr-3 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <div>
+                    <h3 className="text-sm font-semibold text-yellow-800 mb-1">
+                      Nenhuma atividade cadastrada neste plano
+                    </h3>
+                    <p className="text-sm text-yellow-700">
+                      Este plano ainda não possui atividades cadastradas pelo seu instrutor. Entre em contato com ele para adicionar os exercícios ao seu plano.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Activities List */}
+            {selectedWeekDay && activities.length > 0 && (
               <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-6">
                 <h2 className="text-xl font-bold text-gray-900 mb-4">
                   Exercícios do Treino
                 </h2>
 
                 <div className="space-y-6">
-                  {todayTrains.map((train, index) => (
+                  {activities.map((activity, index) => (
                     <div
-                      key={train.id}
+                      key={activity.id}
                       className="border border-gray-200 rounded-lg p-4"
                     >
                       <div className="flex items-center gap-3 mb-4">
                         <span className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 font-bold text-sm">
                           {index + 1}
                         </span>
-                        <h3 className="text-lg font-semibold text-gray-900">
-                          {train.activity.name}
-                        </h3>
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-gray-900">
+                            {activity.name}
+                          </h3>
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                            {ACTIVITY_TYPE_LABELS[activity.ACTIVITY_TYPE]}
+                          </span>
+                        </div>
                       </div>
 
+                      {activity.description && (
+                        <p className="text-sm text-gray-600 mb-4 ml-11">
+                          {activity.description}
+                        </p>
+                      )}
+
                       <div className="ml-11 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {train.series && (
+                        {activity.sets !== undefined && (
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                               Séries Realizadas
-                              <span className="text-gray-500 ml-1">
-                                (planejado: {train.series})
-                              </span>
-                            </label>
-                            <input
-                              type="number"
-                              min="0"
-                              step="1"
-                              onChange={(e) =>
-                                handleExerciseChange(
-                                  train.id,
-                                  "series",
-                                  parseInt(e.target.value) || 0
-                                )
-                              }
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                              placeholder="0"
-                            />
-                          </div>
-                        )}
-
-                        {train.repetitions && (
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Repetições Realizadas
-                              <span className="text-gray-500 ml-1">
-                                (planejado: {train.repetitions})
-                              </span>
-                            </label>
-                            <input
-                              type="number"
-                              min="0"
-                              step="1"
-                              onChange={(e) =>
-                                handleExerciseChange(
-                                  train.id,
-                                  "repetitions",
-                                  parseInt(e.target.value) || 0
-                                )
-                              }
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                              placeholder="0"
-                            />
-                          </div>
-                        )}
-
-                        {train.weight !== undefined && (
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Peso Utilizado (kg)
-                              {train.weight > 0 && (
+                              {activity.sets > 0 && (
                                 <span className="text-gray-500 ml-1">
-                                  (sugerido: {train.weight})
+                                  (planejado: {activity.sets})
                                 </span>
                               )}
                             </label>
                             <input
                               type="number"
-                              min="0"
+                              min="1"
+                              step="1"
+                              onChange={(e) =>
+                                handleExerciseChange(
+                                  activity.id,
+                                  "sets",
+                                  parseInt(e.target.value) || 0
+                                )
+                              }
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                              placeholder="1"
+                            />
+                          </div>
+                        )}
+
+                        {activity.reps !== undefined && (
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Repetições Realizadas
+                              {activity.reps > 0 && (
+                                <span className="text-gray-500 ml-1">
+                                  (planejado: {activity.reps})
+                                </span>
+                              )}
+                            </label>
+                            <input
+                              type="number"
+                              min="1"
+                              step="1"
+                              onChange={(e) =>
+                                handleExerciseChange(
+                                  activity.id,
+                                  "reps",
+                                  parseInt(e.target.value) || 0
+                                )
+                              }
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                              placeholder="1"
+                            />
+                          </div>
+                        )}
+
+                        {activity.weight !== undefined && (
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Peso Utilizado (kg)
+                              {activity.weight > 0 && (
+                                <span className="text-gray-500 ml-1">
+                                  (sugerido: {activity.weight})
+                                </span>
+                              )}
+                            </label>
+                            <input
+                              type="number"
+                              min="0.5"
                               step="0.5"
                               onChange={(e) =>
                                 handleExerciseChange(
-                                  train.id,
+                                  activity.id,
                                   "weight",
                                   parseFloat(e.target.value) || 0
                                 )
@@ -432,21 +488,23 @@ export default function RegisterWorkoutPage() {
                           </div>
                         )}
 
-                        {train.duration && (
+                        {activity.duration !== undefined && (
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                               Duração (minutos)
-                              <span className="text-gray-500 ml-1">
-                                (planejado: {train.duration})
-                              </span>
+                              {activity.duration > 0 && (
+                                <span className="text-gray-500 ml-1">
+                                  (planejado: {activity.duration})
+                                </span>
+                              )}
                             </label>
                             <input
                               type="number"
-                              min="0"
+                              min="1"
                               step="1"
                               onChange={(e) =>
                                 handleExerciseChange(
-                                  train.id,
+                                  activity.id,
                                   "duration",
                                   parseInt(e.target.value) || 0
                                 )
@@ -465,8 +523,8 @@ export default function RegisterWorkoutPage() {
                             rows={2}
                             onChange={(e) =>
                               handleExerciseChange(
-                                train.id,
-                                "observations",
+                                activity.id,
+                                "description",
                                 e.target.value
                               )
                             }
@@ -482,7 +540,7 @@ export default function RegisterWorkoutPage() {
             )}
 
             {/* Submit Button */}
-            {todayTrains.length > 0 && (
+            {activities.length > 0 && (
               <div className="flex gap-4">
                 <Link
                   href="/trainee/dashboard"

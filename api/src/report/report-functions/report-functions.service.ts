@@ -14,6 +14,7 @@ export class ReportFunctionsService extends PrismaService {
         imc: true,
         bodyFat: true,
         weight: true,
+        height: true,
         profileId: true,
         planId: true,
         Trainee: {
@@ -37,6 +38,7 @@ export class ReportFunctionsService extends PrismaService {
         imc: true,
         bodyFat: true,
         weight: true,
+        height: true,
         profileId: true,
         planId: true,
         Trainee: {
@@ -69,6 +71,7 @@ export class ReportFunctionsService extends PrismaService {
         imc: true,
         bodyFat: true,
         weight: true,
+        height: true,
         profileId: true,
         createdBy: true,
         planId: true,
@@ -136,6 +139,7 @@ export class ReportFunctionsService extends PrismaService {
         imc: true,
         bodyFat: true,
         weight: true,
+        height: true,
         profileId: true,
         planId: true,
         Trainee: {
@@ -173,6 +177,7 @@ export class ReportFunctionsService extends PrismaService {
         imc: true,
         bodyFat: true,
         weight: true,
+        height: true,
         profileId: true,
         planId: true,
         Trainee: {
@@ -206,6 +211,7 @@ export class ReportFunctionsService extends PrismaService {
         imc: true,
         bodyFat: true,
         weight: true,
+        height: true,
         profileId: true,
         planId: true,
         BodyPart: {
@@ -238,6 +244,7 @@ export class ReportFunctionsService extends PrismaService {
         imc: true,
         bodyFat: true,
         weight: true,
+        height: true,
         profileId: true,
         planId: true,
       },

@@ -203,7 +203,7 @@ export default function AdminUsersPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-100">
+    <main>
       <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <div className="mb-6">

@@ -16,15 +16,16 @@ type Profile = {
 type BodyPart = {
   id: string;
   name: string;
-  measurement: string;
+  bodyFat: number;
 };
 
 type Report = {
   id: string;
-  traineeId: string;
+  profileId: string;
   height: number;
   weight: number;
-  observations?: string;
+  imc: number;
+  content?: string;
   createdAt: string;
   Trainee?: Profile;
   BodyPart: BodyPart[];
@@ -82,7 +83,7 @@ export default function TrainerReportsPage() {
   const filteredReports = reports
     .filter((report) => {
       // Filter by traineeId if provided in URL
-      if (filterByTraineeId && report.traineeId !== filterByTraineeId) {
+      if (filterByTraineeId && report.profileId !== filterByTraineeId) {
         return false;
       }
       return true;
@@ -93,7 +94,7 @@ export default function TrainerReportsPage() {
       return (
         report.Trainee?.name.toLowerCase().includes(search) ||
         report.Trainee?.email.toLowerCase().includes(search) ||
-        report.observations?.toLowerCase().includes(search)
+        report.content?.toLowerCase().includes(search)
       );
     });
 
@@ -181,7 +182,7 @@ export default function TrainerReportsPage() {
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
-                      <div>
+                      <div> 
                         <p className="text-sm text-gray-500">Altura</p>
                         <p className="text-lg font-semibold text-gray-900">
                           {report.height} cm
@@ -196,21 +197,21 @@ export default function TrainerReportsPage() {
                       <div>
                         <p className="text-sm text-gray-500">IMC</p>
                         <p className="text-lg font-semibold text-gray-900">
-                          {(report.weight / Math.pow(report.height / 100, 2)).toFixed(1)}
+                          {report.imc ? report.imc.toFixed(1) : (report.weight / Math.pow(report.height / 100, 2)).toFixed(1)}
                         </p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">Medidas</p>
                         <p className="text-lg font-semibold text-gray-900">
-                          {report.BodyPart.length} partes
+                          {report.BodyPart?.length || 0} partes
                         </p>
                       </div>
                     </div>
 
-                    {report.observations && (
+                    {report.content && (
                       <div className="mt-3 p-3 bg-gray-50 rounded-lg">
                         <p className="text-sm text-gray-700">
-                          <span className="font-medium">Observações:</span> {report.observations}
+                          <span className="font-medium">Observações:</span> {report.content}
                         </p>
                       </div>
                     )}
@@ -225,7 +226,7 @@ export default function TrainerReportsPage() {
                             {report.BodyPart.map((bp) => (
                               <div key={bp.id} className="p-2 bg-gray-50 rounded">
                                 <p className="text-xs text-gray-500">{bp.name}</p>
-                                <p className="font-semibold text-gray-900">{bp.measurement} cm</p>
+                                <p className="font-semibold text-gray-900">{bp.bodyFat} cm</p>
                               </div>
                             ))}
                           </div>

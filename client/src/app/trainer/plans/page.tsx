@@ -39,15 +39,15 @@ export default function TrainerPlansPage() {
 
       try {
         setLoading(true);
-        // Buscar todos os planos criados pelo trainer
+        // Buscar todos os planos
         const res = await fetchWithAuth(`/plan`);
         if (res?.status === 200) {
           const plansData = Array.isArray(res.data) ? res.data : [];
-          // Filter plans created by this trainer
-          const trainerPlans = plansData.filter(
-            (p: Plan) => p.trainerId === session.profile.id
-          );
-          setPlans(trainerPlans);
+          // Admin vê todos os planos, Trainer vê apenas os seus
+          const filteredPlans = session.profile.role === 2 
+            ? plansData 
+            : plansData.filter((p: Plan) => p.trainerId === session.profile.id);
+          setPlans(filteredPlans);
         }
       } catch (error) {
         console.error("Failed to fetch plans", error);
@@ -289,7 +289,7 @@ export default function TrainerPlansPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center gap-2">
                           <Link
-                            href={`/trainee/plans/${plan.id}`}
+                            href={`/trainer/plans/${plan.id}`}
                             className="text-indigo-600 hover:text-indigo-900"
                             title="Ver detalhes"
                           >

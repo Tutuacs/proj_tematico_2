@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
 import { redirect } from "next/navigation";
+import AdminNavbar from "@/components/AdminNavbar";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -19,5 +20,10 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
     redirect("/");
   }
 
-  return <>{children}</>;
+  return (
+    <div className="min-h-screen bg-gray-100">
+      <AdminNavbar session={session} />
+      {children}
+    </div>
+  );
 }

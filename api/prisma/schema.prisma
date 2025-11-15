@@ -85,7 +85,7 @@ model Activity {
   weight        Float?
   reps          Int?
   sets          Int?
-  duration      Int? // Duration in seconds
+  duration      Int? // Duration in minutes
   planId        String
   Plan          Plan          @relation(fields: [planId], references: [id])
   Exercise      Exercise[]

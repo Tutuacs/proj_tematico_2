@@ -112,14 +112,14 @@ export default function TraineeDashboardPage() {
           />
           <DashboardCard
             title="Visualizar Plano de Treino"
-            variant="muted"
+            variant="dark"
             size="lg"
             actionHeightClass="h-[120px]"
-            href="/trainee/plan"
+            href="/trainee/plans"
           />
           <DashboardCard
             title="Histórico de Treinos e Avaliações"
-            variant="muted"
+            variant="dark"
             size="lg"
             actionHeightClass="h-[120px]"
             href="/trainee/history"

@@ -50,6 +50,7 @@ export default function NewAssessmentPage() {
   const [traineeId, setTraineeId] = useState(preselectedTraineeId || "");
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
+  const [bodyFat, setBodyFat] = useState("");
   const [observations, setObservations] = useState("");
 
   // Body Parts
@@ -135,19 +136,36 @@ export default function NewAssessmentPage() {
       }
 
       // 1. Create Report
+      const reportBody: any = {
+        profileId: traineeId,
+        height: parseFloat(height),
+        weight: parseFloat(weight),
+        imc: parseFloat(imc),
+      };
+
+      // Only add bodyFat if it has a value
+      if (bodyFat && bodyFat.trim()) {
+        reportBody.bodyFat = parseFloat(bodyFat);
+      }
+
+      // Only add content (observations) if it has content
+      if (observations && observations.trim()) {
+        reportBody.content = observations.trim();
+      }
+
+      console.log("Sending report body:", reportBody);
+
       const reportRes = await fetchWithAuth(`/report`, {
         method: "POST",
-        body: JSON.stringify({
-          profileId: traineeId,
-          height: parseFloat(height),
-          weight: parseFloat(weight),
-          imc: parseFloat(imc),
-          observations: observations || undefined,
-        }),
+        body: JSON.stringify(reportBody),
       });
 
+      console.log("Report response:", reportRes);
+
       if (!reportRes || reportRes.status !== 201) {
-        throw new Error("Failed to create report");
+        const errorMsg = reportRes?.data?.message || reportRes?.data || "Failed to create report";
+        console.error("Report creation failed:", errorMsg);
+        throw new Error(`Failed to create report: ${JSON.stringify(errorMsg)}`);
       }
 
       const reportId = reportRes.data.id;
@@ -160,7 +178,7 @@ export default function NewAssessmentPage() {
             body: JSON.stringify({
               reportId,
               name: bodyPart.name,
-              measurement: parseFloat(bodyPart.measurement),
+              bodyFat: parseFloat(bodyPart.measurement),
             }),
           })
         );
@@ -284,6 +302,25 @@ export default function NewAssessmentPage() {
                 </div>
               </div>
 
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Percentual de Gordura (%)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="0.1"
+                  value={bodyFat}
+                  onChange={(e) => setBodyFat(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder="Ex: 15.5"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Opcional - Medido por adipômetro ou bioimpedância
+                </p>
+              </div>
+
               {/* IMC Display */}
               {imc && (
                 <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
@@ -340,23 +377,29 @@ export default function NewAssessmentPage() {
             </div>
 
             {/* Quick Add Buttons */}
-            {bodyParts.length === 0 && (
-              <div className="mb-6">
-                <p className="text-sm text-gray-600 mb-3">Adicionar rapidamente:</p>
-                <div className="flex flex-wrap gap-2">
-                  {COMMON_BODY_PARTS.map((part) => (
+            <div className="mb-6">
+              <p className="text-sm text-gray-600 mb-3">Adicionar rapidamente:</p>
+              <div className="flex flex-wrap gap-2">
+                {COMMON_BODY_PARTS.map((part) => {
+                  const isAdded = bodyParts.some((bp) => bp.name === part);
+                  return (
                     <button
                       key={part}
                       type="button"
-                      onClick={() => handleQuickAddBodyPart(part)}
-                      className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm rounded-lg transition"
+                      onClick={() => !isAdded && handleQuickAddBodyPart(part)}
+                      disabled={isAdded}
+                      className={`px-3 py-1.5 text-sm rounded-lg transition ${
+                        isAdded
+                          ? "bg-green-100 text-green-700 border-2 border-green-300 cursor-not-allowed"
+                          : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                      }`}
                     >
-                      {part}
+                      {isAdded ? `✓ ${part}` : part}
                     </button>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
-            )}
+            </div>
 
             {/* Body Parts List */}
             {bodyParts.length === 0 ? (
