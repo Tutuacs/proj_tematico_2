@@ -1,17 +1,27 @@
 {
   "version": 2,
-
+  "buildCommand": "nest build",
+  "installCommand": "pnpm install --force",
+  "framework": null,
+  "outputDirectory": "dist",
   "builds": [
     {
-      "src": "dist/main.js",
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "public"
+      }
+    },
+    {
+      "src": "server.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "dist/main.js",
-      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
+      "dest": "server.js",
+      "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"]
     }
   ]
 }
