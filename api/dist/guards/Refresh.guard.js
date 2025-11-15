@@ -13,6 +13,7 @@ exports.RefreshJwtGuard = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("../auth/auth.service");
 let RefreshJwtGuard = class RefreshJwtGuard {
+    authService;
     constructor(authService) {
         this.authService = authService;
     }

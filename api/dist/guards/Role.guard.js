@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const decorators_1 = require("../decorators");
 let RoleGuard = class RoleGuard {
+    reflector;
     constructor(reflector) {
         this.reflector = reflector;
     }

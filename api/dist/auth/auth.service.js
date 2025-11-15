@@ -15,14 +15,16 @@ const jwt_1 = require("@nestjs/jwt");
 const auth_functions_service_1 = require("./auth-functions/auth-functions.service");
 const process_1 = require("process");
 let AuthService = class AuthService {
+    authFunctions;
+    jwt;
+    audience = 'profile';
+    issuer = 'auth-token';
+    refreshAudience = 'refresh';
+    refreshIssuer = 'refresh-token';
+    EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000;
     constructor(authFunctions, jwt) {
         this.authFunctions = authFunctions;
         this.jwt = jwt;
-        this.audience = 'profile';
-        this.issuer = 'auth-token';
-        this.refreshAudience = 'refresh';
-        this.refreshIssuer = 'refresh-token';
-        this.EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000;
     }
     async login(login) {
         const user = await this.authFunctions.findLogin(login);

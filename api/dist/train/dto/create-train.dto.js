@@ -22,6 +22,10 @@ var WEEK_DAYS;
     WEEK_DAYS["SATURDAY"] = "SATURDAY";
 })(WEEK_DAYS || (WEEK_DAYS = {}));
 class CreateTrainDto {
+    weekDay;
+    from;
+    to;
+    planId;
 }
 exports.CreateTrainDto = CreateTrainDto;
 __decorate([

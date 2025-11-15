@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const profile_functions_service_1 = require("./profile-functions/profile-functions.service");
 const decorators_1 = require("../decorators");
 let ProfileService = class ProfileService {
+    profileFunctions;
     constructor(profileFunctions) {
         this.profileFunctions = profileFunctions;
     }

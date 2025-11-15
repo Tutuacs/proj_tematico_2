@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const body_part_functions_service_1 = require("./body-part-functions/body-part-functions.service");
 const decorators_1 = require("../decorators");
 let BodyPartService = class BodyPartService {
+    bodyPartFunctions;
     constructor(bodyPartFunctions) {
         this.bodyPartFunctions = bodyPartFunctions;
     }

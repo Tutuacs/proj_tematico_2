@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const train_functions_service_1 = require("./train-functions/train-functions.service");
 const decorators_1 = require("../decorators");
 let TrainService = class TrainService {
+    trainFunctions;
     constructor(trainFunctions) {
         this.trainFunctions = trainFunctions;
     }

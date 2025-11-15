@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const report_functions_service_1 = require("./report-functions/report-functions.service");
 const decorators_1 = require("../decorators");
 let ReportService = class ReportService {
+    reportFunctions;
     constructor(reportFunctions) {
         this.reportFunctions = reportFunctions;
     }

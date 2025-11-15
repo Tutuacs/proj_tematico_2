@@ -12,6 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateBodyPartDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateBodyPartDto {
+    name;
+    bodyFat;
+    reportId;
 }
 exports.CreateBodyPartDto = CreateBodyPartDto;
 __decorate([

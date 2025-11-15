@@ -12,6 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateExerciseDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateExerciseDto {
+    weight;
+    reps;
+    sets;
+    duration;
+    description;
+    activityId;
+    trainId;
 }
 exports.CreateExerciseDto = CreateExerciseDto;
 __decorate([
