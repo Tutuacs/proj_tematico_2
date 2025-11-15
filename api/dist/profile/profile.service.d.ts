@@ -27,9 +27,9 @@ export declare class ProfileService {
     } | ({
         Trainer: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
-        } | null;
+        };
     } & {
         email: string;
         password: string;
@@ -37,7 +37,7 @@ export declare class ProfileService {
         role: number;
         id: string;
         trainerId: string | null;
-    })[] | null>;
+    })[]>;
     findOne(id: string, profile: {
         id: string;
         email: string;
@@ -79,7 +79,7 @@ export declare class ProfileService {
     }>;
     getTraineesByTrainer(trainerId: string): Promise<{
         email: string;
-        name: string | null;
+        name: string;
         role: number;
         id: string;
     }[]>;

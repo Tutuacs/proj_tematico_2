@@ -21,7 +21,6 @@ const guards_1 = require("../guards");
 const decorators_1 = require("../decorators");
 const ProfileAtuh_decorator_1 = require("../decorators/ProfileAtuh.decorator");
 let ReportController = class ReportController {
-    reportService;
     constructor(reportService) {
         this.reportService = reportService;
     }

@@ -14,7 +14,6 @@ const common_1 = require("@nestjs/common");
 const plan_functions_service_1 = require("./plan-functions/plan-functions.service");
 const decorators_1 = require("../decorators");
 let PlanService = class PlanService {
-    planFunctions;
     constructor(planFunctions) {
         this.planFunctions = planFunctions;
     }

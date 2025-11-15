@@ -14,7 +14,6 @@ const common_1 = require("@nestjs/common");
 const activity_functions_service_1 = require("./activity-functions/activity-functions.service");
 const decorators_1 = require("../decorators");
 let ActivityService = class ActivityService {
-    activityFunctions;
     constructor(activityFunctions) {
         this.activityFunctions = activityFunctions;
     }

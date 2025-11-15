@@ -3,157 +3,157 @@ export declare class ActivityFunctionsService extends PrismaService {
     createActivity(data: any): Promise<{
         name: string;
         id: string;
-        weight: number | null;
+        weight: number;
         planId: string;
         Plan: {
             id: string;
             trainerId: string;
             Trainee: {
                 email: string;
-                name: string | null;
+                name: string;
                 id: string;
             };
             title: string;
             traineeId: string;
         };
-        description: string | null;
+        description: string;
         ACTIVITY_TYPE: import("@prisma/client").$Enums.ACTIVITY_TYPE;
-        reps: number | null;
-        sets: number | null;
-        duration: number | null;
+        reps: number;
+        sets: number;
+        duration: number;
     }>;
     getAllActivities(): Promise<{
         name: string;
         id: string;
-        weight: number | null;
+        weight: number;
         planId: string;
         Plan: {
             id: string;
             trainerId: string;
             Trainee: {
                 email: string;
-                name: string | null;
+                name: string;
                 id: string;
             };
             title: string;
             traineeId: string;
         };
-        description: string | null;
+        description: string;
         ACTIVITY_TYPE: import("@prisma/client").$Enums.ACTIVITY_TYPE;
-        reps: number | null;
-        sets: number | null;
-        duration: number | null;
+        reps: number;
+        sets: number;
+        duration: number;
         Exercise: {
             id: string;
-            weight: number | null;
-            description: string | null;
-            reps: number | null;
-            sets: number | null;
-            duration: number | null;
+            weight: number;
+            description: string;
+            reps: number;
+            sets: number;
+            duration: number;
         }[];
     }[]>;
     getActivityById(id: string): Promise<{
         name: string;
         id: string;
-        weight: number | null;
+        weight: number;
         planId: string;
         Plan: {
             id: string;
             trainerId: string;
             Trainee: {
                 email: string;
-                name: string | null;
+                name: string;
                 id: string;
             };
             title: string;
             traineeId: string;
         };
-        description: string | null;
+        description: string;
         ACTIVITY_TYPE: import("@prisma/client").$Enums.ACTIVITY_TYPE;
-        reps: number | null;
-        sets: number | null;
-        duration: number | null;
+        reps: number;
+        sets: number;
+        duration: number;
         Exercise: {
             id: string;
-            weight: number | null;
-            description: string | null;
+            weight: number;
+            description: string;
             Train: {
                 id: string;
                 from: Date;
                 to: Date;
             };
-            reps: number | null;
-            sets: number | null;
-            duration: number | null;
+            reps: number;
+            sets: number;
+            duration: number;
         }[];
-    } | null>;
+    }>;
     getActivitiesByTrainer(trainerId: string): Promise<{
         name: string;
         id: string;
-        weight: number | null;
+        weight: number;
         planId: string;
         Plan: {
             id: string;
             Trainee: {
                 email: string;
-                name: string | null;
+                name: string;
                 id: string;
             };
             title: string;
             traineeId: string;
         };
-        description: string | null;
+        description: string;
         ACTIVITY_TYPE: import("@prisma/client").$Enums.ACTIVITY_TYPE;
-        reps: number | null;
-        sets: number | null;
-        duration: number | null;
+        reps: number;
+        sets: number;
+        duration: number;
         Exercise: {
             id: string;
-            weight: number | null;
-            reps: number | null;
-            sets: number | null;
-            duration: number | null;
+            weight: number;
+            reps: number;
+            sets: number;
+            duration: number;
         }[];
     }[]>;
     getActivitiesByTrainee(traineeId: string): Promise<{
         name: string;
         id: string;
-        weight: number | null;
+        weight: number;
         planId: string;
         Plan: {
             id: string;
             title: string;
-            description: string | null;
+            description: string;
         };
-        description: string | null;
+        description: string;
         ACTIVITY_TYPE: import("@prisma/client").$Enums.ACTIVITY_TYPE;
-        reps: number | null;
-        sets: number | null;
-        duration: number | null;
+        reps: number;
+        sets: number;
+        duration: number;
         Exercise: {
             id: string;
-            weight: number | null;
-            description: string | null;
+            weight: number;
+            description: string;
             Train: {
                 id: string;
                 from: Date;
                 to: Date;
             };
-            reps: number | null;
-            sets: number | null;
-            duration: number | null;
+            reps: number;
+            sets: number;
+            duration: number;
         }[];
     }[]>;
     updateActivity(id: string, data: any): Promise<{
         name: string;
         id: string;
-        weight: number | null;
+        weight: number;
         planId: string;
-        description: string | null;
+        description: string;
         ACTIVITY_TYPE: import("@prisma/client").$Enums.ACTIVITY_TYPE;
-        reps: number | null;
-        sets: number | null;
-        duration: number | null;
+        reps: number;
+        sets: number;
+        duration: number;
     }>;
     deleteActivity(id: string): Promise<{
         name: string;
@@ -170,5 +170,5 @@ export declare class ActivityFunctionsService extends PrismaService {
     verifyTrainerPlanAccess(planId: string, trainerId: string): Promise<boolean>;
     existActivityById(id: string): Promise<{
         id: string;
-    } | null>;
+    }>;
 }

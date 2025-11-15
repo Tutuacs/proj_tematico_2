@@ -69,7 +69,7 @@ export declare class ExerciseController {
             Plan: {
                 Trainee: {
                     email: string;
-                    name: string | null;
+                    name: string;
                     id: string;
                 };
             } & {
@@ -119,7 +119,7 @@ export declare class ExerciseController {
             Plan: {
                 Trainee: {
                     email: string;
-                    name: string | null;
+                    name: string;
                     id: string;
                 };
             } & {

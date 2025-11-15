@@ -27,9 +27,9 @@ export declare class ProfileController {
     } | ({
         Trainer: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
-        } | null;
+        };
     } & {
         email: string;
         password: string;
@@ -37,7 +37,7 @@ export declare class ProfileController {
         role: number;
         id: string;
         trainerId: string | null;
-    })[] | null>;
+    })[]>;
     findOne(id: string, profile: {
         id: string;
         email: string;

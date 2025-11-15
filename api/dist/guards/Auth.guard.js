@@ -14,8 +14,6 @@ const common_1 = require("@nestjs/common");
 const auth_functions_service_1 = require("../auth/auth-functions/auth-functions.service");
 const auth_service_1 = require("../auth/auth.service");
 let AuthGuard = class AuthGuard {
-    authService;
-    authFunctions;
     constructor(authService, authFunctions) {
         this.authService = authService;
         this.authFunctions = authFunctions;

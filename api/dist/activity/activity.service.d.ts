@@ -12,24 +12,24 @@ export declare class ActivityService {
     }): Promise<{
         name: string;
         id: string;
-        weight: number | null;
+        weight: number;
         planId: string;
         Plan: {
             id: string;
             trainerId: string;
             Trainee: {
                 email: string;
-                name: string | null;
+                name: string;
                 id: string;
             };
             title: string;
             traineeId: string;
         };
-        description: string | null;
+        description: string;
         ACTIVITY_TYPE: import("@prisma/client").$Enums.ACTIVITY_TYPE;
-        reps: number | null;
-        sets: number | null;
-        duration: number | null;
+        reps: number;
+        sets: number;
+        duration: number;
     }>;
     findAll(profile: {
         id: string;
@@ -39,57 +39,57 @@ export declare class ActivityService {
     }): Promise<{
         name: string;
         id: string;
-        weight: number | null;
+        weight: number;
         planId: string;
         Plan: {
             id: string;
             Trainee: {
                 email: string;
-                name: string | null;
+                name: string;
                 id: string;
             };
             title: string;
             traineeId: string;
         };
-        description: string | null;
+        description: string;
         ACTIVITY_TYPE: import("@prisma/client").$Enums.ACTIVITY_TYPE;
-        reps: number | null;
-        sets: number | null;
-        duration: number | null;
+        reps: number;
+        sets: number;
+        duration: number;
         Exercise: {
             id: string;
-            weight: number | null;
-            reps: number | null;
-            sets: number | null;
-            duration: number | null;
+            weight: number;
+            reps: number;
+            sets: number;
+            duration: number;
         }[];
     }[] | {
         name: string;
         id: string;
-        weight: number | null;
+        weight: number;
         planId: string;
         Plan: {
             id: string;
             title: string;
-            description: string | null;
+            description: string;
         };
-        description: string | null;
+        description: string;
         ACTIVITY_TYPE: import("@prisma/client").$Enums.ACTIVITY_TYPE;
-        reps: number | null;
-        sets: number | null;
-        duration: number | null;
+        reps: number;
+        sets: number;
+        duration: number;
         Exercise: {
             id: string;
-            weight: number | null;
-            description: string | null;
+            weight: number;
+            description: string;
             Train: {
                 id: string;
                 from: Date;
                 to: Date;
             };
-            reps: number | null;
-            sets: number | null;
-            duration: number | null;
+            reps: number;
+            sets: number;
+            duration: number;
         }[];
     }[]>;
     findOne(id: string, profile: {
@@ -100,36 +100,36 @@ export declare class ActivityService {
     }): Promise<{
         name: string;
         id: string;
-        weight: number | null;
+        weight: number;
         planId: string;
         Plan: {
             id: string;
             trainerId: string;
             Trainee: {
                 email: string;
-                name: string | null;
+                name: string;
                 id: string;
             };
             title: string;
             traineeId: string;
         };
-        description: string | null;
+        description: string;
         ACTIVITY_TYPE: import("@prisma/client").$Enums.ACTIVITY_TYPE;
-        reps: number | null;
-        sets: number | null;
-        duration: number | null;
+        reps: number;
+        sets: number;
+        duration: number;
         Exercise: {
             id: string;
-            weight: number | null;
-            description: string | null;
+            weight: number;
+            description: string;
             Train: {
                 id: string;
                 from: Date;
                 to: Date;
             };
-            reps: number | null;
-            sets: number | null;
-            duration: number | null;
+            reps: number;
+            sets: number;
+            duration: number;
         }[];
     }>;
     update(id: string, updateActivityDto: UpdateActivityDto, profile: {
@@ -140,13 +140,13 @@ export declare class ActivityService {
     }): Promise<{
         name: string;
         id: string;
-        weight: number | null;
+        weight: number;
         planId: string;
-        description: string | null;
+        description: string;
         ACTIVITY_TYPE: import("@prisma/client").$Enums.ACTIVITY_TYPE;
-        reps: number | null;
-        sets: number | null;
-        duration: number | null;
+        reps: number;
+        sets: number;
+        duration: number;
     }>;
     remove(id: string, profile: {
         id: string;

@@ -19,7 +19,6 @@ const Validation_1 = require("./Validation");
 const guards_1 = require("../guards");
 const ProfileAtuh_decorator_1 = require("../decorators/ProfileAtuh.decorator");
 let AuthController = class AuthController {
-    service;
     constructor(service) {
         this.service = service;
     }

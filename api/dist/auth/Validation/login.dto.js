@@ -13,8 +13,6 @@ exports.LoginDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class LoginDto {
-    email;
-    password;
 }
 exports.LoginDto = LoginDto;
 __decorate([

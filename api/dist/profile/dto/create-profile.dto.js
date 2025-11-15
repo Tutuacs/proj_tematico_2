@@ -12,11 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateProfileDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateProfileDto {
-    name;
-    email;
-    password;
-    role = 0;
-    trainerId;
+    constructor() {
+        this.role = 0;
+    }
 }
 exports.CreateProfileDto = CreateProfileDto;
 __decorate([

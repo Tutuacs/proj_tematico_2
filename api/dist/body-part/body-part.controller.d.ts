@@ -23,7 +23,7 @@ export declare class BodyPartController {
     }, reportId?: string): Promise<{
         name: string;
         id: string;
-        bodyFat: number | null;
+        bodyFat: number;
         reportId: string;
         Report: {
             id: string;
@@ -37,13 +37,13 @@ export declare class BodyPartController {
     }): Promise<{
         name: string;
         id: string;
-        bodyFat: number | null;
+        bodyFat: number;
         reportId: string;
         Report: {
             id: string;
             Trainee: {
                 email: string;
-                name: string | null;
+                name: string;
                 id: string;
             };
         };
@@ -56,7 +56,7 @@ export declare class BodyPartController {
     }): Promise<{
         name: string;
         id: string;
-        bodyFat: number | null;
+        bodyFat: number;
         reportId: string;
     }>;
     remove(id: string, profile: {

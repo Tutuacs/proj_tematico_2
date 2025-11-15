@@ -18,7 +18,7 @@ export declare class AuthController {
     }>;
     registerGym(register: RegisterDto): Promise<{
         email: string;
-        name: string | null;
+        name: string;
         role: number;
         id: string;
     }>;
@@ -30,10 +30,10 @@ export declare class AuthController {
     }): Promise<{
         profile: {
             email: string;
-            name: string | null;
+            name: string;
             role: number;
             id: string;
-        } | null;
+        };
         access: string;
         refresh: string;
         expiresIn: number;

@@ -17,7 +17,7 @@ export declare class TrainService {
             trainerId: string;
             Trainee: {
                 email: string;
-                name: string | null;
+                name: string;
                 id: string;
             };
             title: string;
@@ -40,7 +40,7 @@ export declare class TrainService {
             id: string;
             Trainee: {
                 email: string;
-                name: string | null;
+                name: string;
                 id: string;
             };
             title: string;
@@ -50,10 +50,10 @@ export declare class TrainService {
         to: Date;
         Exercise: {
             id: string;
-            weight: number | null;
-            reps: number | null;
-            sets: number | null;
-            duration: number | null;
+            weight: number;
+            reps: number;
+            sets: number;
+            duration: number;
         }[];
     }[] | {
         id: string;
@@ -61,27 +61,27 @@ export declare class TrainService {
         Plan: {
             id: string;
             title: string;
-            description: string | null;
+            description: string;
         };
         from: Date;
         to: Date;
         Exercise: {
             id: string;
-            weight: number | null;
-            description: string | null;
+            weight: number;
+            description: string;
             Activity: {
                 name: string;
                 id: string;
-                weight: number | null;
-                description: string | null;
+                weight: number;
+                description: string;
                 ACTIVITY_TYPE: import("@prisma/client").$Enums.ACTIVITY_TYPE;
-                reps: number | null;
-                sets: number | null;
-                duration: number | null;
+                reps: number;
+                sets: number;
+                duration: number;
             };
-            reps: number | null;
-            sets: number | null;
-            duration: number | null;
+            reps: number;
+            sets: number;
+            duration: number;
         }[];
         weekDay: import("@prisma/client").$Enums.WEEK_DAYS;
     }[]>;
@@ -98,7 +98,7 @@ export declare class TrainService {
             trainerId: string;
             Trainee: {
                 email: string;
-                name: string | null;
+                name: string;
                 id: string;
             };
             title: string;
@@ -108,21 +108,21 @@ export declare class TrainService {
         to: Date;
         Exercise: {
             id: string;
-            weight: number | null;
-            description: string | null;
+            weight: number;
+            description: string;
             Activity: {
                 name: string;
                 id: string;
-                weight: number | null;
-                description: string | null;
+                weight: number;
+                description: string;
                 ACTIVITY_TYPE: import("@prisma/client").$Enums.ACTIVITY_TYPE;
-                reps: number | null;
-                sets: number | null;
-                duration: number | null;
+                reps: number;
+                sets: number;
+                duration: number;
             };
-            reps: number | null;
-            sets: number | null;
-            duration: number | null;
+            reps: number;
+            sets: number;
+            duration: number;
         }[];
         weekDay: import("@prisma/client").$Enums.WEEK_DAYS;
     }>;

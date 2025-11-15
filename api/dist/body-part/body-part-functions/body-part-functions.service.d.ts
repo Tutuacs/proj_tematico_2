@@ -9,13 +9,13 @@ export declare class BodyPartFunctionsService extends PrismaService {
     getAllBodyParts(): Promise<{
         name: string;
         id: string;
-        bodyFat: number | null;
+        bodyFat: number;
         reportId: string;
         Report: {
             id: string;
             Trainee: {
                 email: string;
-                name: string | null;
+                name: string;
                 id: string;
             };
         };
@@ -23,27 +23,27 @@ export declare class BodyPartFunctionsService extends PrismaService {
     getBodyPartById(id: string): Promise<{
         name: string;
         id: string;
-        bodyFat: number | null;
+        bodyFat: number;
         reportId: string;
         Report: {
             id: string;
             Trainee: {
                 email: string;
-                name: string | null;
+                name: string;
                 id: string;
             };
         };
-    } | null>;
+    }>;
     getBodyPartsByReport(reportId: string): Promise<{
         name: string;
         id: string;
-        bodyFat: number | null;
+        bodyFat: number;
         reportId: string;
         Report: {
             id: string;
             Trainee: {
                 email: string;
-                name: string | null;
+                name: string;
                 id: string;
             };
         };
@@ -51,13 +51,13 @@ export declare class BodyPartFunctionsService extends PrismaService {
     getBodyPartsByTrainer(trainerId: string): Promise<{
         name: string;
         id: string;
-        bodyFat: number | null;
+        bodyFat: number;
         reportId: string;
         Report: {
             id: string;
             Trainee: {
                 email: string;
-                name: string | null;
+                name: string;
                 id: string;
             };
         };
@@ -65,7 +65,7 @@ export declare class BodyPartFunctionsService extends PrismaService {
     getBodyPartsByTrainee(traineeId: string): Promise<{
         name: string;
         id: string;
-        bodyFat: number | null;
+        bodyFat: number;
         reportId: string;
         Report: {
             id: string;
@@ -74,7 +74,7 @@ export declare class BodyPartFunctionsService extends PrismaService {
     updateBodyPart(id: string, data: any): Promise<{
         name: string;
         id: string;
-        bodyFat: number | null;
+        bodyFat: number;
         reportId: string;
     }>;
     deleteBodyPart(id: string): Promise<{
@@ -87,5 +87,5 @@ export declare class BodyPartFunctionsService extends PrismaService {
     verifyBodyPartAccess(bodyPartId: string, userId: string, userType: 'trainer' | 'trainee'): Promise<boolean>;
     existBodyPartById(id: string): Promise<{
         id: string;
-    } | null>;
+    }>;
 }

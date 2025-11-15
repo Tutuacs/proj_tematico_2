@@ -26,7 +26,7 @@ export declare class AuthService {
     }>;
     register(register: RegisterDto): Promise<{
         email: string;
-        name: string | null;
+        name: string;
         role: number;
         id: string;
     }>;
@@ -72,10 +72,10 @@ export declare class AuthService {
     }): Promise<{
         profile: {
             email: string;
-            name: string | null;
+            name: string;
             role: number;
             id: string;
-        } | null;
+        };
         access: string;
         refresh: string;
         expiresIn: number;

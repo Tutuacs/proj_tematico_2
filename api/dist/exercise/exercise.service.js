@@ -14,7 +14,6 @@ const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const decorators_1 = require("../decorators");
 let ExerciseService = class ExerciseService {
-    prisma;
     constructor(prisma) {
         this.prisma = prisma;
     }

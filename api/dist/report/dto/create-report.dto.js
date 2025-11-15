@@ -12,13 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateReportDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateReportDto {
-    content;
-    imc;
-    bodyFat;
-    weight;
-    height;
-    profileId;
-    planId;
 }
 exports.CreateReportDto = CreateReportDto;
 __decorate([

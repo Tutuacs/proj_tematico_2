@@ -69,7 +69,7 @@ export declare class ExerciseService {
             Plan: {
                 Trainee: {
                     email: string;
-                    name: string | null;
+                    name: string;
                     id: string;
                 };
             } & {
@@ -117,7 +117,7 @@ export declare class ExerciseService {
             Plan: {
                 Trainee: {
                     email: string;
-                    name: string | null;
+                    name: string;
                     id: string;
                 };
             } & {

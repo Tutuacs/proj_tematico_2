@@ -12,11 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateProfileDto = void 0;
 const class_validator_1 = require("class-validator");
 class UpdateProfileDto {
-    name;
-    email;
-    password;
-    role;
-    trainerId;
 }
 exports.UpdateProfileDto = UpdateProfileDto;
 __decorate([

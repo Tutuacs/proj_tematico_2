@@ -4,73 +4,73 @@ export declare class ReportFunctionsService extends PrismaService {
         id: string;
         Trainee: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
         };
-        content: string | null;
-        imc: number | null;
-        bodyFat: number | null;
-        weight: number | null;
-        height: number | null;
+        content: string;
+        imc: number;
+        bodyFat: number;
+        weight: number;
+        height: number;
         profileId: string;
-        planId: string | null;
+        planId: string;
         createdAt: Date;
     }>;
     getAllReports(): Promise<{
         id: string;
         Trainee: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
-            trainerId: string | null;
+            trainerId: string;
         };
-        content: string | null;
-        imc: number | null;
-        bodyFat: number | null;
-        weight: number | null;
-        height: number | null;
+        content: string;
+        imc: number;
+        bodyFat: number;
+        weight: number;
+        height: number;
         profileId: string;
-        planId: string | null;
+        planId: string;
         createdAt: Date;
         BodyPart: {
             name: string;
             id: string;
-            bodyFat: number | null;
+            bodyFat: number;
         }[];
     }[]>;
     getReportById(id: string): Promise<{
         id: string;
         Trainee: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
-            trainerId: string | null;
+            trainerId: string;
         };
         Trainer: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
-        } | null;
-        content: string | null;
-        imc: number | null;
-        bodyFat: number | null;
-        weight: number | null;
-        height: number | null;
+        };
+        content: string;
+        imc: number;
+        bodyFat: number;
+        weight: number;
+        height: number;
         profileId: string;
-        planId: string | null;
+        planId: string;
         createdAt: Date;
-        createdBy: string | null;
+        createdBy: string;
         BodyPart: {
             name: string;
             id: string;
-            bodyFat: number | null;
+            bodyFat: number;
         }[];
         Plan: {
             id: string;
             title: string;
-            description: string | null;
-        } | null;
-    } | null>;
+            description: string;
+        };
+    }>;
     getReportsWithFilters(filters: {
         profileId?: string;
         from?: string;
@@ -79,75 +79,75 @@ export declare class ReportFunctionsService extends PrismaService {
         id: string;
         Trainee: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
-            trainerId: string | null;
+            trainerId: string;
         };
-        content: string | null;
-        imc: number | null;
-        bodyFat: number | null;
-        weight: number | null;
-        height: number | null;
+        content: string;
+        imc: number;
+        bodyFat: number;
+        weight: number;
+        height: number;
         profileId: string;
-        planId: string | null;
+        planId: string;
         createdAt: Date;
         BodyPart: {
             name: string;
             id: string;
-            bodyFat: number | null;
+            bodyFat: number;
         }[];
     }[]>;
     getReportsByTrainer(trainerId: string, filterProfileId?: string): Promise<{
         id: string;
         Trainee: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
         };
-        content: string | null;
-        imc: number | null;
-        bodyFat: number | null;
-        weight: number | null;
-        height: number | null;
+        content: string;
+        imc: number;
+        bodyFat: number;
+        weight: number;
+        height: number;
         profileId: string;
-        planId: string | null;
+        planId: string;
         createdAt: Date;
         BodyPart: {
             name: string;
             id: string;
-            bodyFat: number | null;
+            bodyFat: number;
         }[];
     }[]>;
     getReportsByTrainee(traineeId: string): Promise<{
         id: string;
-        content: string | null;
-        imc: number | null;
-        bodyFat: number | null;
-        weight: number | null;
-        height: number | null;
+        content: string;
+        imc: number;
+        bodyFat: number;
+        weight: number;
+        height: number;
         profileId: string;
-        planId: string | null;
+        planId: string;
         createdAt: Date;
         BodyPart: {
             name: string;
             id: string;
-            bodyFat: number | null;
+            bodyFat: number;
         }[];
         Plan: {
             id: string;
             title: string;
-            description: string | null;
-        } | null;
+            description: string;
+        };
     }[]>;
     updateReport(id: string, data: any): Promise<{
         id: string;
-        content: string | null;
-        imc: number | null;
-        bodyFat: number | null;
-        weight: number | null;
-        height: number | null;
+        content: string;
+        imc: number;
+        bodyFat: number;
+        weight: number;
+        height: number;
         profileId: string;
-        planId: string | null;
+        planId: string;
         createdAt: Date;
     }>;
     deleteReport(id: string): Promise<{
@@ -165,5 +165,5 @@ export declare class ReportFunctionsService extends PrismaService {
     verifyTraineeOwnership(traineeId: string, trainerId: string): Promise<boolean>;
     existReportById(id: string): Promise<{
         id: string;
-    } | null>;
+    }>;
 }

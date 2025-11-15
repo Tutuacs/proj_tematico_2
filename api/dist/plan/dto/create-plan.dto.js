@@ -12,11 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreatePlanDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreatePlanDto {
-    title;
-    description;
-    from;
-    to;
-    traineeId;
 }
 exports.CreatePlanDto = CreatePlanDto;
 __decorate([

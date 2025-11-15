@@ -19,14 +19,6 @@ var ACTIVITY_TYPE;
     ACTIVITY_TYPE["BALANCE"] = "BALANCE";
 })(ACTIVITY_TYPE || (ACTIVITY_TYPE = {}));
 class CreateActivityDto {
-    name;
-    ACTIVITY_TYPE;
-    description;
-    weight;
-    reps;
-    sets;
-    duration;
-    planId;
 }
 exports.CreateActivityDto = CreateActivityDto;
 __decorate([

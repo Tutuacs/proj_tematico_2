@@ -9,7 +9,7 @@ export declare class PrismaService extends PrismaClient implements OnModuleInit 
         role: number;
         id: string;
         trainerId: string | null;
-    } | null>;
+    }>;
     existProfileEmail(email: string): Promise<{
         email: string;
         password: string;
@@ -17,5 +17,5 @@ export declare class PrismaService extends PrismaClient implements OnModuleInit 
         role: number;
         id: string;
         trainerId: string | null;
-    } | null>;
+    }>;
 }

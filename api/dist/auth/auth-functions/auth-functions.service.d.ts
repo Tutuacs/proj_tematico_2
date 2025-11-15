@@ -5,18 +5,18 @@ export declare class AuthFunctionsService extends PrismaService {
         id: string;
         email: string;
         role: number;
-        name: string | null;
+        name: string;
     }>;
     register(register: RegisterDto): Promise<{
         email: string;
-        name: string | null;
+        name: string;
         role: number;
         id: string;
     }>;
     profileInfo(id: string): Promise<{
         email: string;
-        name: string | null;
+        name: string;
         role: number;
         id: string;
-    } | null>;
+    }>;
 }

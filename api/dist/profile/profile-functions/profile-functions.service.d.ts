@@ -11,9 +11,9 @@ export declare class ProfileFunctionsService extends PrismaService {
     getAllProfiles(): Promise<({
         Trainer: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
-        } | null;
+        };
     } & {
         email: string;
         password: string;
@@ -25,9 +25,9 @@ export declare class ProfileFunctionsService extends PrismaService {
     getAllProfilesTrainer(trainerId: string): Promise<({
         Trainer: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
-        } | null;
+        };
     } & {
         email: string;
         password: string;
@@ -43,7 +43,7 @@ export declare class ProfileFunctionsService extends PrismaService {
         role: number;
         id: string;
         trainerId: string | null;
-    } | null>;
+    }>;
     getProfileByEmail(email: string): Promise<{
         email: string;
         password: string;
@@ -51,7 +51,7 @@ export declare class ProfileFunctionsService extends PrismaService {
         role: number;
         id: string;
         trainerId: string | null;
-    } | null>;
+    }>;
     updateProfile(id: string, data: any): Promise<{
         email: string;
         password: string;
@@ -70,10 +70,10 @@ export declare class ProfileFunctionsService extends PrismaService {
     }>;
     existProfileById(id: string): Promise<{
         id: string;
-    } | null>;
+    }>;
     getTraineesByTrainer(trainerId: string): Promise<{
         email: string;
-        name: string | null;
+        name: string;
         role: number;
         id: string;
     }[]>;

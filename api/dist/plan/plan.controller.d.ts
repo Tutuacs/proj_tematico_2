@@ -28,16 +28,16 @@ export declare class PlanController {
         trainerId: string;
         Trainee: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
         };
         Trainer: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
         };
         title: string;
-        description: string | null;
+        description: string;
         from: Date;
         to: Date;
         traineeId: string;
@@ -46,11 +46,11 @@ export declare class PlanController {
         trainerId: string;
         Trainee: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
         };
         title: string;
-        description: string | null;
+        description: string;
         from: Date;
         to: Date;
         traineeId: string;
@@ -63,23 +63,23 @@ export declare class PlanController {
         trainerId: string;
         Trainer: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
         };
         title: string;
-        description: string | null;
+        description: string;
         from: Date;
         to: Date;
         traineeId: string;
         Activity: {
             name: string;
             id: string;
-            weight: number | null;
-            description: string | null;
+            weight: number;
+            description: string;
             ACTIVITY_TYPE: import("@prisma/client").$Enums.ACTIVITY_TYPE;
-            reps: number | null;
-            sets: number | null;
-            duration: number | null;
+            reps: number;
+            sets: number;
+            duration: number;
         }[];
         Train: {
             id: string;
@@ -98,28 +98,28 @@ export declare class PlanController {
         trainerId: string;
         Trainee: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
         };
         Trainer: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
         };
         title: string;
-        description: string | null;
+        description: string;
         from: Date;
         to: Date;
         traineeId: string;
         Activity: {
             name: string;
             id: string;
-            weight: number | null;
-            description: string | null;
+            weight: number;
+            description: string;
             ACTIVITY_TYPE: import("@prisma/client").$Enums.ACTIVITY_TYPE;
-            reps: number | null;
-            sets: number | null;
-            duration: number | null;
+            reps: number;
+            sets: number;
+            duration: number;
         }[];
         Train: {
             id: string;
@@ -137,7 +137,7 @@ export declare class PlanController {
         id: string;
         trainerId: string;
         title: string;
-        description: string | null;
+        description: string;
         from: Date;
         to: Date;
         traineeId: string;

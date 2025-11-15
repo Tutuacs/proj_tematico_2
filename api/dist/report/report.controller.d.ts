@@ -13,16 +13,16 @@ export declare class ReportController {
         id: string;
         Trainee: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
         };
-        content: string | null;
-        imc: number | null;
-        bodyFat: number | null;
-        weight: number | null;
-        height: number | null;
+        content: string;
+        imc: number;
+        bodyFat: number;
+        weight: number;
+        height: number;
         profileId: string;
-        planId: string | null;
+        planId: string;
         createdAt: Date;
     }>;
     findAll(profile: {
@@ -34,42 +34,42 @@ export declare class ReportController {
         id: string;
         Trainee: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
         };
-        content: string | null;
-        imc: number | null;
-        bodyFat: number | null;
-        weight: number | null;
-        height: number | null;
+        content: string;
+        imc: number;
+        bodyFat: number;
+        weight: number;
+        height: number;
         profileId: string;
-        planId: string | null;
+        planId: string;
         createdAt: Date;
         BodyPart: {
             name: string;
             id: string;
-            bodyFat: number | null;
+            bodyFat: number;
         }[];
     }[] | {
         id: string;
-        content: string | null;
-        imc: number | null;
-        bodyFat: number | null;
-        weight: number | null;
-        height: number | null;
+        content: string;
+        imc: number;
+        bodyFat: number;
+        weight: number;
+        height: number;
         profileId: string;
-        planId: string | null;
+        planId: string;
         createdAt: Date;
         BodyPart: {
             name: string;
             id: string;
-            bodyFat: number | null;
+            bodyFat: number;
         }[];
         Plan: {
             id: string;
             title: string;
-            description: string | null;
-        } | null;
+            description: string;
+        };
     }[]>;
     findOne(id: string, profile: {
         id: string;
@@ -80,34 +80,34 @@ export declare class ReportController {
         id: string;
         Trainee: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
-            trainerId: string | null;
+            trainerId: string;
         };
         Trainer: {
             email: string;
-            name: string | null;
+            name: string;
             id: string;
-        } | null;
-        content: string | null;
-        imc: number | null;
-        bodyFat: number | null;
-        weight: number | null;
-        height: number | null;
+        };
+        content: string;
+        imc: number;
+        bodyFat: number;
+        weight: number;
+        height: number;
         profileId: string;
-        planId: string | null;
+        planId: string;
         createdAt: Date;
-        createdBy: string | null;
+        createdBy: string;
         BodyPart: {
             name: string;
             id: string;
-            bodyFat: number | null;
+            bodyFat: number;
         }[];
         Plan: {
             id: string;
             title: string;
-            description: string | null;
-        } | null;
+            description: string;
+        };
     }>;
     update(id: string, updateReportDto: UpdateReportDto, profile: {
         id: string;
@@ -116,13 +116,13 @@ export declare class ReportController {
         name: string;
     }): Promise<{
         id: string;
-        content: string | null;
-        imc: number | null;
-        bodyFat: number | null;
-        weight: number | null;
-        height: number | null;
+        content: string;
+        imc: number;
+        bodyFat: number;
+        weight: number;
+        height: number;
         profileId: string;
-        planId: string | null;
+        planId: string;
         createdAt: Date;
     }>;
     remove(id: string, profile: {
