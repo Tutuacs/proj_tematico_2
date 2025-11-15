@@ -1,1 +1,2 @@
-export const Backend_URL = "https://vercel.com/tutuacs-projects/tematico_2_back/8S6PdVeDqGqsBULXDDkNjUF8eXmH";
+export const Backend_URL = "https://tematico2back.vercel.app";
+1
