@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import useFetch from "@/utils/useFetch";
 
@@ -25,6 +25,7 @@ type Plan = {
 export default function TrainerPlansPage() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const filterByTraineeId = searchParams.get("traineeId");
   const { fetchWithAuth } = useFetch();
 
@@ -108,6 +109,29 @@ export default function TrainerPlansPage() {
   return (
     <main className="min-h-screen bg-gray-100">
       <div className="max-w-6xl mx-auto p-6">
+        {/* Back Button - Show when filtering by trainee */}
+        {filterByTraineeId && (
+          <button
+            onClick={() => router.back()}
+            className="text-indigo-600 hover:text-indigo-700 text-sm mb-4 inline-flex items-center"
+          >
+            <svg
+              className="w-4 h-4 mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            Voltar
+          </button>
+        )}
+
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import useFetch from "@/utils/useFetch";
 
@@ -34,6 +34,7 @@ type Report = {
 export default function TrainerReportsPage() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const filterByTraineeId = searchParams.get("traineeId");
   const { fetchWithAuth } = useFetch();
 
@@ -111,6 +112,29 @@ export default function TrainerReportsPage() {
   return (
     <main className="min-h-screen bg-gray-100">
       <div className="max-w-6xl mx-auto p-6">
+        {/* Back Button - Show when filtering by trainee */}
+        {filterByTraineeId && (
+          <button
+            onClick={() => router.back()}
+            className="text-indigo-600 hover:text-indigo-700 text-sm mb-4 inline-flex items-center"
+          >
+            <svg
+              className="w-4 h-4 mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            Voltar
+          </button>
+        )}
+
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -216,21 +240,79 @@ export default function TrainerReportsPage() {
                       </div>
                     )}
 
-                    {report.BodyPart.length > 0 && (
-                      <div className="mt-3">
-                        <details className="text-sm">
-                          <summary className="cursor-pointer text-gray-600 hover:text-gray-900 font-medium">
+                    {report.BodyPart.length > 0 ? (
+                      <div className="mt-4">
+                        <details className="group">
+                          <summary className="cursor-pointer text-sm font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-2 py-2 px-3 rounded-lg hover:bg-indigo-50 transition-colors w-fit">
+                            <svg
+                              className="w-5 h-5 transition-transform group-open:rotate-90"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 5l7 7-7 7"
+                              />
+                            </svg>
                             Ver medidas corporais ({report.BodyPart.length})
                           </summary>
-                          <div className="mt-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                          <div className="mt-3 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                             {report.BodyPart.map((bp) => (
-                              <div key={bp.id} className="p-2 bg-gray-50 rounded">
-                                <p className="text-xs text-gray-500">{bp.name}</p>
-                                <p className="font-semibold text-gray-900">{bp.bodyFat} cm</p>
+                              <div 
+                                key={bp.id} 
+                                className="relative bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-lg p-3 hover:shadow-md transition-all duration-200"
+                              >
+                                <div className="absolute top-2 right-2 opacity-20">
+                                  <svg
+                                    className="w-6 h-6 text-indigo-600"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                                    />
+                                  </svg>
+                                </div>
+                                <p className="text-xs font-medium text-gray-600 mb-1">{bp.name}</p>
+                                <div className="flex items-baseline gap-1">
+                                  <span className="text-xl font-bold text-indigo-600">{bp.bodyFat}</span>
+                                  <span className="text-xs text-gray-600 font-medium">cm</span>
+                                </div>
                               </div>
                             ))}
                           </div>
                         </details>
+                      </div>
+                    ) : (
+                      <div className="mt-4 bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-lg p-3 flex items-center gap-3">
+                        <svg
+                          className="w-6 h-6 text-yellow-600 flex-shrink-0"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                          />
+                        </svg>
+                        <div>
+                          <p className="text-sm font-semibold text-yellow-800">
+                            Nenhuma medida corporal registrada
+                          </p>
+                          <p className="text-xs text-yellow-700 mt-0.5">
+                            Esta avaliação não possui medidas de partes do corpo
+                          </p>
+                        </div>
                       </div>
                     )}
                   </div>

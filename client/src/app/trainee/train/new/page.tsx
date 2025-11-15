@@ -464,7 +464,7 @@ export default function RegisterWorkoutPage() {
                         {activity.weight !== undefined && (
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Peso Utilizado (kg)
+                              Carga Utilizada (kg/m/cm)
                               {activity.weight > 0 && (
                                 <span className="text-gray-500 ml-1">
                                   (sugerido: {activity.weight})

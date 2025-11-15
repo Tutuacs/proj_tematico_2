@@ -244,7 +244,7 @@ export default function WorkoutHistoryPage() {
 
                           {exercise.weight && (
                             <span>
-                              <strong>Peso:</strong> {exercise.weight} kg
+                              <strong>Carga:</strong> {exercise.weight}
                             </span>
                           )}
 
@@ -413,11 +413,11 @@ export default function WorkoutHistoryPage() {
 
                         {(exercise.weight || exercise.Activity?.weight) && (
                           <div>
-                            <p className="text-xs text-gray-600 mb-1">Peso</p>
+                            <p className="text-xs text-gray-600 mb-1">Carga</p>
                             <div className="space-y-1">
                               {exercise.Activity?.weight && (
                                 <p className="text-xs text-gray-500">
-                                  Planejado: {exercise.Activity.weight} kg
+                                  Planejado: {exercise.Activity.weight}
                                 </p>
                               )}
                               <p className={`text-lg font-semibold ${
@@ -427,7 +427,7 @@ export default function WorkoutHistoryPage() {
                                   ? 'text-orange-600'
                                   : 'text-gray-900'
                               }`}>
-                                Feito: {exercise.weight || 0} kg
+                                Feito: {exercise.weight || 0}
                               </p>
                             </div>
                           </div>

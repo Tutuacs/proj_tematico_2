@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import useFetch from "@/utils/useFetch";
 
 type Profile = {
@@ -208,12 +207,12 @@ export default function CreatePlanPage() {
               Preencha as informações do plano e adicione as atividades
             </p>
           </div>
-          <Link
-            href="/trainer/plans"
+          <button
+            onClick={() => router.back()}
             className="text-gray-600 hover:text-gray-900"
           >
             ← Voltar
-          </Link>
+          </button>
         </div>
 
         <div className="bg-white rounded-lg shadow p-6 space-y-6">
@@ -337,7 +336,7 @@ export default function CreatePlanPage() {
                         )}
                         <div className="flex gap-4 text-sm text-gray-700">
                           {activity.weight && (
-                            <span>Peso: {activity.weight}kg</span>
+                            <span>Carga: {activity.weight}</span>
                           )}
                           {activity.sets && (
                             <span>Séries: {activity.sets}</span>
@@ -372,12 +371,12 @@ export default function CreatePlanPage() {
           </div>
 
           <div className="border-t pt-6 flex justify-end gap-3">
-            <Link
-              href="/trainer/plans"
+            <button
+              onClick={() => router.back()}
               className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
             >
               Cancelar
-            </Link>
+            </button>
             <button
               onClick={handleSubmit}
               disabled={submitting}
@@ -455,7 +454,7 @@ export default function CreatePlanPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Peso (kg)
+                    Carga (kg/m/cm)
                   </label>
                   <input
                     type="number"

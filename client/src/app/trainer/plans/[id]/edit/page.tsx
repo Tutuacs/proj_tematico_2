@@ -413,7 +413,7 @@ export default function EditPlanPage() {
                         )}
                         <div className="flex gap-4 text-sm text-gray-700">
                           {activity.weight && (
-                            <span>Peso: {activity.weight}kg</span>
+                            <span>Carga: {activity.weight}</span>
                           )}
                           {activity.sets && (
                             <span>Séries: {activity.sets}</span>
@@ -531,7 +531,7 @@ export default function EditPlanPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Peso (kg)
+                    Carga (kg/m/cm)
                   </label>
                   <input
                     type="number"

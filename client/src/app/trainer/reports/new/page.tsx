@@ -210,8 +210,8 @@ export default function NewAssessmentPage() {
       <div className="max-w-4xl mx-auto p-6">
         {/* Header */}
         <div className="mb-6">
-          <Link
-            href="/trainer/dashboard"
+          <button
+            onClick={() => router.back()}
             className="text-indigo-600 hover:text-indigo-700 text-sm mb-2 inline-flex items-center"
           >
             <svg
@@ -228,7 +228,7 @@ export default function NewAssessmentPage() {
               />
             </svg>
             Voltar
-          </Link>
+          </button>
           <h1 className="text-3xl font-bold text-gray-900">Registrar Avaliação Física</h1>
           <p className="mt-2 text-gray-600">
             Preencha os dados da avaliação física do aluno
@@ -377,8 +377,23 @@ export default function NewAssessmentPage() {
             </div>
 
             {/* Quick Add Buttons */}
-            <div className="mb-6">
-              <p className="text-sm text-gray-600 mb-3">Adicionar rapidamente:</p>
+            <div className="mb-6 bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <p className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                <svg
+                  className="w-4 h-4 mr-2 text-indigo-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
+                </svg>
+                Adicionar rapidamente:
+              </p>
               <div className="flex flex-wrap gap-2">
                 {COMMON_BODY_PARTS.map((part) => {
                   const isAdded = bodyParts.some((bp) => bp.name === part);
@@ -388,13 +403,47 @@ export default function NewAssessmentPage() {
                       type="button"
                       onClick={() => !isAdded && handleQuickAddBodyPart(part)}
                       disabled={isAdded}
-                      className={`px-3 py-1.5 text-sm rounded-lg transition ${
+                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                         isAdded
-                          ? "bg-green-100 text-green-700 border-2 border-green-300 cursor-not-allowed"
-                          : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                          ? "bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border-2 border-green-300 cursor-not-allowed shadow-sm"
+                          : "bg-white hover:bg-indigo-50 text-gray-700 hover:text-indigo-700 border-2 border-gray-200 hover:border-indigo-300 shadow-sm hover:shadow-md"
                       }`}
                     >
-                      {isAdded ? `✓ ${part}` : part}
+                      {isAdded ? (
+                        <span className="flex items-center gap-1">
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                          {part}
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1">
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 4v16m8-8H4"
+                            />
+                          </svg>
+                          {part}
+                        </span>
+                      )}
                     </button>
                   );
                 })}
@@ -403,9 +452,9 @@ export default function NewAssessmentPage() {
 
             {/* Body Parts List */}
             {bodyParts.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border-2 border-dashed border-gray-300">
                 <svg
-                  className="mx-auto h-12 w-12 text-gray-400 mb-2"
+                  className="mx-auto h-16 w-16 text-gray-400 mb-3"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -417,58 +466,88 @@ export default function NewAssessmentPage() {
                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                   />
                 </svg>
-                <p>Nenhuma medida adicionada</p>
+                <p className="text-gray-600 font-medium">Nenhuma medida adicionada</p>
+                <p className="text-sm text-gray-500 mt-1">Clique nos botões acima ou em "Adicionar Medida"</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Parte do Corpo
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Medida (cm)
-                      </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Ações
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {bodyParts.map((bodyPart, index) => (
-                      <tr key={index}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {bodyParts.map((bodyPart, index) => (
+                  <div
+                    key={index}
+                    className="relative bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-lg p-4 hover:shadow-md transition-all duration-200 group"
+                  >
+                    {/* Body Part Icon */}
+                    <div className="absolute top-3 right-3 opacity-20 group-hover:opacity-30 transition-opacity">
+                      <svg
+                        className="w-8 h-8 text-indigo-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                        />
+                      </svg>
+                    </div>
+
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1 pr-8">
+                        <h4 className="text-sm font-medium text-gray-600 mb-1">
+                          Parte do Corpo
+                        </h4>
+                        <p className="text-lg font-bold text-gray-900">
                           {bodyPart.name}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                          {bodyPart.measurement} cm
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveBodyPart(index)}
-                            className="text-red-600 hover:text-red-700"
-                          >
-                            Remover
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-indigo-200">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-bold text-indigo-600">
+                          {bodyPart.measurement}
+                        </span>
+                        <span className="text-sm text-gray-600 font-medium">cm</span>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveBodyPart(index)}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                        title="Remover medida"
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
 
           {/* Actions */}
           <div className="flex justify-end gap-3">
-            <Link
-              href="/trainer/dashboard"
+            <button
+              type="button"
+              onClick={() => router.back()}
               className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-6 rounded-lg transition"
             >
               Cancelar
-            </Link>
+            </button>
             <button
               type="submit"
               disabled={submitting}

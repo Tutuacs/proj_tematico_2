@@ -253,7 +253,7 @@ export default function PlanDetailsPage() {
 
                         {activity.weight && activity.weight > 0 && (
                           <span className="text-gray-600">
-                            <strong>Peso:</strong> {activity.weight} kg
+                            <strong>Carga:</strong> {activity.weight}
                           </span>
                         )}
 

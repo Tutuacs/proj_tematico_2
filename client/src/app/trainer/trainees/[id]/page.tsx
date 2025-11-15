@@ -217,8 +217,8 @@ export default function TraineeProfilePage() {
       <div className="max-w-6xl mx-auto p-6">
         {/* Header */}
         <div className="mb-6">
-          <Link
-            href="/trainer/dashboard"
+          <button
+            onClick={() => router.back()}
             className="text-indigo-600 hover:text-indigo-700 text-sm mb-2 inline-flex items-center"
           >
             <svg
@@ -235,7 +235,7 @@ export default function TraineeProfilePage() {
               />
             </svg>
             Voltar
-          </Link>
+          </button>
 
           <div className="flex items-center justify-between">
             <div>
@@ -556,7 +556,7 @@ export default function TraineeProfilePage() {
                                   {exercise.repetitions && (
                                     <span>Reps: {exercise.repetitions}</span>
                                   )}
-                                  {exercise.weight && <span>Peso: {exercise.weight} kg</span>}
+                                  {exercise.weight && <span>Carga: {exercise.weight}</span>}
                                   {exercise.duration && (
                                     <span>Duração: {exercise.duration} min</span>
                                   )}
