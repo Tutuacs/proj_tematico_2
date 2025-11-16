@@ -1,7 +1,9 @@
 # Desktop
 .venv/
 build
-desktop/dist/main
+desktop/dist/
+desktop/build/
+*.spec
 
 # Logs
 logs
