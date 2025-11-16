@@ -1,0 +1,28 @@
+{
+  "services": [
+    {
+      "name": "api",
+      "deploy": {
+        "type": "docker",
+        "dockerfilePath": "./api/Dockerfile",
+        "buildContext": "./api"
+      },
+      "env": {
+        "PORT": "3333",
+        "RAILWAY_STATIC_URL": "",
+        "DATABASE_URL": "",
+        "JWT_SECRET": "",
+        "GH_CLIENT_ID": "",
+        "GH_CLIENT_SECRET": "",
+        "EMAIL_USER": "",
+        "EMAIL_PASS": ""
+      },
+      "ports": [
+        {
+          "containerPort": "${PORT}",
+          "servicePort": "80"
+        }
+      ]
+    }
+  ]
+}
