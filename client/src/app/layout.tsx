@@ -7,8 +7,8 @@ import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "FullStack",
-  description: "Full-Stack Next&Nestjs",
+  title: "GymApp",
+  description: "App to manage your gym",
 };
 
 export default function RootLayout({

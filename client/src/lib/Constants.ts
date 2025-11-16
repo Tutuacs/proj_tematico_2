@@ -1,1 +1,1 @@
-export const Backend_URL = "https://projtematico2-production.up.railway.app/";
+export const Backend_URL = "https://projtematico2-production.up.railway.app";
