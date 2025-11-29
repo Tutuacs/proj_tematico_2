@@ -219,6 +219,59 @@ export class ActivityFunctionsService extends PrismaService {
     });
   }
 
+  // Get activities by plan ID
+  async getActivitiesByPlan(planId: string) {
+    return this.activity.findMany({
+      where: {
+        planId: planId,
+      },
+      select: {
+        id: true,
+        name: true,
+        ACTIVITY_TYPE: true,
+        description: true,
+        weight: true,
+        reps: true,
+        sets: true,
+        duration: true,
+        planId: true,
+        Plan: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            traineeId: true,
+            trainerId: true,
+            Trainee: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+          },
+        },
+        Exercise: {
+          select: {
+            id: true,
+            weight: true,
+            reps: true,
+            sets: true,
+            duration: true,
+            description: true,
+            Train: {
+              select: {
+                id: true,
+                from: true,
+                to: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   // Update activity
   async updateActivity(id: string, data: any) {
     return this.activity.update({

@@ -48,7 +48,36 @@ export class ActivityService {
     email: string;
     role: number;
     name: string;
-  }) {
+  }, planId?: string) {
+    // Se planId foi fornecido, filtrar por plano específico
+    if (planId) {
+      const activities = await this.activityFunctions.getActivitiesByPlan(planId);
+      
+      // Admin pode ver atividades de qualquer plano
+      if (profile.role === ROLE.ADMIN) {
+        return activities;
+      }
+      
+      // Verificar se há atividades e se o usuário tem acesso ao plano
+      if (activities.length > 0) {
+        const plan = activities[0].Plan;
+        
+        // TRAINER pode ver atividades de planos de seus alunos
+        if (profile.role === ROLE.TRAINER && plan.trainerId === profile.id) {
+          return activities;
+        }
+        
+        // TRAINEE pode ver atividades de seus próprios planos
+        if (profile.role === ROLE.TRAINEE && plan.traineeId === profile.id) {
+          return activities;
+        }
+      }
+      
+      // Se não tem acesso, retorna array vazio
+      return [];
+    }
+    
+    // Se não foi fornecido planId, retornar todas as atividades conforme permissão
     if (profile.role === ROLE.ADMIN) {
       return this.activityFunctions.getAllActivities();
     }

@@ -38,6 +38,9 @@ export class TrainFunctionsService extends PrismaService {
   // Get all trains
   async getAllTrains() {
     return this.train.findMany({
+      orderBy: {
+        from: 'desc', // Do mais recente para o mais antigo
+      },
       select: {
         id: true,
         weekDay: true,
@@ -143,6 +146,9 @@ export class TrainFunctionsService extends PrismaService {
           trainerId: trainerId,
         },
       },
+      orderBy: {
+        from: 'desc', // Do mais recente para o mais antigo
+      },
       select: {
         id: true,
         from: true,
@@ -180,6 +186,9 @@ export class TrainFunctionsService extends PrismaService {
     return this.train.findMany({
       where: {
         planId: planId,
+      },
+      orderBy: {
+        from: 'desc', // Do mais recente para o mais antigo
       },
       select: {
         id: true,
@@ -231,6 +240,9 @@ export class TrainFunctionsService extends PrismaService {
         Plan: {
           traineeId: traineeId,
         },
+      },
+      orderBy: {
+        from: 'desc', // Do mais recente para o mais antigo
       },
       select: {
         id: true,

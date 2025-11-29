@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
@@ -38,6 +39,7 @@ export class ActivityController {
   @Access(ROLE.TRAINEE, ROLE.TRAINER, ROLE.ADMIN)
   @Get()
   findAll(
+    @Query('planId') planId: string,
     @ProfileAuth()
     profile: {
       id: string;
@@ -46,7 +48,7 @@ export class ActivityController {
       name: string;
     },
   ) {
-    return this.activityService.findAll(profile);
+    return this.activityService.findAll(profile, planId);
   }
 
   @Access(ROLE.TRAINEE, ROLE.TRAINER, ROLE.ADMIN)
