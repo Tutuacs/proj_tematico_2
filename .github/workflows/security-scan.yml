@@ -1,0 +1,83 @@
+name: Security Scan with Semgrep
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Executar diariamente às 2h da manhã (UTC)
+    - cron: '0 2 * * *'
+
+jobs:
+  semgrep:
+    name: Semgrep Security Analysis
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    
+    container:
+      image: semgrep/semgrep
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: 🔍 Run Semgrep Security Scan
+        run: |
+          cd api
+          semgrep \
+            --config=auto \
+            --sarif \
+            --output=semgrep.sarif \
+            src/
+        continue-on-error: true
+      
+      - name: 📊 Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: api/semgrep.sarif
+          category: semgrep
+      
+      - name: 📈 Generate Report Summary
+        run: |
+          cd api
+          echo "##  Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          semgrep --config=auto src/ --json | \
+          jq -r '
+            "### Summary",
+            "- **Total Findings**: \(.results | length)",
+            "- **Files Scanned**: \(.paths.scanned | length)",
+            "- **Rules Run**: \(.skipped_rules | length)",
+            "",
+            "### By Severity",
+            (.results | group_by(.extra.severity) | 
+             map("- **\(.[0].extra.severity)**: \(length)") | 
+             join("\n"))
+          ' >> $GITHUB_STEP_SUMMARY
+      
+      - name:  Fail on HIGH severity
+        run: |
+          cd api
+          HIGH_COUNT=$(semgrep --config=auto src/ --severity=ERROR --count)
+          if [ "$HIGH_COUNT" -gt 0 ]; then
+            echo " Found $HIGH_COUNT HIGH severity vulnerabilities!"
+            echo "::error::Security scan failed with $HIGH_COUNT high-severity issues"
+            exit 1
+          fi
+          echo " No high-severity vulnerabilities found!"
+      
+      - name: 📤 Upload Semgrep Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: semgrep-results
+          path: api/semgrep.sarif
+          retention-days: 30

@@ -399,7 +399,7 @@ export default function AdminUserDetailsPage() {
                   </select>
                   {session?.profile?.id === userId && (
                     <p className="text-sm text-amber-600 mt-1">
-                      ⚠️ Você não pode alterar sua própria role.
+                       Você não pode alterar sua própria role.
                     </p>
                   )}
                 </div>

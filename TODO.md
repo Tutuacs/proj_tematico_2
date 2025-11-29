@@ -20,10 +20,10 @@
 
 ---
 
-## 🔴 PROBLEMAS CRÍTICOS NA API (BLOQUEADORES)
+##  PROBLEMAS CRÍTICOS NA API (BLOQUEADORES)
 
-### ✅ P0 - Módulo Exercise Inexistente
-**Status:** ✅ IMPLEMENTADO  
+###  P0 - Módulo Exercise Inexistente
+**Status:**  IMPLEMENTADO  
 **Impacto:** Desbloqueia UC03, UC04, UC09  
 **Prioridade:** CRÍTICA
 
@@ -46,10 +46,10 @@
 
 ---
 
-## 🟡 PROBLEMAS NO SCHEMA PRISMA
+##  PROBLEMAS NO SCHEMA PRISMA
 
-### ✅ P1 - Plan.weekDay é ENUM singular
-**Status:** ✅ CORRIGIDO  
+###  P1 - Plan.weekDay é ENUM singular
+**Status:**  CORRIGIDO  
 **Problema:** Um plano só pode ter 1 dia da semana  
 **Solução:** weekDay movido para Train
 
@@ -65,8 +65,8 @@
 
 ---
 
-### ✅ P1 - Plan não tem trainerId
-**Status:** ✅ CORRIGIDO  
+###  P1 - Plan não tem trainerId
+**Status:**  CORRIGIDO  
 **Problema:** Não identifica qual instrutor criou o plano  
 
 **Tarefas:**
@@ -79,8 +79,8 @@
 
 ---
 
-### ✅ P2 - Report não tem createdBy
-**Status:** ✅ CORRIGIDO  
+###  P2 - Report não tem createdBy
+**Status:**  CORRIGIDO  
 **Problema:** Não identifica qual instrutor criou a avaliação
 
 **Tarefas:**
@@ -92,10 +92,10 @@
 
 ---
 
-## ✅ API - MÓDULOS IMPLEMENTADOS
+##  API - MÓDULOS IMPLEMENTADOS
 
 ### ✓ AuthModule
-**Status:** ✅ COMPLETO  
+**Status:**  COMPLETO  
 **Casos de Uso:** UC01 - Logar no sistema
 
 **Endpoints:**
@@ -112,7 +112,7 @@
 ---
 
 ### ✓ ProfileModule
-**Status:** ✅ COMPLETO  
+**Status:**  COMPLETO  
 **Casos de Uso:** UC05, UC11 - Gerenciar Alunos/Usuários
 
 **Endpoints:**
@@ -130,7 +130,7 @@
 ---
 
 ### ✓ PlanModule
-**Status:** ✅ COMPLETO (com ressalvas do schema)  
+**Status:**  COMPLETO (com ressalvas do schema)  
 **Casos de Uso:** UC02, UC07 - Visualizar/Gerenciar Planos
 
 **Endpoints:**
@@ -148,7 +148,7 @@
 ---
 
 ### ✓ ActivityModule
-**Status:** ✅ COMPLETO  
+**Status:**  COMPLETO  
 **Casos de Uso:** UC06 - Cadastrar/Editar Atividade
 
 **Endpoints:**
@@ -167,7 +167,7 @@
 ---
 
 ### ✓ TrainModule
-**Status:** ✅ COMPLETO  
+**Status:**  COMPLETO  
 **Casos de Uso:** UC03 (parcial) - Estrutura do treino
 
 **Endpoints:**
@@ -185,7 +185,7 @@
 ---
 
 ### ✓ ReportModule
-**Status:** ✅ COMPLETO  
+**Status:**  COMPLETO  
 **Casos de Uso:** UC08, UC10 - Registrar/Visualizar Avaliações
 
 **Endpoints:**
@@ -203,7 +203,7 @@
 ---
 
 ### ✓ BodyPartModule
-**Status:** ✅ COMPLETO  
+**Status:**  COMPLETO  
 **Casos de Uso:** UC08, UC10 - Detalhes da Avaliação
 
 **Endpoints:**
@@ -218,13 +218,13 @@
 
 ---
 
-## 🎨 CLIENT (NEXT.JS) - PÁGINAS A DESENVOLVER
+##  CLIENT (NEXT.JS) - PÁGINAS A DESENVOLVER
 
-### 🔐 ÁREA DE AUTENTICAÇÃO `/app/(auth-routes)/`
+###  ÁREA DE AUTENTICAÇÃO `/app/(auth-routes)/`
 
 #### 1. Página de Login
 **Rota:** `/login`  
-**Status:** 🟡 VERIFICAR IMPLEMENTAÇÃO  
+**Status:**  VERIFICAR IMPLEMENTAÇÃO  
 **UC:** UC01  
 **API:** `POST /auth/login`
 
@@ -249,7 +249,7 @@
 
 #### 2. Página de Registro
 **Rota:** `/register`  
-**Status:** 🟡 VERIFICAR IMPLEMENTAÇÃO  
+**Status:**  VERIFICAR IMPLEMENTAÇÃO  
 **UC:** UC01  
 **API:** `POST /auth/register`
 
@@ -266,7 +266,7 @@
 
 #### 3. Página Esqueci Senha
 **Rota:** `/forgot`  
-**Status:** 🔴 SEM ENDPOINT NA API  
+**Status:**  SEM ENDPOINT NA API  
 **UC:** N/A
 
 **Checklist:**
@@ -278,16 +278,16 @@
 
 ---
 
-### 👤 ÁREA DO ALUNO (TRAINEE) `/app/trainee/`
+###  ÁREA DO ALUNO (TRAINEE) `/app/trainee/`
 
 #### 4. Dashboard do Aluno
 **Rota:** `/trainee/dashboard`  
-**Status:** 🟡 VERIFICAR IMPLEMENTAÇÃO  
+**Status:**  VERIFICAR IMPLEMENTAÇÃO  
 **UC:** UC02, UC04  
 **API:**
 - `GET /plan` (planos do aluno logado)
 - `GET /report` (avaliações do aluno)
-- `GET /exercise` (⚠️ FALTA IMPLEMENTAR)
+- `GET /exercise` ( FALTA IMPLEMENTAR)
 
 **Checklist:**
 - [ ] Layout com sidebar/header
@@ -317,7 +317,7 @@
 
 #### 5. Meus Planos de Treino
 **Rota:** `/trainee/plans`  
-**Status:** 🔴 NÃO IMPLEMENTADO  
+**Status:**  NÃO IMPLEMENTADO  
 **UC:** UC02  
 **API:** `GET /plan`
 
@@ -338,7 +338,7 @@
 
 #### 6. Detalhes do Plano
 **Rota:** `/trainee/plans/[id]`  
-**Status:** 🔴 NÃO IMPLEMENTADO  
+**Status:**  NÃO IMPLEMENTADO  
 **UC:** UC02  
 **API:**
 - `GET /plan/:id`
@@ -373,12 +373,12 @@
 
 #### 7. Registrar Treino Realizado
 **Rota:** `/trainee/train/new` ou `/trainee/plans/[id]/train`  
-**Status:** 🔴 NÃO IMPLEMENTADO  
-**UC:** UC03 ⚠️ BLOQUEADO (falta API Exercise)  
+**Status:**  NÃO IMPLEMENTADO  
+**UC:** UC03  BLOQUEADO (falta API Exercise)  
 **API:**
 - `GET /plan/:id`
 - `GET /train?planId=xxx`
-- ⚠️ `POST /exercise` (NÃO EXISTE)
+-  `POST /exercise` (NÃO EXISTE)
 
 **Checklist:**
 - [ ] Aguardar implementação do módulo Exercise na API
@@ -406,9 +406,9 @@
 
 #### 8. Histórico de Treinos
 **Rota:** `/trainee/history/workouts`  
-**Status:** 🔴 NÃO IMPLEMENTADO  
-**UC:** UC04 ⚠️ BLOQUEADO (falta API Exercise)  
-**API:** ⚠️ `GET /exercise` (NÃO EXISTE)
+**Status:**  NÃO IMPLEMENTADO  
+**UC:** UC04  BLOQUEADO (falta API Exercise)  
+**API:**  `GET /exercise` (NÃO EXISTE)
 
 **Checklist:**
 - [ ] Aguardar implementação do módulo Exercise na API
@@ -440,7 +440,7 @@
 
 #### 9. Histórico de Avaliações Físicas
 **Rota:** `/trainee/history/assessments`  
-**Status:** 🔴 NÃO IMPLEMENTADO  
+**Status:**  NÃO IMPLEMENTADO  
 **UC:** UC04  
 **API:**
 - `GET /report?profileId=xxx`
@@ -477,7 +477,7 @@
 
 #### 10. Meu Perfil
 **Rota:** `/trainee/profile`  
-**Status:** 🔴 NÃO IMPLEMENTADO  
+**Status:**  NÃO IMPLEMENTADO  
 **UC:** N/A (gerenciamento próprio)  
 **API:**
 - `GET /profile/:id`
@@ -502,7 +502,7 @@
 
 #### 11. Dashboard do Instrutor
 **Rota:** `/trainer/dashboard`  
-**Status:** 🟡 VERIFICAR IMPLEMENTAÇÃO  
+**Status:**  VERIFICAR IMPLEMENTAÇÃO  
 **UC:** N/A  
 **API:**
 - `GET /profile` (contar alunos do instrutor)
@@ -529,7 +529,7 @@
 
 #### 12. Gerenciar Alunos
 **Rota:** `/trainer/trainees`  
-**Status:** 🟡 VERIFICAR IMPLEMENTAÇÃO  
+**Status:**  VERIFICAR IMPLEMENTAÇÃO  
 **UC:** UC05  
 **API:** `GET /profile?role=0&trainerId=xxx`
 
@@ -551,14 +551,14 @@
 
 #### 13. Perfil do Aluno (Visão do Instrutor)
 **Rota:** `/trainer/trainees/[id]`  
-**Status:** 🔴 NÃO IMPLEMENTADO  
+**Status:**  NÃO IMPLEMENTADO  
 **UC:** UC05, UC09, UC10  
 **API:**
 - `GET /profile/:id`
 - `PATCH /profile/:id`
 - `GET /plan?traineeId=xxx`
 - `GET /report?profileId=xxx`
-- ⚠️ `GET /exercise?traineeId=xxx` (NÃO EXISTE)
+-  `GET /exercise?traineeId=xxx` (NÃO EXISTE)
 
 **Checklist:**
 - [ ] Header:
@@ -582,7 +582,7 @@
     - [ ] Gráficos de evolução
     - [ ] Botão "Registrar Nova Avaliação"
   - [ ] **Histórico de Execuções**
-    - [ ] ⚠️ Aguardar API Exercise
+    - [ ]  Aguardar API Exercise
     - [ ] Lista de treinos realizados
     - [ ] Filtro por plano
     - [ ] Comparação de cargas/progressão
@@ -591,7 +591,7 @@
 
 #### 14. Gerenciar Atividades/Exercícios
 **Rota:** `/trainer/activities`  
-**Status:** 🟡 VERIFICAR IMPLEMENTAÇÃO  
+**Status:**  VERIFICAR IMPLEMENTAÇÃO  
 **UC:** UC06  
 **API:**
 - `GET /activity`
@@ -622,7 +622,7 @@
 
 #### 15. Gerenciar Planos de Treino
 **Rota:** `/trainer/plans`  
-**Status:** 🔴 NÃO IMPLEMENTADO  
+**Status:**  NÃO IMPLEMENTADO  
 **UC:** UC07  
 **API:**
 - `GET /plan?trainerId=xxx`
@@ -648,7 +648,7 @@
 
 #### 16. Criar Plano de Treino
 **Rota:** `/trainer/plans/new`  
-**Status:** 🔴 NÃO IMPLEMENTADO  
+**Status:**  NÃO IMPLEMENTADO  
 **UC:** UC07  
 **API:**
 - `GET /profile?role=0` (listar alunos)
@@ -704,7 +704,7 @@
 
 #### 17. Editar Plano de Treino
 **Rota:** `/trainer/plans/[id]/edit`  
-**Status:** 🔴 NÃO IMPLEMENTADO  
+**Status:**  NÃO IMPLEMENTADO  
 **UC:** UC07  
 **API:**
 - `GET /plan/:id`
@@ -727,7 +727,7 @@
 
 #### 18. Registrar Avaliação Física
 **Rota:** `/trainer/assessments/new` ou `/trainer/trainees/[id]/new-assessment`  
-**Status:** 🔴 NÃO IMPLEMENTADO  
+**Status:**  NÃO IMPLEMENTADO  
 **UC:** UC08  
 **API:**
 - `GET /profile?role=0` (listar alunos)
@@ -766,7 +766,7 @@
 
 #### 19. Visualizar Avaliações do Aluno
 **Rota:** `/trainer/trainees/[id]/assessments`  
-**Status:** 🔴 NÃO IMPLEMENTADO  
+**Status:**  NÃO IMPLEMENTADO  
 **UC:** UC10  
 **API:**
 - `GET /report?profileId=xxx`
@@ -807,11 +807,11 @@
 
 #### 20. Histórico de Execuções do Aluno
 **Rota:** `/trainer/trainees/[id]/workouts`  
-**Status:** 🔴 NÃO IMPLEMENTADO  
-**UC:** UC09 ⚠️ BLOQUEADO (falta API Exercise)  
+**Status:**  NÃO IMPLEMENTADO  
+**UC:** UC09  BLOQUEADO (falta API Exercise)  
 **API:**
 - `GET /plan?traineeId=xxx`
-- ⚠️ `GET /exercise?traineeId=xxx` (NÃO EXISTE)
+-  `GET /exercise?traineeId=xxx` (NÃO EXISTE)
 
 **Checklist:**
 - [ ] Aguardar implementação do módulo Exercise na API
@@ -843,7 +843,7 @@
 
 #### 21. Dashboard Admin
 **Rota:** `/admin/dashboard`  
-**Status:** 🔴 NÃO IMPLEMENTADO  
+**Status:**  NÃO IMPLEMENTADO  
 **UC:** N/A  
 **API:**
 - `GET /profile` (todos)
@@ -872,7 +872,7 @@
 
 #### 22. Gerenciar Usuários
 **Rota:** `/admin/users`  
-**Status:** 🔴 NÃO IMPLEMENTADO  
+**Status:**  NÃO IMPLEMENTADO  
 **UC:** UC11  
 **API:**
 - `GET /profile`
@@ -913,7 +913,7 @@
 
 #### 23. Detalhes do Usuário (Visão Admin)
 **Rota:** `/admin/users/[id]`  
-**Status:** 🔴 NÃO IMPLEMENTADO  
+**Status:**  NÃO IMPLEMENTADO  
 **UC:** UC11  
 **API:**
 - `GET /profile/:id`
@@ -1102,9 +1102,9 @@
 
 ## 📈 PRIORIZAÇÃO
 
-### Sprint 1 - Fundação (CRÍTICO) ✅ COMPLETO
-1. ✅ Corrigir schema Prisma (weekDay, trainerId, createdBy)
-2. ✅ Criar módulo Exercise na API
+### Sprint 1 - Fundação (CRÍTICO)  COMPLETO
+1.  Corrigir schema Prisma (weekDay, trainerId, createdBy)
+2.  Criar módulo Exercise na API
 3. ⏳ Implementar autenticação no Client (PRÓXIMO)
 4. ⏳ Criar layouts base (Auth, Trainee, Trainer, Admin)
 5. ⏳ Páginas: Login, Register, Dashboard (todos os roles)
@@ -1177,10 +1177,10 @@
 5. **Deploy:** Vercel vs AWS vs DigitalOcean
 
 ### Riscos Identificados
-- ⚠️ Schema Prisma precisa ser corrigido (breaking change)
-- ⚠️ Falta módulo Exercise (bloqueia 3 casos de uso)
-- ⚠️ Relacionamentos Plan-Train-Activity podem precisar refatoração
-- ⚠️ Não há endpoint de reset de senha
+-  Schema Prisma precisa ser corrigido (breaking change)
+-  Falta módulo Exercise (bloqueia 3 casos de uso)
+-  Relacionamentos Plan-Train-Activity podem precisar refatoração
+-  Não há endpoint de reset de senha
 
 ### Dúvidas para o Cliente
 - [ ] Desktop (Python) será mantido ou descartado?
@@ -1195,56 +1195,56 @@
 **Última atualização:** 31/10/2025  
 **Progresso geral:** 70% (API) + 95% (Client) = ~85% do projeto total
 
-**✅ Completado nesta sessão (Sprint 1 + Sprint 2 + Sprint 3 + Sprint 4):**
+** Completado nesta sessão (Sprint 1 + Sprint 2 + Sprint 3 + Sprint 4):**
 
 **Backend (API) - 70%:**
-1. ✅ Corrigido schema Prisma (Plan.weekDay → Train.weekDay)
-2. ✅ Adicionado trainerId ao Plan com relação adequada
-3. ✅ Adicionado createdBy ao Report
-4. ✅ Criado módulo Exercise completo com CRUD
-5. ✅ Implementadas validações de permissão no Exercise
-6. ✅ Migração do banco de dados aplicada com sucesso
-7. ✅ API compilando sem erros
+1.  Corrigido schema Prisma (Plan.weekDay → Train.weekDay)
+2.  Adicionado trainerId ao Plan com relação adequada
+3.  Adicionado createdBy ao Report
+4.  Criado módulo Exercise completo com CRUD
+5.  Implementadas validações de permissão no Exercise
+6.  Migração do banco de dados aplicada com sucesso
+7.  API compilando sem erros
 
 **Frontend (Client) - 95%:**
 
 **Trainee Pages (5 páginas):**
-8. ✅ Página /trainee/plans - Lista de planos do aluno (UC02)
-9. ✅ Página /trainee/plans/[id] - Detalhes do plano com tabs por dia (UC02)
-10. ✅ Página /trainee/train/new - Registrar execução de treino (UC03)
-11. ✅ Página /trainee/history/workouts - Histórico de treinos executados (UC04)
-12. ✅ Página /trainee/history/assessments - Histórico de avaliações físicas (UC04)
+8.  Página /trainee/plans - Lista de planos do aluno (UC02)
+9.  Página /trainee/plans/[id] - Detalhes do plano com tabs por dia (UC02)
+10.  Página /trainee/train/new - Registrar execução de treino (UC03)
+11.  Página /trainee/history/workouts - Histórico de treinos executados (UC04)
+12.  Página /trainee/history/assessments - Histórico de avaliações físicas (UC04)
 
 **Trainer Pages (5 páginas):**
-13. ✅ Página /trainer/plans - Gerenciar planos criados pelo instrutor (UC07)
-14. ✅ Página /trainer/plans/new - Criar plano multi-step (4 passos) (UC07)
-15. ✅ Página /trainer/plans/[id]/edit - Editar plano com rastreamento de mudanças (UC07)
-16. ✅ Página /trainer/trainees/[id] - Perfil do aluno com tabs (planos, histórico, avaliações) (UC05, UC09, UC10)
-17. ✅ Página /trainer/reports/new - Registrar avaliação física do aluno (UC06)
+13.  Página /trainer/plans - Gerenciar planos criados pelo instrutor (UC07)
+14.  Página /trainer/plans/new - Criar plano multi-step (4 passos) (UC07)
+15.  Página /trainer/plans/[id]/edit - Editar plano com rastreamento de mudanças (UC07)
+16.  Página /trainer/trainees/[id] - Perfil do aluno com tabs (planos, histórico, avaliações) (UC05, UC09, UC10)
+17.  Página /trainer/reports/new - Registrar avaliação física do aluno (UC06)
 
 **Admin Pages (3 páginas):**
-18. ✅ Página /admin/dashboard - Dashboard com métricas do sistema (usuários, planos, atividades, relatórios)
-19. ✅ Página /admin/users - Gerenciar usuários (tabela com filtros, busca, create/delete) (UC01)
-20. ✅ Página /admin/users/[id] - Detalhes do usuário com conteúdo específico por role (UC01)
+18.  Página /admin/dashboard - Dashboard com métricas do sistema (usuários, planos, atividades, relatórios)
+19.  Página /admin/users - Gerenciar usuários (tabela com filtros, busca, create/delete) (UC01)
+20.  Página /admin/users/[id] - Detalhes do usuário com conteúdo específico por role (UC01)
 
 **📊 Features implementadas no Client:**
-- ✅ Sistema de autenticação (next-auth) com controle de acesso por role
-- ✅ Dashboards para Trainee, Trainer e Admin com widgets e métricas
-- ✅ Tema consistente (indigo-600, cards brancos, max-w-6xl/7xl, responsive)
-- ✅ Formulários multi-step com validação
-- ✅ Modais para detalhes, confirmações e criação sob demanda
-- ✅ Loading states e empty states em todas as páginas
-- ✅ Filtros e busca client-side (role, status, data, nome)
-- ✅ CRUD completo de Plans (view/create/edit/delete)
-- ✅ CRUD completo de Users (admin: view/create/edit/delete)
-- ✅ Registro de treinos executados (Exercise)
-- ✅ Históricos com agrupamento por data e paginação
-- ✅ Cálculo automático de IMC com categorização
-- ✅ Tabs para organização de conteúdo
-- ✅ Navegação com breadcrumbs
-- ✅ Badges de status coloridos por role (blue/purple/red)
-- ✅ Tabelas responsivas com overflow e hover states
-- ✅ Conditional rendering baseado em role do usuário
+-  Sistema de autenticação (next-auth) com controle de acesso por role
+-  Dashboards para Trainee, Trainer e Admin com widgets e métricas
+-  Tema consistente (indigo-600, cards brancos, max-w-6xl/7xl, responsive)
+-  Formulários multi-step com validação
+-  Modais para detalhes, confirmações e criação sob demanda
+-  Loading states e empty states em todas as páginas
+-  Filtros e busca client-side (role, status, data, nome)
+-  CRUD completo de Plans (view/create/edit/delete)
+-  CRUD completo de Users (admin: view/create/edit/delete)
+-  Registro de treinos executados (Exercise)
+-  Históricos com agrupamento por data e paginação
+-  Cálculo automático de IMC com categorização
+-  Tabs para organização de conteúdo
+-  Navegação com breadcrumbs
+-  Badges de status coloridos por role (blue/purple/red)
+-  Tabelas responsivas com overflow e hover states
+-  Conditional rendering baseado em role do usuário
 
 **🚀 Próximos passos:**
 1. Testar todos os endpoints da API no Insomnia/Postman

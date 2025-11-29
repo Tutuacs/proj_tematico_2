@@ -7,12 +7,18 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  //  CORS Security Fix: Whitelist specific origins instead of allowing all
+  const allowedOrigins = env.ALLOWED_ORIGINS
+    ? env.ALLOWED_ORIGINS.split(',')
+    : ['http://localhost:3000', 'http://localhost:3001'];
+
   app.enableCors({
-    // ? Need more than one specific origin?
-    // TODO: origin: ['http://localhost:3000', 'http://localhost:3001'],
-    // ! origin: ['http://localhost:3000', 'http://localhost:3001'], NOTE: dont do ( origin:['*', ...] )
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['X-Total-Count'],
+    maxAge: 3600,
   });
 
   const config = new DocumentBuilder()

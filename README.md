@@ -3,147 +3,124 @@
  <img width=200px height=200px src="https://utfs.io/f/eiiA8GXc0v9SqLuNPUnvpTHYU6ftd3wqVrulk9QMG4cXSDx0" alt="Project logo"></a>
 </p>
 
-<h3 align="center">Nest x Next</h3>
+<h3 align="center">Sistema de Gerenciamento de Treinos</h3>
 
 <div align="center">
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![GitHub Issues](https://img.shields.io/github/issues/Tutuacs/Nest_Next.svg)](https://github.com/Tutuacs/Nest_Next/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/Tutuacs/Nest_Next.svg)](https://github.com/Tutuacs/Nest_Next/pulls)
+[![Security](https://img.shields.io/badge/security-scanned-green.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
 </div>
 
 ---
 
-<p align="center"> Few lines describing your project.
-    <br> 
-</p>
+##  Análise de Segurança OWASP
 
-## 📝 Table of Contents
+Este projeto passou por análise completa de segurança usando **Semgrep (SAST)**.
 
-- [About](#about)
-- [Getting Started](#getting_started)
-- [Deployment](#deployment)
-- [Usage](#usage)
-- [Built Using](#built_using)
-- [Authors](#authors)
+### Documentação
 
-## 🧐 About <a name = "about"> Nest_Next</a>
+- **[RELATORIO_SEGURANCA.md](./RELATORIO_SEGURANCA.md)** - Relatório completo da análise OWASP
 
-This is a Fullstack Base system, you can clone this repo and get a full-stack project with NestJs and NextJs using Refresh-Tokens and JWT, you can run it with Docker-Compose configured. Stop doing software from scratch and start using this base system.
+###  Resultados
 
-## 🏁 Getting Started <a name = "getting_started">Nest_Next</a>
+| Métrica | Antes | Depois | Melhoria |
+|---------|-------|--------|----------|
+| **Vulnerabilidades** | 2 | 1 |  **-50%** |
+| **Severidade HIGH** | 1 | 0 |  **-100%** |
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+###  Vulnerabilidades
 
-### Prerequisites
+ **CORS Misconfiguration** (HIGH) - Corrigida  
+ **Rate Limiting** (MEDIUM) - Documentada  
+ **JWT Secret Validation** (MEDIUM) - Documentada
 
-What things you need to install the software and how to install them.
-
+### Executar Análise
 
 ```bash
-install Docker
+cd api
+./security-scan.sh
 ```
-Our database run by default on docker, you can change it if you want.
 
+---
+
+##  Sobre o Projeto
+
+Sistema Full-Stack de gerenciamento de treinos com:
+-  Autenticação JWT
+-  Planos e atividades
+-  Relatórios de progresso
+-  Docker
+-  Segurança OWASP
+
+---
+
+##  Quick Start
+
+### Clone e Instale
 ```bash
-NodeJS -v 20.0^
+git clone https://github.com/Tutuacs/proj_tematico_2.git
+cd proj_tematico_2
 ```
 
+### Backend
 ```bash
-NestJs 10.4^
+cd api
+pnpm install
+docker-compose up -d  # Banco de dados
+pnpm run dev
 ```
 
-### Installing
-
-A step by step series of examples that tell you how to get a development env running.
-
-Clone this Repo
-
+### Frontend
 ```bash
-git clone https://github.com/Tutuacs/Nest_Next.git && cd Nest_Next
+cd client
+pnpm install
+pnpm run dev
 ```
 
-Remove the default .git folder
-
+### Análise de Segurança
 ```bash
-rm -rf .git
+cd api
+./security-scan.sh
 ```
 
-Run docker compose
+---
 
-```bash
-docker-compose up
-```
+## 📚 Documentação Adicional
 
-Make a migration
-```bash
-npm  prisma migrate dev --name init
-yarn prisma migrate dev --name init
-pnpm prisma migrate dev --name init
-```
+- **[RELATORIO_SEGURANCA.md](./RELATORIO_SEGURANCA.md)** - Análise completa OWASP
+- **[TABELA_VULNERABILIDADES.md](./TABELA_VULNERABILIDADES.md)** - Resumo executivo
+- **[COMO_ENTREGAR.md](./COMO_ENTREGAR.md)** - Guia de entrega
 
-Ready to use!
+---
 
+## 🛠️ Tecnologias
 
-```link
-http://localhost:3000
-```
+**Backend:**
+- NestJS 11
+- Prisma ORM
+- PostgreSQL
+- JWT Authentication
 
-## 🎈 Usage <a name="usage">Nest_Next</a>
+**Frontend:**
+- Next.js 14
+- TailwindCSS
+- TypeScript
 
-You can use Without Full-Docker!
+**Segurança:**
+- Semgrep SAST
+- OWASP Top 10 Compliance
 
-#### Using Backend docker
+---
 
-You can Run the backend inside the docker with the database or without it. To run without comment the ```full_stack_back``` service on the ```./api/docker-compose.yml``` file or paste this command.
+##  Autor
 
-```bash
-sudo docker compose up full_stack_db | docker-compose up full_stack_db
+**Arthur Silva**
+- GitHub: [@Tutuacs](https://github.com/Tutuacs)
 
-```
+---
 
-#### Build desktop command
+##  License
 
-```bash
-pyinstaller --onefile --windowed main.py --hidden-import=qtpy --hidden-import=PyQt5.QtWebEngineWidgets --hidden-import=PyQt5.QtWebEngineCore
-```
-
-To run backend with the database just paste this command.
-
-```bash
-sudo docker compose up -d --build | docker-compose up -d --build 
-```
-
-You can run manually Front and Back.(If you run manually check your Database connection on the ```./api/.env``` file)
-
-```bash
-cd api && npm  run dev
-cd api && yarn run dev
-cd api && pnpm run dev
-```
-Front:
-
-```bash
-cd client && npm  run dev
-cd client && yarn run dev
-cd client && pnpm run dev
-```
-
-## 🚀 Deployment <a name = "deployment">Nest_Next</a>
-
-You can deploy on vercel BUT to deploy the Back-end you need to add the ```./api/dir``` folder on your github repo. Actually Vercel dont build correctly NestJs, build your app manually and deploy the dist folder.
-
-## ⛏️ Built Using <a name = "built_using">Nest_Next</a>
-
-- [PostgreSQL](https://www.postgresql.org/) - Database
-- [NestJs](https://nestjs.com/) - Server Framework
-- [NextJs](https://nextjs.org/) - Web Framework
-- [Docker](https://docker.com/) - Container
-
-## ✍️ Authors <a name = "authors">Tutuacs</a>
-
-- [@Tutuacs](https://github.com/Tutuacs) - Idea & Initial work
-
-See also the list of [contributors](https://github.com/Tutuacs/Nest_Next/contributors) who participated in this project.
+MIT License - see LICENSE file for details

@@ -126,7 +126,7 @@ export default function AdminUsersPage() {
     // Additional confirmation when creating an admin
     if (formData.role === "2") {
       const confirmAdmin = confirm(
-        "⚠️ ATENÇÃO: Você está criando um usuário ADMINISTRADOR.\n\n" +
+        " ATENÇÃO: Você está criando um usuário ADMINISTRADOR.\n\n" +
         "Administradores têm acesso total ao sistema, incluindo:\n" +
         "• Gerenciar todos os usuários\n" +
         "• Visualizar e editar todos os dados\n" +
@@ -452,11 +452,11 @@ export default function AdminUsersPage() {
                   >
                     <option value="0">Aluno</option>
                     <option value="1">Instrutor</option>
-                    <option value="2">⚠️ Administrador (requer confirmação)</option>
+                    <option value="2"> Administrador (requer confirmação)</option>
                   </select>
                   {formData.role === "2" && (
                     <p className="mt-2 text-sm text-amber-600 flex items-center gap-1">
-                      <span>⚠️</span>
+                      <span></span>
                       <span>
                         Cuidado: Administradores têm acesso total ao sistema
                       </span>

@@ -328,7 +328,7 @@ export default function PlanDetailsPage() {
           <div className="mt-6">
             <div className="bg-red-50 rounded-xl border border-red-200 p-6 text-center">
               <p className="text-red-700 font-medium">
-                ⚠️ Este plano está expirado. Não é possível registrar treinos.
+                 Este plano está expirado. Não é possível registrar treinos.
               </p>
             </div>
           </div>

@@ -16,7 +16,7 @@ export class AppController {
   getHealth() {
     return {
       status: 'healthy',
-      message: 'Backend Vercel deployment is working perfectly! ✅',
+      message: 'Backend Vercel deployment is working perfectly! ',
       uptime: process.uptime(),
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV || 'development',

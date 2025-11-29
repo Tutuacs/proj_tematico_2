@@ -1,0 +1,23 @@
+# Semgrep Ignore File
+# Arquivos e diretórios que devem ser ignorados pela análise de segurança
+
+# Prisma generated files (podem causar timeouts)
+src/prisma/types/
+prisma/migrations/
+
+# Node modules
+node_modules/
+dist/
+build/
+
+# Test coverage
+coverage/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Build artifacts
+*.map
+*.log
