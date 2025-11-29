@@ -97,7 +97,7 @@ out
 # Nuxt.js build / generate output
 .nuxt
 /client/dist
-# /api/dist
+/api/dist
 
 # Gatsby files
 .cache/
@@ -137,7 +137,7 @@ out
 .yarn/install-state.gz
 .pnp.*
 
-# /api/dist
+/api/dist
 /api/node_modules
 /api/prisma/migrations
 
